@@ -1,13 +1,12 @@
+# Voluntia  
+### A Voluntary Actions Management System  
 
-# Voluntia
-### A Voluntary Actions Management System
-## Sketch of the `Backend`.
+## Sketch of the `Backend`  
 
-##### The plan:
-- **`Backend`**: `Spring Boot` (`Spring Data JPA` *aka: `Hibernate`* + `Spring Security` + `Postgres SQL`).
-    - *The **API** is a Restful API that handles JSON requests*
-- **`Frontend`**: `Node JS` + `React JS`.
-
+##### The Plan:  
+- **`Backend`**: `Spring Boot` (`Spring Data JPA` *aka: `Hibernate`* + `Spring Security` + `Postgres SQL`)  
+    - *The **API** is a Restful API that handles JSON requests*  
+- **`Frontend`**: `Node JS` + `React JS`  
 
 ```zsh
 voluntia-backend/
@@ -37,19 +36,20 @@ voluntia-backend/
 ├── pom.xml                                       # Maven dependencies
 ├── README.md                                     # Project documentation
 └── mvnw / mvnw.cmd                               # Maven wrapper scripts
+```  
 
-```
+#### Models  
 
-#### Models
-- **Roles - Users:**
-    - **User:** Υπερκλάση για όλους τους τύπους χρηστών (Admin, Volunteer, Organization).
-        - *Παρέχει κοινές ιδιότητες σε όλους τους τύπους χρηστών.*
-    - **Admin:** Διαχειριστής που εγκρίνει χρήστες, εκδηλώσεις και εθελοντές.
-    - **Volunteer:** Εθελοντής που συμμετέχει σε εκδηλώσεις και διαχειρίζεται τη συμμετοχή του.
-    - **Organization:** Οργανισμός που δημιουργεί εκδηλώσεις και διαχειρίζεται τη συμμετοχή των εθελοντών.
-- **System Classes:**
-    - **Event:** Αναπαριστά μια εκδήλωση στην πλατφόρμα.
-    - **Participation:** Συνδέει έναν Volunteer με μια Event, διαχειρίζοντας τη συμμετοχή του εθελοντή.
-- **Administration Services:**
-    - **AuthenticationService:**Παρέχει τη λογική αυθεντικοποίησης (login, signup, logout, κλπ.).
+- **Roles - Users:**  
+    - **User:** Superclass for all user types (Admin, Volunteer, Organization).  
+        - *Provides common properties for all user types.*  
+    - **Admin:** Administrator responsible for approving users, events, and volunteers.  
+    - **Volunteer:** A volunteer who participates in events and manages their participation.  
+    - **Organization:** An organization that creates events and manages volunteer participation.  
 
+- **System Classes:**  
+    - **Event:** Represents an event on the platform.  
+    - **Participation:** Links a Volunteer to an Event, managing their participation.  
+
+- **Administration Services:**  
+    - **AuthenticationService:** Provides authentication logic (login, signup, logout, etc.).  
