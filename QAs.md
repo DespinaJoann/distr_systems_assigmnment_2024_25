@@ -1,148 +1,168 @@
-# QAs: Questions and Answers:
+# 🤔 **QAs: Questions and Answers**  
+🔑 *`Key Questions` We Faced While Developing the Web-Restful-App (and How We Solved Them):*  
 
-### **Questions and Answers that we gave *(while developing the Web-Restful-App)*:**
+---
 
-#### 1. How many controllers do we need for our application? Do we need one for each entity and only one for the User *(or a main - base controller for the User and then some others that extend it for the subclasses)*?
-   - Keep in mind that the User is a base class that will not be implemented as a table! But only will be extended by the subclasses and all its attributes will be written to the tables of them using the (`INHERITANCE.Strategy=JOINED`).
-   - What is better and more appropriate and why ?(!)
+### **1️. How many controllers do we need for our application?**Do we need one controller for each entity? Or should we have a main base controller for the `User` class and separate role-specific controllers for subclasses like `Admin`, `Volunteer`, and `Organization`?  
 
+💡 *Note:* The `User` class is abstract and won’t be directly mapped to a table. Instead, it’s extended by the subclasses, and its fields are written to their respective tables using the `INHERITANCE.Strategy=JOINED`.
 
+#### **Analysis:**  
+Controllers are the entry points for handling HTTP requests in our Spring Boot application. The challenge here is to balance **clarity, maintainability**, and **efficiency**.  
 
-**Analysis:**
-
-In a Spring Boot application, controllers act as entry points for handling `HTTP` requests. Given that our system uses the User class as a base class with the `JOINED` inheritance strategy, we need to decide how to organize our controllers to balance **clarity, maintainability**, and **performance**.
+Here are the two main options we considered:  
 
 - **Option 1: One Controller per Entity**  
-   - Each role (`Admin`, `Volunteer`, `Organization`) has its own controller.  
-   - The controllers directly map to their respective repositories and services.  
-   - This is a simple structure where each role's functionality is entirely separated.  
-   - Shared functionality like login could be handled in an additional `AuthenticationController`.  
+   Each role (`Admin`, `Volunteer`, `Organization`) gets its own controller that directly maps to the corresponding repository and service. Shared functionality like login or logout is handled in a separate controller (e.g., `AuthenticationController`).  
+   - **Advantages:**  
+     - Clear separation of concerns.  
+     - Each controller is focused on its specific role.  
+   - **Disadvantages:**  
+     - Duplicated code for shared functionality like login or logout.  
+     - Potentially harder to maintain as the app grows.  
 
-- **Option 2: Base UserController with Role-Specific Controllers**  
-   - A base `UserController` contains shared functionality (e.g., login, logout).  
-   - Role-specific controllers (`AdminController`, `VolunteerController`, `OrganizationController`) extend this base controller or operate independently.  
-   - This allows for centralized logic for common operations but still separates role-specific functionality.  
+- **Option 2: Base UserController + Role-Specific Controllers**  
+   A shared `UserController` handles functionality common to all roles (e.g., login, logout), while role-specific controllers (`AdminController`, `VolunteerController`, `OrganizationController`) manage their own unique operations.  
+   - **Advantages:**  
+     - Centralizes shared logic, making it easier to maintain.  
+     - Reduces duplicate code.  
+     - Still allows for role-specific flexibility where needed.  
+   - **Disadvantages:**  
+     - Slightly more complex to set up, as we need to differentiate between shared and role-specific logic.  
 
-**Decision:**
 
-To use **Option 2 (Base UserController + Role-Specific Controllers)** because:
-- It centralizes shared operations, reducing code duplication (e.g., login).
-- It allows for flexibility by letting each role-specific controller handle unique functionalities.
-- It aligns with the principle of **single responsibility** while making the design modular and extensible.
+#### **Decision:**  
+✅ We chose **Option 2 (Base UserController + Role-Specific Controllers)**. Here’s why:  
+- Shared operations like login and logout are centralized, avoiding code duplication.  
+- Each role can still have its own dedicated controller for unique functionalities.  
+- The design is **modular** and **extensible**, making future updates or changes easier.  
 
----
-
-#### 2. The `dtos` *- Data Transferred Objects* will be only the **request / responses** of the `REST API`, or and something further? And why?
-
-**Analysis:**
-
-**DTOs (Data Transfer Objects)** are primarily used to:
-- Define the structure of data being sent to or received from the client.
-- Decouple API contracts (requests and responses) from internal domain models (entities).
-- Provide an additional layer for **data validation**, **transformation**, and **security**.  
-
-DTOs in most systems serve as the **boundary** of your application, ensuring that:
-1. The client sees only the data you want to expose.  
-2. Validation rules are enforced early in the request lifecycle.  
-3. Domain models (e.g., `Admin`, `Volunteer`) remain unaffected by changes in the API. 
-
-**Decision:**
-
-To keep DTOs focused on **request/response handling only** for:
-1. SignUp, Login, Delete and Edit operations.
-2. API responses to standardize data sent to clients.  
-This keeps the design simple and avoids conflating DTOs with other responsibilities like database mapping.
+For example:  
+- `UserController` handles login and shared endpoints.  
+- `AdminController` focuses on admin-specific tasks like approving events.  
+- `VolunteerController` manages volunteer operations like viewing participations.  
 
 ---
 
-#### 3. How could we actually apply the `CRUD` logic to our specific app?
+### **2. What are DTOs (*Data Transfer Objects*) used for in our system?**Should we use DTOs only for API requests/responses, or could they serve other purposes?
 
-**Analysis:**
 
-CRUD (`Create`, `Read`, `Update`, `Delete`) forms the backbone of any application, and its implementation depends on how the entities are structured. In our system:
-- Each role (`Admin`, `Volunteer`, `Organization`) is tied to a specific table due to the `JOINED` inheritance strategy.
-- CRUD operations should be role-specific, while some shared operations (e.g., login) can be generalized.
+#### **Analysis:**  
+In a Spring Boot app, **DTOs** (Data Transfer Objects) are critical for separating API interactions from our domain logic.  
+
+Here’s why they’re important:  
+- **Primary Role:**  
+   DTOs define the structure of data being sent to or received from the client. For example, when a user signs up or logs in, we use DTOs to validate and transfer that data.  
+- **Why Not Use Entities Directly?**  
+   Exposing entities directly can lead to:  
+   - Security risks (e.g., exposing sensitive fields).  
+   - Tight coupling between the API and the database schema.  
+   - Difficulty in handling data validation and transformations.  
+
+
+#### **Decision:**  
+✅ We’ll use DTOs exclusively for **API requests and responses**, focusing on:  
+1. **Requests** (e.g., `SignUpRequest`, `SignInRequest`) for user input validation.  
+2. **Responses** (e.g., `UserDetailsResponse`, `EventDetailsResponse`) to control what data is returned to the client.  
+
+This keeps our backend **secure**, **flexible**, and easy to maintain.
+
+---
+
+### **3️. How will we implement CRUD operations in our app?**  
+
+
+#### **Analysis:**  
+CRUD operations are the foundation of any application. In our case, implementing them involves a few key considerations due to the `JOINED` inheritance strategy and role-based functionality.  
+
+Here’s how we’ll handle each operation:  
 
 1. **Create (`POST`)**  
-   - Each role has a dedicated creation method (`signUp`).  
-   - Use DTOs for validation to ensure only valid data is persisted.
+   - Use **role-specific DTOs** to validate and map incoming data for creation.  
+   - For example, creating a `Volunteer` requires different fields than creating an `Organization`.  
 
 2. **Read (`GET`)**  
-   - Fetch user-specific or role-specific data (e.g., get all events for a volunteer).  
-   - Add optional filters for more advanced queries (e.g., find events by date).
+   - Provide endpoints for fetching data by ID or using filters (e.g., find events by date or location).  
+   - Ensure role-based permissions (e.g., volunteers shouldn’t see admin-specific data).  
 
 3. **Update (`PUT`/`PATCH`)**  
-   - Allow role-specific updates (e.g., update an organization's address or a volunteer's contact info).  
-   - Validate incoming data to avoid inconsistencies.
+   - Validate incoming updates to avoid inconsistencies.  
+   - Allow users to update their profiles while ensuring only authorized changes (e.g., an admin can approve events, but a volunteer can’t).  
 
 4. **Delete (`DELETE`)**  
-   - Role-based deletion (e.g., delete an event as an admin or cancel participation as a volunteer).  
-   - Handle dependencies carefully (e.g., removing participations tied to a deleted volunteer).
+   - Handle deletions carefully to manage dependencies (e.g., deleting a volunteer should also remove their participations).  
 
-**Decision:**
 
-Implement CRUD operations role-specific, with:
-- Role-specific services (e.g., `VolunteerService`) handling logic.
-- Validation using request DTOs.
-- Consistency checks before deletion or updates (e.g., cascade behavior for related entities).
+#### **Decision:**  
+✅ CRUD operations will be implemented as **role-specific services**.  
+- Shared functionality will go into base services, while role-specific services (e.g., `AdminService`, `VolunteerService`) handle unique logic.  
+- Repositories will focus solely on database interactions, keeping services responsible for business logic.  
 
 ---
 
-#### 4. How can we create our backend and implement it and run and test it without frontend settings, due to the fact that we will focus on developing the fronted after using the `REACT JS` framework and `JS`? 
-- we use PostgreSQL , maybe we can do sth a command line runner? 
+### **4️. How can we test and run the backend without a frontend?**  
 
-**Analysis:**
-// TODO: ...
-**Decision:**
-// TODO: ...
+We actually don't know exactly how yet :face_with_spiral_eyes: but we are styding and learning how we will do it :grin:.
 
----
+#### **Possibilities:**  
+-  Implement a `CommandLineRunner` to populate the database with test data for easier testing and creating dummy data for testing.
 
+// TODO: ... Think more!
 
-#### 5. So how do we must develop our frontend and actually what is going on with the Participation class? How must we implement all the logic? Do we need to create a reposiory for this table ? How we will connect many-to-many / one-to-many? What we will do?
-
-**Analysis:**
-
-The `Participation` class links `Volunteer` and `Event` in a many-to-many relationship. It allows tracking of additional information about the relationship, such as the participation date or status.
-
-1. **Database Relationships:**
-   - Define `@ManyToOne` relationships in `Participation` to link it to `Volunteer` and `Event`.  
-   - This is a classic many-to-many pattern with a join table (`Participation`).
-
-2. **Repository and Service:**
-   - Create a repository to manage `Participation` records (e.g., register for an event, cancel participation).  
-   - Add methods to query participations by volunteer or event.
-
-3. **Controller:**
-   - Implement endpoints for registering a volunteer to an event, fetching participation details, etc.
-
-**Decision:**
-
-- Implement `Participation` as a full-fledged entity with a repository and service.  
-- Use it to track relationships and additional details (e.g., status).  
-- Create a dedicated `ParticipationController` to handle participation-specific endpoints.
+#### **Decision:**  
+✅ We’ll focus on:  
+- **Postman** for manual testing.  
+- **Swagger UI** for interactive testing and documentation.  
+- A mix of **H2 (development)** and **PostgreSQL (production)** for flexibility.
 
 ---
 
-#### 6. Do we need to create controllers for tge Event and Participation entities? What is better for our app and what is the appropriate in general?
+### **5️. How should we handle the `Participation` class and its relationships?**  
 
-**Analysis:**
+#### **Analysis:**  
+The `Participation` entity links `Volunteer` and `Event` in a many-to-many relationship. It’s also responsible for tracking additional information, like the participation status or registration date.  
 
-Controllers provide endpoints for client interactions. For `Event` and `Participation`:
-1. `EventController`:  
-   - Handles CRUD operations for events (e.g., creating events, fetching event details).
-   - Focuses on `Organization` and `Admin` interactions.
+Here’s the plan:  
+1. **Database Relationships:**  
+   - Define `@ManyToOne` relationships in `Participation` for both `Volunteer` and `Event`.  
+   - Use `@JoinTable` to define the many-to-many relationship.  
 
-2. `ParticipationController`:  
-   - Manages volunteer registrations for events.
-   - Provides endpoints for fetching participations.
+2. **Repositories and Services:**  
+   - Create a `ParticipationRepository` to handle CRUD operations.  
+   - Implement a `ParticipationService` for logic like registering for an event or canceling participation.  
 
-**Decision:**
+3. **Controllers:**  
+   - Provide endpoints for volunteers to register for events, view their participations, and cancel them if needed.  
 
-- Create **both controllers** to encapsulate entity-specific logic and keep the design modular.  
-- Use services to delegate business logic, keeping controllers lightweight.
+
+#### **Decision:**  
+✅ The `Participation` entity will have its own repository, service, and controller. This ensures clean separation of logic and makes the relationship between `Volunteer` and `Event` easy to manage.
 
 ---
 
-### Generall Design!
-// TODO: ...
+### **6️. Should we create controllers for Event and Participation entities?**  
+
+#### **Analysis:**  
+Both `Event` and `Participation` require specific operations, so they each deserve their own controllers:  
+
+1. **EventController:**  
+   - Handles CRUD operations for events (e.g., creating, updating, or deleting events).  
+   - Focuses on interactions by `Admin` and `Organization`.  
+
+2. **ParticipationController:**  
+   - Manages volunteer registrations for events.  
+   - Handles fetching and managing participations.  
+
+
+#### **Decision:**  
+✅ Create separate controllers for `Event` and `Participation`. This keeps the design modular and ensures each controller has a clear purpose.  
+
+---
+
+### **General Design Takeaways:**  
+
+1. 🚀 **DTOs** will handle all request/response validation and transformation.  
+2. 🏗️ Role-specific **controllers and services** ensure a modular and maintainable structure.  
+3. ⚙️ Focus on testing backend functionality with **Command line Runner**.  
+4. 🔗 The `Participation` entity will manage many-to-many relationships and act as a bridge between `Volunteer` and `Event`.
+
