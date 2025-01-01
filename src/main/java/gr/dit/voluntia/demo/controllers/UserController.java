@@ -5,4 +5,6 @@ public class UserController {
     // maybe the best thing is to use Inheritance or maybe to create a UserController
     // interface that will work as the base-class for our webapp
 
+    
+
 }

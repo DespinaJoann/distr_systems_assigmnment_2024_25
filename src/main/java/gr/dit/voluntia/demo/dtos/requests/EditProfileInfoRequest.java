@@ -1,9 +1,11 @@
-package gr.dit.voluntia.demo.dtos;
+package gr.dit.voluntia.demo.dtos.requests;
 
 import lombok.Data;
 
 @Data
-public class SignUpRequest {
+public class EditProfileInfoRequest {
+
+    private Long userId;
     private String username;
     private String password;
     private String email;
@@ -17,6 +19,4 @@ public class SignUpRequest {
     private String organizationName;
     private String address;
     private String location;
-
-    private String specialAdminKey;     // Only for the Admin
 }

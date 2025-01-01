@@ -3,7 +3,7 @@
 
 ---
 
-### 1️. How many controllers do we need for our application?**Do we need one controller for each entity? Or should we have a main base controller for the `User` class and separate role-specific controllers for subclasses like `Admin`, `Volunteer`, and `Organization`?
+### 1️. How many controllers do we need for our application? Do we need one controller for each entity? Or should we have a main base controller for the `User` class and separate role-specific controllers for subclasses like `Admin`, `Volunteer`, and `Organization`?
 
 💡 *Note:* The `User` class is abstract and won’t be directly mapped to a table. Instead, it’s extended by the subclasses, and its fields are written to their respective tables using the `INHERITANCE.Strategy=JOINED`.
 
@@ -44,7 +44,7 @@ For example:
 
 ---
 
-### 2. What are DTOs (*Data Transfer Objects*) used for in our system?**Should we use DTOs only for API requests/responses, or could they serve other purposes?
+### 2. What are DTOs (*Data Transfer Objects*) used for in our system? Should we use DTOs only for API requests/responses, or could they serve other purposes?
 
 
 #### **Analysis:**  

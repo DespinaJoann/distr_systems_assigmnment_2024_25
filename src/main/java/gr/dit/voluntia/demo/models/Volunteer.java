@@ -26,22 +26,7 @@ public class Volunteer extends User {
     private String accountStatus = "Pending"; // => Pending/ Created/ Rejected
     private List<Participation> listOfParticipation = null;
 
-    /**Description:
-     * Applies for participating on an event */
-    public Participation applyForEvent(Event event) {
-        // TODO: ...
-        return null;
-    }
-
-    /**Description:
-     * Searches and selects the event that they want to participate */
-    public List<Participation> searchEventForParticipation( ) {
-        // TODO: ...
-        return null;
-    }
-
     // Update Methods
-
     /**Description: Add new participation */
     public void addNewParticipation(Participation participation) {
         if (this.listOfParticipation == null) {
