@@ -3,7 +3,7 @@
 
 ---
 
-### **1️. How many controllers do we need for our application?**Do we need one controller for each entity? Or should we have a main base controller for the `User` class and separate role-specific controllers for subclasses like `Admin`, `Volunteer`, and `Organization`?** 
+### 1️. How many controllers do we need for our application?**Do we need one controller for each entity? Or should we have a main base controller for the `User` class and separate role-specific controllers for subclasses like `Admin`, `Volunteer`, and `Organization`?
 
 💡 *Note:* The `User` class is abstract and won’t be directly mapped to a table. Instead, it’s extended by the subclasses, and its fields are written to their respective tables using the `INHERITANCE.Strategy=JOINED`.
 
@@ -44,7 +44,7 @@ For example:
 
 ---
 
-### **2. What are DTOs (*Data Transfer Objects*) used for in our system?**Should we use DTOs only for API requests/responses, or could they serve other purposes?**
+### 2. What are DTOs (*Data Transfer Objects*) used for in our system?**Should we use DTOs only for API requests/responses, or could they serve other purposes?
 
 
 #### **Analysis:**  
@@ -69,7 +69,7 @@ This keeps our backend **secure**, **flexible**, and easy to maintain.
 
 ---
 
-### **3️. How will we implement CRUD operations in our app?**  
+### 3️. How will we implement CRUD operations in our app? 
 
 
 #### **Analysis:**  
@@ -100,7 +100,7 @@ Here’s how we’ll handle each operation:
 
 ---
 
-### **4️. How can we test and run the backend without a frontend?**  
+### 4️. How can we test and run the backend without a frontend?  
 
 We actually don't know exactly how yet :face_with_spiral_eyes: but we are styding and learning how we will do it :grin:.
 
@@ -117,7 +117,7 @@ We actually don't know exactly how yet :face_with_spiral_eyes: but we are stydin
 
 ---
 
-### **5️. How should we handle the `Participation` class and its relationships?**  
+### 5️. How should we handle the `Participation` class and its relationships?  
 
 #### **Analysis:**  
 The `Participation` entity links `Volunteer` and `Event` in a many-to-many relationship. It’s also responsible for tracking additional information, like the participation status or registration date.  
@@ -140,7 +140,7 @@ Here’s the plan:
 
 ---
 
-### **6️. Should we create controllers for Event and Participation entities?**  
+### 6️. Should we create controllers for Event and Participation entities?  
 
 #### **Analysis:**  
 Both `Event` and `Participation` require specific operations, so they each deserve their own controllers:  
