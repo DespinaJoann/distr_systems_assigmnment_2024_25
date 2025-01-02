@@ -1,4 +1,4 @@
-package gr.dit.voluntia.demo.dtos.requests;
+package gr.dit.voluntia.demo.dtos.requests.tasks;
 
 import lombok.Data;
 

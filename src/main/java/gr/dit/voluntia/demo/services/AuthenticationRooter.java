@@ -1,8 +1,7 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.dtos.requests.LogOutRequest;
-import gr.dit.voluntia.demo.dtos.requests.SignInRequest;
-import gr.dit.voluntia.demo.dtos.requests.SignUpRequest;
+import gr.dit.voluntia.demo.dtos.requests.acts.SignInRequest;
+import gr.dit.voluntia.demo.dtos.requests.acts.SignUpRequest;
 import gr.dit.voluntia.demo.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

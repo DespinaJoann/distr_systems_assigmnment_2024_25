@@ -23,10 +23,10 @@ public class Participation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Foreign Key for Volunteer
-    private Long volunteerId;
-    // Foreign Key for Event
-    private Long eventId;
+
+    private Long volunteerId;           // Foreign Key for Volunteer
+    private Long eventId;               // Foreign Key for Event
+    private Long organizationId;         // Foreign Key for Organization (the creator of the event)
 
     private LocalDateTime date;
     private String status = "Pending";  // (Pending, Confirmed, CheckedIn, Rejected)

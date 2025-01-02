@@ -1,8 +1,8 @@
 package gr.dit.voluntia.demo.services.blueprints;
 
-import gr.dit.voluntia.demo.dtos.requests.DeleteRequest;
-import gr.dit.voluntia.demo.dtos.requests.DisplayProfileRequest;
-import gr.dit.voluntia.demo.dtos.requests.EditProfileInfoRequest;
+import gr.dit.voluntia.demo.dtos.requests.acts.DeleteRequest;
+import gr.dit.voluntia.demo.dtos.requests.tasks.DisplayProfileRequest;
+import gr.dit.voluntia.demo.dtos.requests.tasks.EditProfileInfoRequest;
 import gr.dit.voluntia.demo.models.User;
 
 import java.util.List;

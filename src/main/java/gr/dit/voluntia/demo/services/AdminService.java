@@ -1,6 +1,11 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.dtos.requests.*;
+import gr.dit.voluntia.demo.dtos.requests.acts.DeleteRequest;
+import gr.dit.voluntia.demo.dtos.requests.acts.LogOutRequest;
+import gr.dit.voluntia.demo.dtos.requests.acts.SignInRequest;
+import gr.dit.voluntia.demo.dtos.requests.acts.SignUpRequest;
+import gr.dit.voluntia.demo.dtos.requests.tasks.DisplayProfileRequest;
+import gr.dit.voluntia.demo.dtos.requests.tasks.EditProfileInfoRequest;
 import gr.dit.voluntia.demo.models.Admin;
 import gr.dit.voluntia.demo.models.Event;
 import gr.dit.voluntia.demo.models.User;

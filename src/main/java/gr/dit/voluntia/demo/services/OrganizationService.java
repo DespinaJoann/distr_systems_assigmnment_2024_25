@@ -1,14 +1,21 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.dtos.requests.*;
+import gr.dit.voluntia.demo.dtos.requests.acts.DeleteRequest;
+import gr.dit.voluntia.demo.dtos.requests.acts.LogOutRequest;
+import gr.dit.voluntia.demo.dtos.requests.acts.SignInRequest;
+import gr.dit.voluntia.demo.dtos.requests.acts.SignUpRequest;
+import gr.dit.voluntia.demo.dtos.requests.tasks.CreateNewEventRequest;
+import gr.dit.voluntia.demo.dtos.requests.tasks.DisplayProfileRequest;
+import gr.dit.voluntia.demo.dtos.requests.tasks.EditProfileInfoRequest;
 import gr.dit.voluntia.demo.models.*;
+import gr.dit.voluntia.demo.repositories.EventRepository;
 import gr.dit.voluntia.demo.repositories.OrganizationRepository;
+import gr.dit.voluntia.demo.repositories.ParticipationRepository;
 import gr.dit.voluntia.demo.services.blueprints.AuthenticationService;
 import gr.dit.voluntia.demo.services.blueprints.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +24,10 @@ public class OrganizationService implements UserService, AuthenticationService {
 
     @Autowired
     private OrganizationRepository organizationRepository;
+    @Autowired
+    private EventRepository eventRepository;
+    @Autowired
+    private ParticipationRepository participationRepository;
 
     // Methods for Organization Activities
     // -> (for every single organization  -- things that can do)
@@ -25,35 +36,44 @@ public class OrganizationService implements UserService, AuthenticationService {
      * Description:
      * Creates a new event for the organization.
      *
-     * @param eventName the name of the event to be created.
-     * @param eventDate the date that will take part.
-     * @param location the location of the event.
-     * @param maxNumberOfParticipants the maximum number of volunteers
-     * @param eventDescription a description of the event.
+     * @param request to create new event
      * */
     public Event createEvent(
-            String eventName,
-            LocalDateTime eventDate,
-            String location,
-            Integer maxNumberOfParticipants,
-            String eventDescription
+            CreateNewEventRequest request
     ) {
-        // TODO: ...
-        return new Event();
+        // Create a new Event instance and populate it with data from the request
+        Event event = new Event();
+        event.setOrganizationId(request.getOrganizationId());
+        event.setName(request.getName());
+        event.setDescription(request.getDescription());
+        event.setLocation(request.getLocation());
+        event.setDate(request.getDate());
+        event.setMaxNumbOfVolunteers(request.getMaxNumberOfPeople());
+
+        event.setParticipationList(null);    // Initialize the list as empty
+        event.setStatus("Pending");          // Event is pending and sends a request to the
+                                             // Admin and waits until Admin make it confirmed
+
+        // Save the created Event to the event table
+        event = eventRepository.save(event);
+
+        // Return the created event
+        return event;
     }
 
     /**
      * Description:
-     * Reviews a volunteer's request to participate in an event.
-     *
-     * @param volunteer the volunteer object representing the volunteer requesting participation.
-     * @param event the event object the volunteer wants to participate in.
-     * */
-    public Participation reviewVolunteerParticipation(Volunteer volunteer, Event event ) {
-        // TODO: ...
-        // if the Event is well suited for the Volunteer
+     * Reviews a volunteer's request to participate in an event.*/
 
-        return null;
+    public Participation reviewVolunteerParticipation() {
+
+        // Get All participation that have status "Pending" and The event belongs to this organization
+        List<Participation> pendingParticipations = participationRepository.findPendingParticipationsForOrganization(
+                organizationId
+        );
+        // 2. If the list is empty -> return: "Everything is up to date! ..."
+        // 3. If the list is not empty -> loop over all the list and review
+
     }
 
     /**
@@ -149,6 +169,23 @@ public class OrganizationService implements UserService, AuthenticationService {
         }
 
         return null;
+    }
+
+    // Utility functions
+    public String reviewParticipation(Participation part, Event ev) {
+        // Check if the event has reached its maximum number of participants
+        if (ev.getParticipationList().size() >= ev.getMaxNumbOfVolunteers()) {
+            // Event is full, cannot accept more participants
+            part.setStatus("Rejected");
+            return "rejected";
+        }
+
+        // TODO:
+        // -> Add more attributes to the Event and the Participation classes
+        // Additional checks can be added here, e.g.,
+        // matching event requirements with volunteer skills
+        part.setStatus("Accepted");
+        return "accepted";
     }
 }
 

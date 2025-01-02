@@ -2,9 +2,11 @@
 # **Voluntia**
 
 ## **Project Overview**
-**Voluntia** is a backend solution developed as part of the course "Distributed Systems" at Harokopio University of Athens (HUA) during the academic year 2024-2025.
-Authored by *Despina Ioanna Chalkiadaki* and *Vasiliki Maria Koutsi*, this project provides a robust backend system for managing volunteers, events, and organizations. Built using Spring Boot, it integrates Hibernate ORM for seamless database interactions with PostgreSQL and ensures secure authentication with Spring Security.
-This API powers a volunteer management platform by offering core endpoints for user and event operations.
+**Voluntia** is a backend solution developed as part of the course "Distributed Systems" at Harokopio University of Athens (`HUA`) during the academic year 2024-2025.
+
+Authored by *Despina Ioanna Chalkiadaki* and *Vasiliki Maria Koutsi*, this project provides a robust backend system for managing volunteers, events, and organizations. Built using `Spring Boot`, it integrates `Hibernate ORM` for seamless database interactions with `PostgreSQL` and ensures secure authentication with `Spring Security`.
+
+This `API` powers a volunteer management platform by offering core endpoints for user and event operations.
 
 ---
 
@@ -12,7 +14,6 @@ This API powers a volunteer management platform by offering core endpoints for u
 
 ### **Authentication & Authorization**
 - **Spring Security** for role-based access control (Admin, Volunteer, Organization).
-- User registration, login, and logout with **BCrypt**-encrypted credentials.
 
 ### **Role-Based Functionalities**
 1. **Admin**:
@@ -34,12 +35,12 @@ This API powers a volunteer management platform by offering core endpoints for u
 ---
 
 ## **Tech Stack**
-- **Java**: Core language.
-- **Spring Boot**: Backend framework for rapid development.
-- **Hibernate ORM**: Handles database persistence.
-- **PostgreSQL**: Relational database.
-- **Spring Security**: Manages authentication and authorization.
-- **Maven**: Dependency and build management tool.
+- **`Java`**: Core language.
+- **`Spring Boot`**: Backend framework for rapid development.
+- **`Hibernate ORM`**: Handles database persistence.
+- **`PostgreSQL`**: Relational database.
+- **`Spring Security`**: Manages authentication and authorization.
+- **`Maven`**: Dependency and build management tool.
 
 ---
 
@@ -52,7 +53,7 @@ src/
 │   │   └── gr/
 │   │       └── dit/
 │   │           └── voluntia/
-│   │               ├── config/                       # Security configurations
+│   │               ├── config/                      # Security configurations
 │   │               ├── controllers/                 # REST API controllers
 │   │               ├── dtos/                        # Data Transfer Objects (DTOs)
 │   │               │   ├── requests/                # Request DTOs
