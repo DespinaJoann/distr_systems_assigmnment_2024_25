@@ -1,9 +1,9 @@
-package gr.dit.voluntia.demo.dtos.requests.acts;
+package gr.dit.voluntia.demo.dtos.forward;
 
 import lombok.Data;
 
 @Data
-public class DeleteRequest {
+public class DeleteDto {
 
     private Long userId;
     private String password; // Password for validation

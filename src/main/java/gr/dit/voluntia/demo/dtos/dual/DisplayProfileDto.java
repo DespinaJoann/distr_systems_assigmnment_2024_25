@@ -1,9 +1,9 @@
-package gr.dit.voluntia.demo.dtos.requests.tasks;
+package gr.dit.voluntia.demo.dtos.dual;
 
 import lombok.Data;
 
 @Data
-public class DisplayProfileRequest {
+public class DisplayProfileDto {
     // TODO: ...
     private Boolean displayProfile;
     private Long userId;

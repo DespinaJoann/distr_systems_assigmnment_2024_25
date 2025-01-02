@@ -1,12 +1,13 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.dtos.requests.acts.DeleteRequest;
-import gr.dit.voluntia.demo.dtos.requests.acts.LogOutRequest;
-import gr.dit.voluntia.demo.dtos.requests.acts.SignInRequest;
-import gr.dit.voluntia.demo.dtos.requests.acts.SignUpRequest;
-import gr.dit.voluntia.demo.dtos.requests.tasks.CreateNewEventRequest;
-import gr.dit.voluntia.demo.dtos.requests.tasks.DisplayProfileRequest;
-import gr.dit.voluntia.demo.dtos.requests.tasks.EditProfileInfoRequest;
+import gr.dit.voluntia.demo.dtos.forward.DeleteDto;
+import gr.dit.voluntia.demo.dtos.forward.LogOutDto;
+import gr.dit.voluntia.demo.dtos.forward.SignInDto;
+import gr.dit.voluntia.demo.dtos.forward.SignUpDto;
+import gr.dit.voluntia.demo.dtos.dual.CreateNewEventDto;
+import gr.dit.voluntia.demo.dtos.dual.DisplayParticipationListsDto;
+import gr.dit.voluntia.demo.dtos.dual.DisplayProfileDto;
+import gr.dit.voluntia.demo.dtos.dual.EditProfileInfoDto;
 import gr.dit.voluntia.demo.models.*;
 import gr.dit.voluntia.demo.repositories.EventRepository;
 import gr.dit.voluntia.demo.repositories.OrganizationRepository;
@@ -36,19 +37,19 @@ public class OrganizationService implements UserService, AuthenticationService {
      * Description:
      * Creates a new event for the organization.
      *
-     * @param request to create new event
+     * @param createDto to create new event
      * */
     public Event createEvent(
-            CreateNewEventRequest request
+            CreateNewEventDto createDto
     ) {
         // Create a new Event instance and populate it with data from the request
         Event event = new Event();
-        event.setOrganizationId(request.getOrganizationId());
-        event.setName(request.getName());
-        event.setDescription(request.getDescription());
-        event.setLocation(request.getLocation());
-        event.setDate(request.getDate());
-        event.setMaxNumbOfVolunteers(request.getMaxNumberOfPeople());
+        event.setOrganizationId(createDto.getOrganizationId());
+        event.setName(createDto.getName());
+        event.setDescription(createDto.getDescription());
+        event.setLocation(createDto.getLocation());
+        event.setDate(createDto.getDate());
+        event.setMaxNumbOfVolunteers(createDto.getMaxNumberOfPeople());
 
         event.setParticipationList(null);    // Initialize the list as empty
         event.setStatus("Pending");          // Event is pending and sends a request to the
@@ -63,36 +64,77 @@ public class OrganizationService implements UserService, AuthenticationService {
 
     /**
      * Description:
-     * Reviews a volunteer's request to participate in an event.*/
-
-    public Participation reviewVolunteerParticipation() {
-
-        // Get All participation that have status "Pending" and The event belongs to this organization
-        List<Participation> pendingParticipations = participationRepository.findPendingParticipationsForOrganization(
-                organizationId
-        );
-        // 2. If the list is empty -> return: "Everything is up to date! ..."
-        // 3. If the list is not empty -> loop over all the list and review
-
-    }
-
-    /**
-     * Description:
-     * Confirms a volunteer's participation in a specific event.
-     * It is called after the reviewVolunteerParticipation method
+     * Reviews pending volunteer participations for a given organization and updates their status to "Accepted" or "Rejected".
      *
-     * @param volunteer the volunteer object representing the volunteer requesting participation.
-     * @param participation the participation object that keeps all the information.
+     * This method retrieves all "Pending" participations for the organization, evaluates them based on event criteria,
+     * and updates their status. It counts the number of accepted and rejected participations and updates the provided
+     * {@link DisplayParticipationListsDto} with the results.
+     *
+     * @param dispPartDto A {@link DisplayParticipationListsDto} containing the organization ID and participation details.
+     *                    It will be updated with the review results and task completion status.
+     * @return The updated {@link DisplayParticipationListsDto} with the review results and task completion flag.
      * */
-    public void confirmVolunteerParticipation(Volunteer volunteer, Participation participation ) {
-        // TODO: ...
+
+    public DisplayParticipationListsDto reviewVolunteerParticipation(DisplayParticipationListsDto dispPartDto) {
+
+        // Counters for info message visualization
+        int countAccepted = 0;
+        int countRejected = 0;
+
+        // Get All participation that have status "Pending" and the event belongs to this organization
+        List<Participation> pendingParticipations = participationRepository.findPendingParticipationsForOrganization(
+                dispPartDto.getOrganizationId()
+        );
+
+        // If the list is empty, nothing to review
+        if (pendingParticipations.isEmpty()) {
+            dispPartDto.setInfoMessage("Nothing to review! Everything is up to date!");
+            dispPartDto.setTaskCompleted(true);
+            return dispPartDto; // This should return when there are no pending participations
+        }
+
+        // If the list is not empty -> loop over all the list and review
+        for (Participation part : pendingParticipations) {
+            // Find the event that connects to the participation
+            Optional<Event> optEv = eventRepository.findById(part.getEventId());
+            if (optEv.isPresent()) {
+                Event event = optEv.get();                                 // Get the event object
+                String reviewResult = reviewParticipation(part, event);    // Review the participation
+
+                // Increment counters based on result
+                if (reviewResult.equals("accepted")) {
+                    countAccepted++;
+                } else {
+                    countRejected++;
+                }
+
+                // Save the updated participation to the repository
+                participationRepository.save(part);
+
+                // Print the result status for each event (For debugging purposes)
+                System.out.println("Participation for volunteer " + part.getVolunteerId() +
+                        " in event " + event.getName() + " was " + reviewResult + ".");
+            }
+        }
+
+        // Update Dto with the results
+        dispPartDto.setInfoMessage(
+                countAccepted + " new participations accepted, " +
+                countRejected + " new participations rejected, " +
+                (countAccepted + countRejected) + " total participations reviewed"
+        );
+
+        dispPartDto.setTaskCompleted(true);
+
+        return dispPartDto;
     }
+
 
 
     // Methods for Managing itself (login/signin - delete/alter)
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    public Organization signUp(SignUpRequest request) {
+    public Organization signUp(SignUpDto request) {
         // Create a new organization instance with the
         Organization org = new Organization();
         org.setUsername(request.getUsername());
@@ -108,7 +150,7 @@ public class OrganizationService implements UserService, AuthenticationService {
     }
 
     @Override
-    public User logIn(SignInRequest request) {
+    public User logIn(SignInDto request) {
         return organizationRepository.findByUsernameAndPassword(
                 request.getUsername(),
                 request.getPassword()
@@ -116,7 +158,7 @@ public class OrganizationService implements UserService, AuthenticationService {
     }
 
     @Override
-    public User logOut(LogOutRequest request) {
+    public User logOut(LogOutDto request) {
         Optional<Organization> org = organizationRepository.findById(request.getUserId());
         if (org.isPresent()) {
             // The Optional contains a non-null value
@@ -128,7 +170,7 @@ public class OrganizationService implements UserService, AuthenticationService {
     }
 
     @Override
-    public List<String> displayProfileInfo(DisplayProfileRequest request) {
+    public List<String> displayProfileInfo(DisplayProfileDto request) {
         Optional<Organization> org = organizationRepository.findById(request.getUserId());
         return org.<List<String>>map(
                 value -> List.of(
@@ -137,7 +179,7 @@ public class OrganizationService implements UserService, AuthenticationService {
     }
 
     @Override
-    public User editProfileInfo(EditProfileInfoRequest request) {
+    public User editProfileInfo(EditProfileInfoDto request) {
         return organizationRepository.findById(request.getUserId()).map(org -> {
             org.setUsername(request.getUsername() != null ? request.getUsername() : org.getUsername());
             org.setPassword(request.getPassword() != null ? request.getPassword() : org.getPassword());
@@ -153,7 +195,7 @@ public class OrganizationService implements UserService, AuthenticationService {
     }
 
     @Override
-    public User deleteAccount(DeleteRequest request) {
+    public User deleteAccount(DeleteDto request) {
         Optional<Organization> org = organizationRepository.findById(request.getUserId());
         if (org.isPresent()) {
             // The Optional contains a non-null value

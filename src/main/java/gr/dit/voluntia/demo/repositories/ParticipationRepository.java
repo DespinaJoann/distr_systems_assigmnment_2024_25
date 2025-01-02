@@ -18,7 +18,6 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
 
 
     // Custom queries for more complex activities
-
     @Query(
     "SELECT p " +
     "FROM Participation p " +

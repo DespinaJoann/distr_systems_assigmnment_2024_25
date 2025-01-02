@@ -1,11 +1,11 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.dtos.requests.acts.DeleteRequest;
-import gr.dit.voluntia.demo.dtos.requests.acts.LogOutRequest;
-import gr.dit.voluntia.demo.dtos.requests.acts.SignInRequest;
-import gr.dit.voluntia.demo.dtos.requests.acts.SignUpRequest;
-import gr.dit.voluntia.demo.dtos.requests.tasks.DisplayProfileRequest;
-import gr.dit.voluntia.demo.dtos.requests.tasks.EditProfileInfoRequest;
+import gr.dit.voluntia.demo.dtos.forward.DeleteDto;
+import gr.dit.voluntia.demo.dtos.forward.LogOutDto;
+import gr.dit.voluntia.demo.dtos.forward.SignInDto;
+import gr.dit.voluntia.demo.dtos.forward.SignUpDto;
+import gr.dit.voluntia.demo.dtos.dual.DisplayProfileDto;
+import gr.dit.voluntia.demo.dtos.dual.EditProfileInfoDto;
 import gr.dit.voluntia.demo.models.Event;
 import gr.dit.voluntia.demo.models.Participation;
 import gr.dit.voluntia.demo.models.User;
@@ -47,7 +47,7 @@ public class VolunteerService implements UserService, AuthenticationService {
     // Methods for Managing itself (login/signin - delete/alter)
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    public Volunteer signUp(SignUpRequest request) {
+    public Volunteer signUp(SignUpDto request) {
         // Create a new Volunteer object and fill it with the data
         Volunteer vol = new Volunteer();
         vol.setUsername(request.getUsername());
@@ -63,7 +63,7 @@ public class VolunteerService implements UserService, AuthenticationService {
     }
 
     @Override
-    public User logIn(SignInRequest request) {
+    public User logIn(SignInDto request) {
         return volunteerRepository.findByUsernameAndPassword(
                 request.getUsername(),
                 request.getPassword()
@@ -71,7 +71,7 @@ public class VolunteerService implements UserService, AuthenticationService {
     }
 
     @Override
-    public User logOut(LogOutRequest request) {
+    public User logOut(LogOutDto request) {
         Optional<Volunteer> vol = volunteerRepository.findById(request.getUserId());
         if (vol.isPresent()) {
             // The Optional contains a non-null value
@@ -84,7 +84,7 @@ public class VolunteerService implements UserService, AuthenticationService {
 
 
     @Override
-    public List<String> displayProfileInfo(DisplayProfileRequest request) {
+    public List<String> displayProfileInfo(DisplayProfileDto request) {
         Optional<Volunteer> vol = volunteerRepository.findById(request.getUserId());
         return vol.<List<String>>map(
                 value -> List.of(
@@ -93,7 +93,7 @@ public class VolunteerService implements UserService, AuthenticationService {
     }
 
     @Override
-    public User editProfileInfo(EditProfileInfoRequest request) {
+    public User editProfileInfo(EditProfileInfoDto request) {
         return volunteerRepository.findById(request.getUserId()).map(vol -> {
             vol.setUsername(request.getUsername() != null ? request.getUsername() : vol.getUsername());
             vol.setPassword(request.getPassword() != null ? request.getPassword() : vol.getPassword());
@@ -108,7 +108,7 @@ public class VolunteerService implements UserService, AuthenticationService {
     }
 
     @Override
-    public User deleteAccount(DeleteRequest request) {
+    public User deleteAccount(DeleteDto request) {
         Optional<Volunteer> vol = volunteerRepository.findById(request.getUserId());
         if (vol.isPresent()) {
             // The Optional contains a non-null value

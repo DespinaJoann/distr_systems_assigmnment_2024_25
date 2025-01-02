@@ -1,7 +1,7 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.dtos.requests.acts.SignInRequest;
-import gr.dit.voluntia.demo.dtos.requests.acts.SignUpRequest;
+import gr.dit.voluntia.demo.dtos.forward.SignInDto;
+import gr.dit.voluntia.demo.dtos.forward.SignUpDto;
 import gr.dit.voluntia.demo.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class AuthenticationRooter {
     private VolunteerService volunteerService;
 
     /**Description: Create new user account*/
-    public User signUp(SignUpRequest request) {
+    public User signUp(SignUpDto request) {
         // Extract the role attribute of the request
         String role = request.getRole().toLowerCase();
 
@@ -37,7 +37,7 @@ public class AuthenticationRooter {
     }
 
     /**Description: Sign in with your existing account*/
-    public User logIn(SignInRequest request) {
+    public User logIn(SignInDto request) {
         String role = request.getSignAs().toLowerCase();
         String username = request.getUsername();
         String password = request.getPassword();

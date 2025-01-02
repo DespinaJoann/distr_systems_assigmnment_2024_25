@@ -1,9 +1,10 @@
-package gr.dit.voluntia.demo.dtos.requests.tasks;
+package gr.dit.voluntia.demo.dtos.dual;
 
+import gr.dit.voluntia.demo.models.Event;
 import lombok.Data;
 
 @Data
-public class CreateNewEventRequest {
+public class CreateNewEventDto {
 
     // The id of the Organization that makes the request to
     // create a new Event
@@ -15,4 +16,6 @@ public class CreateNewEventRequest {
     public String Date;
     public Integer maxNumberOfPeople;
 
+    // The new Event that will be created
+    public Event event;
 }

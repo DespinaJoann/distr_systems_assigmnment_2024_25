@@ -1,11 +1,11 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.dtos.requests.acts.DeleteRequest;
-import gr.dit.voluntia.demo.dtos.requests.acts.LogOutRequest;
-import gr.dit.voluntia.demo.dtos.requests.acts.SignInRequest;
-import gr.dit.voluntia.demo.dtos.requests.acts.SignUpRequest;
-import gr.dit.voluntia.demo.dtos.requests.tasks.DisplayProfileRequest;
-import gr.dit.voluntia.demo.dtos.requests.tasks.EditProfileInfoRequest;
+import gr.dit.voluntia.demo.dtos.forward.DeleteDto;
+import gr.dit.voluntia.demo.dtos.forward.LogOutDto;
+import gr.dit.voluntia.demo.dtos.forward.SignInDto;
+import gr.dit.voluntia.demo.dtos.forward.SignUpDto;
+import gr.dit.voluntia.demo.dtos.dual.DisplayProfileDto;
+import gr.dit.voluntia.demo.dtos.dual.EditProfileInfoDto;
 import gr.dit.voluntia.demo.models.Admin;
 import gr.dit.voluntia.demo.models.Event;
 import gr.dit.voluntia.demo.models.User;
@@ -33,8 +33,11 @@ public class AdminService implements UserService, AuthenticationService {
 
     /**Description:
      * Approve new user and activate their profile*/
-    public Boolean approveUser(User user) {
+    public Boolean confirmUser(User user) {
         // TODO: ...
+        // -> approve Organizations (make "pending" to ("approved" or "rejected"))
+        // -> approve Volunteers (make "pending" to ("approved" or "rejected"))
+
         return false;
     }
 
@@ -42,14 +45,16 @@ public class AdminService implements UserService, AuthenticationService {
      * Approve new event and change its status*/
     public Boolean approveEvent(Event event) {
         // TODO: ...
+        // approve Event (make "pending" to ("approved" or "rejected"))
         return false;
     }
+
 
     // Methods for Managing itself (login/signin - delete/alter)
     //////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public User signUp(SignUpRequest request) {
+    public User signUp(SignUpDto request) {
 
         if (!uniqueAdmin()) {
             // The admin is already logged in or if the table is not empty,
@@ -71,7 +76,7 @@ public class AdminService implements UserService, AuthenticationService {
     }
 
     @Override
-    public User logIn(SignInRequest request) {
+    public User logIn(SignInDto request) {
         // Attempt to find an admin by the provided credentials (username, password, and account key)
         return adminRepository.findByUsernameAndPasswordAndAccountKey(
                 request.getUsername(),
@@ -81,7 +86,7 @@ public class AdminService implements UserService, AuthenticationService {
     }
 
     @Override
-    public User logOut(LogOutRequest request) {
+    public User logOut(LogOutDto request) {
         // Retrieve the admin by ID and log them out by setting isLoggedIn to false
         Optional<Admin> admin = adminRepository.findById(request.getUserId());
         if (admin.isPresent()) {
@@ -95,7 +100,7 @@ public class AdminService implements UserService, AuthenticationService {
     }
 
     @Override
-    public User deleteAccount(DeleteRequest request) {
+    public User deleteAccount(DeleteDto request) {
         // Retrieve the admin by ID and validate the provided password and special key
         Optional<Admin> admin = adminRepository.findById(request.getUserId());
         if (admin.isPresent()) {
@@ -117,7 +122,7 @@ public class AdminService implements UserService, AuthenticationService {
 
     // Business logic for User actions
     @Override
-    public List<String> displayProfileInfo(DisplayProfileRequest request) {
+    public List<String> displayProfileInfo(DisplayProfileDto request) {
         // Retrieve the admin's profile information and return it as a list of strings
         Optional<Admin> admin = adminRepository.findById(request.getUserId());
         return admin.<List<String>>map(
@@ -127,7 +132,7 @@ public class AdminService implements UserService, AuthenticationService {
     }
 
     @Override
-    public User editProfileInfo(EditProfileInfoRequest request) {
+    public User editProfileInfo(EditProfileInfoDto request) {
         // Retrieve the admin by ID and update their profile information based on the provided request
         return adminRepository.findById(request.getUserId()).map(admin -> {
             admin.setUsername(request.getUsername() != null ? request.getUsername() : admin.getUsername());

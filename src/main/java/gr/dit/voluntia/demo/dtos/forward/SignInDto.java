@@ -1,9 +1,9 @@
-package gr.dit.voluntia.demo.dtos.requests.acts;
+package gr.dit.voluntia.demo.dtos.forward;
 
 import lombok.Data;
 
 @Data
-public class SignInRequest {
+public class SignInDto {
 
     private String signAs;          // Determine a specific role of the sign in
                                     // login as: (Admin, User, Organization)
