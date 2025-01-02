@@ -1,174 +1,158 @@
-# **Voluntia** 
 
----
-## Project Overview
+# **Voluntia**
 
-**Voluntia** is a comprehensive platform built to manage volunteers, events, and administrative tasks. It provides different roles such as **Admin**, **Volunteer**, and **Organization**, each with distinct privileges. The system allows Admin users to manage user roles and approve events, while Volunteers can sign up, participate in events, and manage their own profiles. Organizations can create events and track volunteer participation.
-
-Built using **Spring Boot** and **JPA** for database interaction, this platform also integrates **H2** as an in-memory database for easy development and testing. The project follows a **RESTful** API architecture for seamless interaction between the frontend and backend.
-
----
-
-## Key Features
-
-### **Admin Authentication & Management**:
-1. **Admin Role**:
-  - The **Admin** role is the central authority responsible for managing users, approving events, and handling login and logout functionality.
-  - Admin can sign up only if no other admin is currently logged in.
-  - Admin can log in, log out, and delete their account after verifying credentials.
-
-2. **User & Event Management**:
-  - Admin has the ability to approve or deny new users and events.
-  - Admin can view and edit their own profile information.
-
-### **Volunteer & Organization Role Management**:
-- **Volunteer**: Volunteers can sign up, participate in events, and manage their profiles.
-- **Organization**: Organizations create events and manage the participation of volunteers.
+## **Project Overview**
+**Voluntia** is a backend solution developed as part of the course "Distributed Systems" at Harokopio University of Athens (HUA) during the academic year 2024-2025.
+Authored by *Despina Ioanna Chalkiadaki* and *Vasiliki Maria Koutsi*, this project provides a robust backend system for managing volunteers, events, and organizations. Built using Spring Boot, it integrates Hibernate ORM for seamless database interactions with PostgreSQL and ensures secure authentication with Spring Security.
+This API powers a volunteer management platform by offering core endpoints for user and event operations.
 
 ---
 
-## **Roles and System Architecture**
+## **Features**
 
-The system is built around different **roles** with specific responsibilities and permissions. These roles inherit from a common **User** superclass, and each role can interact with various **system classes** that manage the business logic and data.
+### **Authentication & Authorization**
+- **Spring Security** for role-based access control (Admin, Volunteer, Organization).
+- User registration, login, and logout with **BCrypt**-encrypted credentials.
 
-### **Roles - Users**
+### **Role-Based Functionalities**
+1. **Admin**:
+    - Approve/reject user registrations and event proposals.
+    - Oversee platform activity and manage user roles.
 
-1. **User** (Superclass for all roles)
-  - **Description**: A base class that holds the common properties for all user types (Admin, Volunteer, Organization).
-  - **Common Properties**:
-    - `id`: Unique identifier for each user.
-    - `username`: The username of the user.
-    - `password`: The password for user authentication.
-    - `email`: The email address of the user.
-    - `firstName`: The first name of the user.
-    - `lastName`: The last name of the user.
-    - `accountKey`: Special admin key for verifying admin actions.
-    - `isLoggedIn`: Boolean indicating whether the user is logged in.
+2. **Volunteer**:
+    - Sign up for events and track participation history.
+    - Update and manage their profile.
+
+3. **Organization**:
+    - Create, update, and track events.
+    - Monitor volunteer registrations and event engagement.
+
+### **Event & Participation Management**
+- Organizations can manage events, including scheduling and volunteer tracking.
+- Volunteers register and participate in events, with activity logged for tracking purposes.
+
+---
+
+## **Tech Stack**
+- **Java**: Core language.
+- **Spring Boot**: Backend framework for rapid development.
+- **Hibernate ORM**: Handles database persistence.
+- **PostgreSQL**: Relational database.
+- **Spring Security**: Manages authentication and authorization.
+- **Maven**: Dependency and build management tool.
+
+---
+
+## **Directory Structure**
+
+```plaintext
+src/
+├── main/
+│   ├── java/
+│   │   └── gr/
+│   │       └── dit/
+│   │           └── voluntia/
+│   │               ├── config/                       # Security configurations
+│   │               ├── controllers/                 # REST API controllers
+│   │               ├── dtos/                        # Data Transfer Objects (DTOs)
+│   │               │   ├── requests/                # Request DTOs
+│   │               │   └── responses/               # Response DTOs
+│   │               ├── exceptions/                  # Custom exception handling
+│   │               ├── models/                      # Database entities
+│   │               ├── repositories/                # Data access layer
+│   │               ├── services/                    # Business logic
+│   │               │   ├── blueprints/              # Abstract service definitions
+│   │               └── utils/                       # Utility classes
+│   └── resources/
+│       ├── application.properties                   # Configuration files
+│       ├── static/                                  # Static files
+│       └── templates/                               # HTML templates
+└── test/
+    ├── java/                                        # Unit and integration tests
+```
+
+---
+
+## **System Design**
+
+### **Roles & Responsibilities**
+1. **User**:
+    - Base class for `Admin`, `Volunteer`, and `Organization`.
+    - Common properties: `id`, `username`, `password`, `email`, `role`.
 
 2. **Admin**:
-  - **Description**: The **Admin** role manages the platform, approves users and events, and controls other administrative actions.
-  - **Responsibilities**:
-    - Approve new users and events.
-    - View and edit own profile information.
-    - Log in and log out from the system.
+    - Platform moderator with the ability to approve/reject users and events.
 
 3. **Volunteer**:
-  - **Description**: A **Volunteer** can participate in events, track their activities, and manage their own profile.
-  - **Responsibilities**:
-    - Sign up for events and participate in them.
-    - Edit their profile information (e.g., personal details).
-    - View a list of past and upcoming events they have participated in.
+    - Event participant who can manage their profile and view participation history.
 
 4. **Organization**:
-  - **Description**: An **Organization** creates and manages events, tracks volunteer participation, and interacts with volunteers.
-  - **Responsibilities**:
-    - Create new events and manage their status.
-    - View a list of volunteers participating in events.
+    - Event creator responsible for managing activities and tracking engagement.
 
----
-
-### **System Classes**
-
+### **Event and Participation**
 1. **Event**:
-  - **Description**: The **Event** class represents an event that is created by an organization and can be approved by an admin. Volunteers can participate in these events.
-  - **Key Properties**:
-    - `id`: Unique identifier for the event.
-    - `name`: The name of the event.
-    - `description`: A detailed description of the event.
-    - `location`: The location where the event is held.
-    - `date`: The date and time of the event.
-    - `status`: The approval status of the event (approved or pending).
+    - Represents an activity created by an organization.
+    - Properties: `id`, `name`, `description`, `location`, `date`, `status`.
 
 2. **Participation**:
-  - **Description**: **Participation** represents the relationship between a **Volunteer** and an **Event**, tracking which volunteer is participating in which event.
-  - **Key Properties**:
-    - `id`: Unique identifier for each participation record.
-    - `volunteerId`: The ID of the volunteer participating in the event.
-    - `eventId`: The ID of the event the volunteer is participating in.
-    - `status`: The status of the participation (e.g., active, completed).
+    - Links volunteers to events.
+    - Tracks participation details such as `volunteerId`, `eventId`, and `status`.
 
 ---
 
-### **Administration Services**
+## **Configuration**
 
-1. **AuthenticationService**:
-  - **Description**: This service handles all user authentication-related tasks such as sign up, log in, and log out.
-  - **Key Methods**:
-    - `signUp()`: Handles the process of creating a new admin account.
-    - `logIn()`: Allows the admin to log in with their credentials.
-    - `logOut()`: Logs the admin out of the system.
-    - `deleteAccount()`: Deletes the admin account after validating the correct password and special key.
+### **Database**
+Update `application.properties` with your PostgreSQL credentials:
 
-2. **UserService**:
-  - **Description**: This service contains business logic related to user management, including profile management and event approval.
-  - **Key Methods**:
-    - `approveUser()`: Allows an admin to approve a new user.
-    - `approveEvent()`: Allows an admin to approve a new event.
-    - `displayProfileInfo()`: Displays the current profile details of an admin.
-    - `editProfileInfo()`: Allows an admin to update their profile information.
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/voluntia
+spring.datasource.username=your_db_user
+spring.datasource.password=your_db_password
+spring.jpa.hibernate.ddl-auto=update
 
----
-
-## **Folder Structure**
-
-This is how the codebase is organized:
-
-```
-voluntia/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── gr/
-│   │   │       └── dit/
-│   │   │           └── voluntia/
-│   │   │               └── demo/
-│   │   │                   ├── controllers/         # REST API controllers for handling requests
-│   │   │                   ├── services/            # Contains business logic services like authentication, user management
-│   │   │                   ├── models/              # Data models for Admin, User, Event, etc.
-│   │   │                   ├── repositories/        # Repositories for interacting with the database (CRUD operations)
-│   │   │                   ├── dtos/                # Data Transfer Objects (DTOs) for communication with the client (requests & responses)
-│   │   │                   └── DemoApplication.java  # Spring Boot entry point
-│   │   └── resources/
-│   │       ├── application.properties  # Configuration for database, security, etc.
-│   │       ├── static/                 # Static resources like CSS, JavaScript
-│   │       └── templates/              # Templates for rendering HTML views
-├── README.md                    # Project documentation
-└── LICENSE                       # License file for the project
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
 ```
 
-### **Key Directories**:
-
-- **controllers/**: Contains the REST API controllers like `EventController.java` and `UserController.java` for handling HTTP requests and routing.
-- **models/**: Contains the entity classes such as `Admin`, `Volunteer`, `Event`, and `Participation` which are mapped to the database.
-- **services/**: Contains the business logic for managing users, events, and admin functionalities (`AdminService.java`, `AuthenticationService.java`).
-- **dtos/**: Contains the request and response DTOs (e.g., `SignUpRequest.java`, `ResponseMsg.java`).
+### **Spring Security**
+- Role-based access: `ADMIN`, `VOLUNTEER`, `ORGANIZATION`.
+- Passwords are encrypted using **BCrypt**.
 
 ---
 
-## Installation and Setup
+## **Setup & Run**
 
-### 1. Clone the repository:
+### **Prerequisites**
+- **Java 17** or later installed.
+- **PostgreSQL** with a database named `voluntia`.
+- Configure `application.properties`.
+
+### **Run Locally**
+1. Clone the repository:
    ```bash
    git clone https://github.com/your-repo/voluntia.git
-   ```
-
-### 2. Navigate into the project directory:
-   ```bash
    cd voluntia
    ```
 
-### 3. Install dependencies using Maven:
+2. Build the project:
    ```bash
-   mvn install
+   mvn clean install
    ```
 
-### 4. Run the application:
+3. Start the application:
    ```bash
    mvn spring-boot:run
    ```
 
+4. Open the application in your browser:
+   ```
+   http://localhost:8080
+   ```
+
 ---
 
-### Conclusion
-
-This **Voluntia** project provides an easy-to-manage platform where volunteers, organizations, and admins can interact. The architecture is designed to be scalable, modular, and easy to extend with additional features as needed.
+## **Future Enhancements**
+- **UI Integration**: Connect the backend with a frontend interface.
+- **Notifications**: Add real-time updates for event changes using WebSockets.
+- **Logging**: Implement **Spring Boot Actuator** for better monitoring.
