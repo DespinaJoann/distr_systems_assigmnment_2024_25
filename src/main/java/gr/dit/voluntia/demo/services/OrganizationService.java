@@ -82,7 +82,7 @@ public class OrganizationService implements UserService, AuthenticationService {
         org.setOrgName(request.getOrganizationName());
         org.setAddress(request.getAddress());
         org.setLocation(request.getLocation());
-
+        org.setIsLoggedIn(true);
         // Save the created organization instance to the Data Base
         return organizationRepository.save(org);
     }
@@ -151,3 +151,5 @@ public class OrganizationService implements UserService, AuthenticationService {
         return null;
     }
 }
+
+

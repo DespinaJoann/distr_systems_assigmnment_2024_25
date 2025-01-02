@@ -52,7 +52,7 @@ public class VolunteerService implements UserService, AuthenticationService {
         vol.setLastName(request.getLastName());
         vol.setPhoneNumber(request.getPhoneNumber());
         vol.setDateOfBirth(request.getDateOfBirth());
-
+        vol.setIsLoggedIn(true);
         // Save the new volunteer to the Data Base
         return volunteerRepository.save(vol);
     }
@@ -120,3 +120,6 @@ public class VolunteerService implements UserService, AuthenticationService {
         return null;
     }
 }
+
+
+

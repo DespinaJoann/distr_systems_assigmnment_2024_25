@@ -1,21 +1,25 @@
 package gr.dit.voluntia.demo.models;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
 @Entity
+@SuperBuilder
+// This table will inherit the User's (superclass) attributers
+@EqualsAndHashCode(callSuper = true)
 public class Volunteer extends User {
     private String firstName;
     private String lastName;
@@ -24,6 +28,13 @@ public class Volunteer extends User {
 
     private Boolean hasCheckedIn = false;
     private String accountStatus = "Pending"; // => Pending/ Created/ Rejected
+
+    // Its volunteer could have many participations
+    @OneToMany(
+            mappedBy = "volunteerId",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<Participation> listOfParticipation = null;
 
     // Update Methods
@@ -49,7 +60,7 @@ public class Volunteer extends User {
     }
 
 
-
-
-
 }
+
+
+

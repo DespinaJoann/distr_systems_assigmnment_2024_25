@@ -11,3 +11,4 @@ public interface AuthenticationService {
     User logIn(SignInRequest request);
     User logOut(LogOutRequest request);
 }
+

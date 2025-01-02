@@ -3,11 +3,11 @@ package gr.dit.voluntia.demo.models;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.persistence.*;
 
 
 // This class will be a mapped superclass entity, meaning it will
@@ -19,7 +19,9 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@MappedSuperclass
+@Entity
+// This tells JPA that subclasses will store data in their own tables.
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,3 +32,6 @@ public class User {
     private String email;
     private Boolean isLoggedIn;
 }
+
+
+

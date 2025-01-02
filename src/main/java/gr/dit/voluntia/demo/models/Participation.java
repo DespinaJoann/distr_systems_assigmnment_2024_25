@@ -22,7 +22,10 @@ public class Participation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    // Foreign Key for Volunteer
     private Long volunteerId;
+    // Foreign Key for Event
     private Long eventId;
 
     private LocalDateTime date;
@@ -32,3 +35,6 @@ public class Participation {
         this.status = status;
     }
 }
+
+
+
