@@ -35,7 +35,7 @@ public class Volunteer extends User {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<Participation> listOfParticipation = null;
+    private List<Participation> listOfParticipation;
 
     // Update Methods
     /**Description: Add new participation */

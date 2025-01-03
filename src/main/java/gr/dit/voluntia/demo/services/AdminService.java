@@ -33,7 +33,7 @@ public class AdminService implements UserService, AuthenticationService {
 
     /**Description:
      * Approve new user and activate their profile*/
-    public Boolean confirmUser(User user) {
+    public Boolean confirmUsers(User user) {
         // TODO: ...
         // -> approve Organizations (make "pending" to ("approved" or "rejected"))
         // -> approve Volunteers (make "pending" to ("approved" or "rejected"))
