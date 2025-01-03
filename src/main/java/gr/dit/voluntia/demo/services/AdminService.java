@@ -30,22 +30,30 @@ public class AdminService implements UserService, AuthenticationService {
     // Methods for managing other Users
     //////////////////////////////////////////////////////////////////////////////////////////
 
-
+    // TODO:
     /**Description:
      * Approve new user and activate their profile*/
     public Boolean confirmUsers(User user) {
-        // TODO: ...
-        // -> approve Organizations (make "pending" to ("approved" or "rejected"))
-        // -> approve Volunteers (make "pending" to ("approved" or "rejected"))
+        // 1. Get All Organizations with account status = "pending"
+        // 2. Get All Volunteers with account status = "pending"
 
+        // 3. Call function approveUser(User user) -> Boolean;
+        // 4. if true ? count_approved ++ : count_rejected ++;
+        // 5. ConfirmUsersDto .fillAllAttributes();
+        // 6. return ConfirmUsersDto Object
         return false;
     }
 
+    // TODO:
     /**Description:
      * Approve new event and change its status*/
     public Boolean approveEvent(Event event) {
-        // TODO: ...
-        // approve Event (make "pending" to ("approved" or "rejected"))
+        // 1. Get All Events with account status = "pending"
+
+        // 3. Call function approveEvent(Event event) -> Boolean;
+        // 4. if true ? count_approved ++ : count_rejected ++;
+        // 5. ConfirmEventsDto .fillAllAttributes();
+        // 6. return ConfirmEventsDto Object
         return false;
     }
 
