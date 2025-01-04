@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +27,8 @@ public class Volunteer extends User {
     private String firstName;
     private String lastName;
     private String phoneNumber;
-    private String dateOfBirth;
+    private String dateOfBirth;         // String -> "yyyy-MM-dd"
+    private String profileDescription;
 
     private Boolean hasCheckedIn = false;
     private String accountStatus = "Pending"; // => Pending/ Created/ Rejected
@@ -59,6 +63,23 @@ public class Volunteer extends User {
 
     }
 
+    /**
+     * Description:
+     * Calculates the age of the volunteer based on the dateOfBirth (which is stored as a String).
+     * @return The age of the volunteer.
+     */
+    public int calculateAge() {
+        // Initialize the formater to our selected pattern
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // Convert String to LocalDate
+        LocalDate birthDate = LocalDate.parse(this.dateOfBirth, formatter);
+        // Get current date
+        LocalDate currentDate = LocalDate.now();
+        // Calculate the period between the birthDate and current date
+        Period period = Period.between(birthDate, currentDate);
+        // Return the number of years (age)
+        return period.getYears();
+    }
 
 }
 

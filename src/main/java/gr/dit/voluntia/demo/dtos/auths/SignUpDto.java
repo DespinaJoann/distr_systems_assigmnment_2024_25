@@ -1,11 +1,9 @@
-package gr.dit.voluntia.demo.dtos.dual;
+package gr.dit.voluntia.demo.dtos.auths;
 
 import lombok.Data;
 
 @Data
-public class EditProfileInfoDto {
-
-    private Long userId;
+public class SignUpDto {
     private String username;
     private String password;
     private String email;
@@ -16,7 +14,12 @@ public class EditProfileInfoDto {
     private String lastName;
     private String phoneNumber;
     private String dateOfBirth;
+
+    private String profileDescription;
     private String organizationName;
     private String address;
     private String location;
+    private String organizationType;
+
+    private String specialAdminKey;     // Only for the Admin
 }

@@ -1,10 +1,7 @@
-package gr.dit.voluntia.demo.dtos.dual;
+package gr.dit.voluntia.demo.dtos.org;
 
 
-import gr.dit.voluntia.demo.models.Event;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class DisplayParticipationListsDto {

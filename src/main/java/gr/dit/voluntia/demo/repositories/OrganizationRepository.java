@@ -4,6 +4,8 @@ import gr.dit.voluntia.demo.models.Organization;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.List;
+
 public interface OrganizationRepository extends JpaRepository<Organization, Long>,
         JpaSpecificationExecutor<Organization> {
 
@@ -13,4 +15,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
     Organization findByUsername(String username);
     Organization findByEmail(String email);
 
+    List<Organization> findAllPendingOrganizations();
+
+    boolean findByOrgName(String orgName);
 }

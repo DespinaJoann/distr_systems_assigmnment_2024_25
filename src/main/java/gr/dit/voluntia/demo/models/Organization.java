@@ -25,6 +25,9 @@ public class Organization extends User {
     private String address;
     private String location;
 
+    private String profileDescription;
+    private String organizationType;
+
     // Its organization has many events
     @OneToMany(
             mappedBy = "organization_id",

@@ -1,4 +1,4 @@
-package gr.dit.voluntia.demo.dtos.forward;
+package gr.dit.voluntia.demo.dtos.auths;
 
 import lombok.Data;
 

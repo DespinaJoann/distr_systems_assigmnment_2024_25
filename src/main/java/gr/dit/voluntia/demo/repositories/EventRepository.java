@@ -18,4 +18,5 @@ public interface EventRepository extends JpaRepository<Event, Long>,
     List<Event> findByLocationAndMaxParticipantsGreaterThan(String location, int maxParticipants);
 
 
+    List<Event> findAllPendingEvents();
 }

@@ -1,15 +1,18 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.dtos.forward.DeleteDto;
-import gr.dit.voluntia.demo.dtos.forward.LogOutDto;
-import gr.dit.voluntia.demo.dtos.forward.SignInDto;
-import gr.dit.voluntia.demo.dtos.forward.SignUpDto;
-import gr.dit.voluntia.demo.dtos.dual.DisplayProfileDto;
-import gr.dit.voluntia.demo.dtos.dual.EditProfileInfoDto;
-import gr.dit.voluntia.demo.models.Admin;
-import gr.dit.voluntia.demo.models.Event;
-import gr.dit.voluntia.demo.models.User;
+import gr.dit.voluntia.demo.dtos.admins.ConfirmEventsDto;
+import gr.dit.voluntia.demo.dtos.admins.ConfirmUserDto;
+import gr.dit.voluntia.demo.dtos.auths.DeleteDto;
+import gr.dit.voluntia.demo.dtos.auths.LogOutDto;
+import gr.dit.voluntia.demo.dtos.auths.SignInDto;
+import gr.dit.voluntia.demo.dtos.auths.SignUpDto;
+import gr.dit.voluntia.demo.dtos.glob.DisplayProfileDto;
+import gr.dit.voluntia.demo.dtos.glob.EditProfileInfoDto;
+import gr.dit.voluntia.demo.models.*;
 import gr.dit.voluntia.demo.repositories.AdminRepository;
+import gr.dit.voluntia.demo.repositories.EventRepository;
+import gr.dit.voluntia.demo.repositories.OrganizationRepository;
+import gr.dit.voluntia.demo.repositories.VolunteerRepository;
 import gr.dit.voluntia.demo.services.blueprints.AuthenticationService;
 import gr.dit.voluntia.demo.services.blueprints.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,12 @@ public class AdminService implements UserService, AuthenticationService {
 
     @Autowired
     private AdminRepository adminRepository;
+    @Autowired
+    private OrganizationRepository organizationRepository;
+    @Autowired
+    private VolunteerRepository volunteerRepository;
+    @Autowired
+    private EventRepository eventRepository;
 
     // Methods for managing other Users
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -33,28 +42,95 @@ public class AdminService implements UserService, AuthenticationService {
     // TODO:
     /**Description:
      * Approve new user and activate their profile*/
-    public Boolean confirmUsers(User user) {
-        // 1. Get All Organizations with account status = "pending"
-        // 2. Get All Volunteers with account status = "pending"
+    public ConfirmUserDto confirmUsers(ConfirmUserDto confdto) {
+        // Counters for info message visualization
+        int countAcceptedOrgs = 0;
+        int countAcceptedVols = 0;
+        int countRejectedOrgs = 0;
+        int countRejectedVols = 0;
 
-        // 3. Call function approveUser(User user) -> Boolean;
-        // 4. if true ? count_approved ++ : count_rejected ++;
-        // 5. ConfirmUsersDto .fillAllAttributes();
-        // 6. return ConfirmUsersDto Object
-        return false;
+        // Get All Organizations and Volunteers with account status = "pending"
+        List<Organization> pendingOrganizations = organizationRepository.findAllPendingOrganizations();
+        List<Volunteer> pendingVolunteers = volunteerRepository.findAllPendingVolunteers();
+
+        if (pendingOrganizations.isEmpty() && pendingVolunteers.isEmpty()) {
+            confdto.setNothingToUpdate(true);
+            return confdto;
+        }
+        // Process pending organizations
+        for (Organization org : pendingOrganizations) {
+            if(approveOrg(org)) {
+                org.setAccountStatus("Approved");
+                countAcceptedOrgs ++;
+            } else {
+                org.setAccountStatus("Rejected");
+                countRejectedOrgs++;
+            }
+            organizationRepository.save(org); // Save updated organization
+        }
+
+        // Process pending volunteers
+        for (Volunteer vol : pendingVolunteers) {
+            if(approveVol(vol)) {
+                vol.setAccountStatus("Approved");
+                countAcceptedVols ++;
+            } else {
+                vol.setAccountStatus("Rejected");
+                countRejectedVols++;
+            }
+            volunteerRepository.save(vol); // Save updated volunteer
+        }
+
+        // Fill the ConfitmUserDto object and return it
+        confdto.setAcceptedOrgs(countAcceptedOrgs);
+        confdto.setAcceptedVols(countAcceptedVols);
+        confdto.setRejectedOrgs(countRejectedOrgs);
+        confdto.setRejectedVols(countRejectedVols);
+        confdto.setUpdatedOrganizations(pendingOrganizations);
+        confdto.setUpdatedVolunteers(pendingVolunteers);
+        confdto.setNothingToUpdate(false);
+
+        return confdto;
     }
+
+
 
     // TODO:
     /**Description:
      * Approve new event and change its status*/
-    public Boolean approveEvent(Event event) {
-        // 1. Get All Events with account status = "pending"
+    public ConfirmEventsDto confirmEvent (ConfirmEventsDto confdto) {
+        // Initialize counters
+        int countAcceptedEvents = 0;
+        int countRejectedEvents = 0;
 
-        // 3. Call function approveEvent(Event event) -> Boolean;
-        // 4. if true ? count_approved ++ : count_rejected ++;
-        // 5. ConfirmEventsDto .fillAllAttributes();
-        // 6. return ConfirmEventsDto Object
-        return false;
+        // Get All Events with account status = "pending"
+        List<Event> pendingEvents = eventRepository.findAllPendingEvents();
+
+        // If there is no pending event
+        if (pendingEvents.isEmpty()) {
+            confdto.setNothingToUpdate(true);
+            return confdto;
+        }
+
+        // Process pending events
+        for (Event ev : pendingEvents) {
+            if (approveEvent(ev)) {
+                ev.setStatus("Approved");
+                countAcceptedEvents ++;
+            } else {
+                ev.setStatus("Rejected");
+                countRejectedEvents++;
+            }
+            eventRepository.save(ev);           // Save updated event
+        }
+
+        // Update ConfirmEventDto object
+        confdto.setAcceptedEvents(countAcceptedEvents);
+        confdto.setRejectedEvents(countRejectedEvents);
+        confdto.setUpdatedEvents(pendingEvents);
+        confdto.setNothingToUpdate(false);
+
+        return confdto;
     }
 
 
@@ -169,8 +245,124 @@ public class AdminService implements UserService, AuthenticationService {
         return adminRepository.findAll().isEmpty(); // Return true if the table is empty
     }
 
+    // Utility function
+    private Boolean approveOrg(Organization org) {
+        // Check if organization is unique to the database
+        boolean isUnique = organizationRepository.findByOrgName(
+                org.getOrgName()
+        );
 
+        if (!isUnique) {
+            // Delete duplicate organization
+            // TODO: call a function that sends a message to this Org
+            organizationRepository.delete(org);
+            return false;
+        }
+        // Check for bad words in profile description or info
+        String profDescr = org.getProfileDescription();
+        String orgInfo = org.getOrganizationType();
+        if (containsEvilContent(profDescr) || containsEvilContent(orgInfo)) {
+            // Delete organizations with evil content
+            // TODO: call a function that sends a message to this Org
+            organizationRepository.delete(org);
+            return false;
+        }
 
+        //  Check if address and  location exists
+        return  org.getAddress() != null
+                && !org.getAddress().isBlank()
+                && org.getLocation() != null; // Missing address or location
+    }
+
+    private Boolean approveVol(Volunteer vol) {
+        // Check if volunteer is unique to the database
+        boolean isUnique = volunteerRepository.findByEmail(vol.getEmail()).isEmpty();
+        if (!isUnique) {
+            // Delete duplicate volunteer
+            // TODO: call a function that sends a message to this Org
+            volunteerRepository.delete(vol);
+            return false;
+        }
+
+        // Check if age is  not valid (>= 16)
+        if (vol.calculateAge() < 16) {
+            // Delete volunteers that are not to the desired age group
+            // TODO: call a function that sends a message to this Org
+            volunteerRepository.delete(vol);
+            return false;
+        }
+
+        // Check for bad words in profile description
+        String profDescr = vol.getProfileDescription();
+        if (containsEvilContent(profDescr)) {
+            // Delete volunteers with evil content
+            // TODO: call a function that sends a message to this Org
+            volunteerRepository.delete(vol);
+            return false;
+        }
+        return true;
+    }
+
+    private Boolean approveEvent(Event ev) {
+        // Check if volunteer is unique to the database
+        boolean isUnique = eventRepository.findAllByName(ev.getName()).isEmpty();
+        if (!isUnique) {
+            // Delete duplicate events
+            // TODO: call a function that sends a message to the Org of that event
+            eventRepository.delete(ev);
+            return false;
+        }
+
+        // Check event description and name contains evil content or is empty
+        if (containsEvilContent(ev.getDescription()) || containsEvilContent(ev.getName())
+             || ev.getDescription().isBlank() || ev.getName().isBlank()) {
+            // Delete events with evil content or empty content
+            // TODO: call a function that sends a message to this Org of that event
+            eventRepository.delete(ev);
+            return false;
+        }
+
+        // Check if the location is valid
+        if (!validLocation(ev.getLocation())) {
+            // Delete events with not valid location
+            // TODO: call a function that sends a message to this Org of that event
+            eventRepository.delete(ev);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**Description:
+     * Check if a string contains any bad words from a predefined list. */
+    private Boolean containsEvilContent(String text) {
+        if (text == null || text.isBlank()) {
+            return false;
+        }
+
+        List<String> evilContent = List.of(
+                "violence", "hate", "racist", "terror", "drugs",
+                "weapon", "abuse", "exploit", "illegal", "scam",
+                "fraud", "nudity", "porn", "kill", "steal",
+                "slavery", "harass", "bully", "curse", "swear",
+                "sex", "alcohol", "gamble", "discriminate",
+                "inappropriate", "extremist", "offend", "unethical"
+        );
+
+        for (String evilCont : evilContent) {
+            if (text.toLowerCase().contains(evilCont)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**Description:
+     * Helper method to validate event location.*/
+    private boolean validLocation(String location) {
+        // TODO: make it better
+        return location != null && !location.isEmpty();
+    }
 }
 
 

@@ -1,8 +1,8 @@
 package gr.dit.voluntia.demo.services.blueprints;
 
-import gr.dit.voluntia.demo.dtos.forward.DeleteDto;
-import gr.dit.voluntia.demo.dtos.dual.DisplayProfileDto;
-import gr.dit.voluntia.demo.dtos.dual.EditProfileInfoDto;
+import gr.dit.voluntia.demo.dtos.auths.DeleteDto;
+import gr.dit.voluntia.demo.dtos.glob.DisplayProfileDto;
+import gr.dit.voluntia.demo.dtos.glob.EditProfileInfoDto;
 import gr.dit.voluntia.demo.models.User;
 
 import java.util.List;

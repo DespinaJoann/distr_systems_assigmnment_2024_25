@@ -1,4 +1,4 @@
-package gr.dit.voluntia.demo.dtos.dual;
+package gr.dit.voluntia.demo.dtos.glob;
 
 import lombok.Data;
 

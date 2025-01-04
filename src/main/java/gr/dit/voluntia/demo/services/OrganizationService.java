@@ -1,13 +1,13 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.dtos.forward.DeleteDto;
-import gr.dit.voluntia.demo.dtos.forward.LogOutDto;
-import gr.dit.voluntia.demo.dtos.forward.SignInDto;
-import gr.dit.voluntia.demo.dtos.forward.SignUpDto;
-import gr.dit.voluntia.demo.dtos.dual.CreateNewEventDto;
-import gr.dit.voluntia.demo.dtos.dual.DisplayParticipationListsDto;
-import gr.dit.voluntia.demo.dtos.dual.DisplayProfileDto;
-import gr.dit.voluntia.demo.dtos.dual.EditProfileInfoDto;
+import gr.dit.voluntia.demo.dtos.auths.DeleteDto;
+import gr.dit.voluntia.demo.dtos.auths.LogOutDto;
+import gr.dit.voluntia.demo.dtos.auths.SignInDto;
+import gr.dit.voluntia.demo.dtos.auths.SignUpDto;
+import gr.dit.voluntia.demo.dtos.org.CreateNewEventDto;
+import gr.dit.voluntia.demo.dtos.org.DisplayParticipationListsDto;
+import gr.dit.voluntia.demo.dtos.glob.DisplayProfileDto;
+import gr.dit.voluntia.demo.dtos.glob.EditProfileInfoDto;
 import gr.dit.voluntia.demo.models.*;
 import gr.dit.voluntia.demo.repositories.EventRepository;
 import gr.dit.voluntia.demo.repositories.OrganizationRepository;
@@ -16,6 +16,7 @@ import gr.dit.voluntia.demo.services.blueprints.AuthenticationService;
 import gr.dit.voluntia.demo.services.blueprints.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.RequestToViewNameTranslator;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,8 @@ public class OrganizationService implements UserService, AuthenticationService {
     private EventRepository eventRepository;
     @Autowired
     private ParticipationRepository participationRepository;
+    @Autowired
+    private RequestToViewNameTranslator requestToViewNameTranslator;
 
     // Methods for Organization Activities
     // -> (for every single organization  -- things that can do)
@@ -144,6 +147,8 @@ public class OrganizationService implements UserService, AuthenticationService {
         org.setOrgName(request.getOrganizationName());
         org.setAddress(request.getAddress());
         org.setLocation(request.getLocation());
+        org.setOrganizationType(request.getOrganizationType());
+        org.setProfileDescription(request.getProfileDescription());
         org.setIsLoggedIn(true);
         // Save the created organization instance to the Data Base
         return organizationRepository.save(org);

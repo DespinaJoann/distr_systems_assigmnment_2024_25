@@ -1,9 +1,9 @@
 package gr.dit.voluntia.demo.services.blueprints;
 
 
-import gr.dit.voluntia.demo.dtos.forward.LogOutDto;
-import gr.dit.voluntia.demo.dtos.forward.SignInDto;
-import gr.dit.voluntia.demo.dtos.forward.SignUpDto;
+import gr.dit.voluntia.demo.dtos.auths.LogOutDto;
+import gr.dit.voluntia.demo.dtos.auths.SignInDto;
+import gr.dit.voluntia.demo.dtos.auths.SignUpDto;
 import gr.dit.voluntia.demo.models.User;
 
 public interface AuthenticationService {

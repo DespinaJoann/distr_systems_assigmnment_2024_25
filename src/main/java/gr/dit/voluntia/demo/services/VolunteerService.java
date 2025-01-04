@@ -1,11 +1,11 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.dtos.forward.DeleteDto;
-import gr.dit.voluntia.demo.dtos.forward.LogOutDto;
-import gr.dit.voluntia.demo.dtos.forward.SignInDto;
-import gr.dit.voluntia.demo.dtos.forward.SignUpDto;
-import gr.dit.voluntia.demo.dtos.dual.DisplayProfileDto;
-import gr.dit.voluntia.demo.dtos.dual.EditProfileInfoDto;
+import gr.dit.voluntia.demo.dtos.auths.DeleteDto;
+import gr.dit.voluntia.demo.dtos.auths.LogOutDto;
+import gr.dit.voluntia.demo.dtos.auths.SignInDto;
+import gr.dit.voluntia.demo.dtos.auths.SignUpDto;
+import gr.dit.voluntia.demo.dtos.glob.DisplayProfileDto;
+import gr.dit.voluntia.demo.dtos.glob.EditProfileInfoDto;
 import gr.dit.voluntia.demo.models.Event;
 import gr.dit.voluntia.demo.models.Participation;
 import gr.dit.voluntia.demo.models.User;
@@ -32,10 +32,36 @@ public class VolunteerService implements UserService, AuthenticationService {
     /**Description:
      * Applies for participating on an event */
     public Participation applyForEvent(Event event) {
+        // Get list of all the Events with status = "Confirmed"
         // TODO: ...
         return null;
     }
 
+    // And also filtered!
+    // Can I do it with filters in only one method?
+    public Participation applyForEvent(Event event, String date) {
+        // Get list of all the Events
+        // with status = "Confirmed"
+        // and event's date = date
+        // TODO: ...
+        return null;
+    }
+
+    public Participation applyForEvent(Event event, String topic) {
+        // Get list of all the Events
+        // with status = "Confirmed"
+        // and event's topic = topic
+        // TODO: ...
+        return null;
+    }
+    public Participation applyForEvent(Event event, String date, String topic) {
+        // Get list of all the Events
+        // with status = "Confirmed"
+        // and event's date = date
+        // and event's topic = topic
+        // TODO: ...
+        return null;
+    }
     /**Description:
      * Searches and selects the event that they want to participate */
     public List<Participation> searchEventForParticipation( ) {
@@ -57,6 +83,7 @@ public class VolunteerService implements UserService, AuthenticationService {
         vol.setLastName(request.getLastName());
         vol.setPhoneNumber(request.getPhoneNumber());
         vol.setDateOfBirth(request.getDateOfBirth());
+        vol.setProfileDescription(request.getProfileDescription());
         vol.setIsLoggedIn(true);
         // Save the new volunteer to the Data Base
         return volunteerRepository.save(vol);
