@@ -52,6 +52,7 @@ public class OrganizationService implements UserService, AuthenticationService {
         event.setDescription(createDto.getDescription());
         event.setLocation(createDto.getLocation());
         event.setDate(createDto.getDate());
+        event.setTopic(createDto.getTopic());
         event.setMaxNumbOfVolunteers(createDto.getMaxNumberOfPeople());
 
         event.setParticipationList(null);    // Initialize the list as empty
@@ -91,9 +92,8 @@ public class OrganizationService implements UserService, AuthenticationService {
 
         // If the list is empty, nothing to review
         if (pendingParticipations.isEmpty()) {
-            dispPartDto.setInfoMessage("Nothing to review! Everything is up to date!");
-            dispPartDto.setTaskCompleted(true);
-            return dispPartDto; // This should return when there are no pending participations
+            dispPartDto.setNothingToUpdate(true);
+            return dispPartDto; 
         }
 
         // If the list is not empty -> loop over all the list and review
@@ -102,32 +102,39 @@ public class OrganizationService implements UserService, AuthenticationService {
             Optional<Event> optEv = eventRepository.findById(part.getEventId());
             if (optEv.isPresent()) {
                 Event event = optEv.get();                                 // Get the event object
-                String reviewResult = reviewParticipation(part, event);    // Review the participation
+                boolean reviewResult = acceptedParticipation(part, event);    // Review the participation
 
                 // Increment counters based on result
-                if (reviewResult.equals("accepted")) {
+                if (reviewResult) {
                     countAccepted++;
+                    part.setStatus("Accepted");
+                    // Save the acccepted participation to the repository
+                    // TODO: 
+                    // Maybe call an other function to send e message to
+                    // the Volunteer for the acceptance
+
+                    participationRepository.save(part);
                 } else {
                     countRejected++;
+                    part.setStatus("Rejected");
+                    // Delete the rejected participation to the repository
+                    // TODO: 
+                    // Maybe call an other function to send e message to
+                    // the Volunteer for the rejection
+                    participationRepository.delete(part);
                 }
-
-                // Save the updated participation to the repository
-                participationRepository.save(part);
-
+                
                 // Print the result status for each event (For debugging purposes)
                 System.out.println("Participation for volunteer " + part.getVolunteerId() +
                         " in event " + event.getName() + " was " + reviewResult + ".");
             }
         }
 
-        // Update Dto with the results
-        dispPartDto.setInfoMessage(
-                countAccepted + " new participations accepted, " +
-                countRejected + " new participations rejected, " +
-                (countAccepted + countRejected) + " total participations reviewed"
-        );
-
-        dispPartDto.setTaskCompleted(true);
+        // Update Dto object with the results
+        dispPartDto.setAcceptedParticipations(countAccepted);
+        dispPartDto.setRejectedParticipations(countRejected);
+        dispPartDto.setUpdatedParticipations(pendingParticipations);
+        dispPartDto.setNothingToUpdate(false);
 
         return dispPartDto;
     }
@@ -219,20 +226,12 @@ public class OrganizationService implements UserService, AuthenticationService {
     }
 
     // Utility functions
-    public String reviewParticipation(Participation part, Event ev) {
-        // Check if the event has reached its maximum number of participants
-        if (ev.getParticipationList().size() >= ev.getMaxNumbOfVolunteers()) {
-            // Event is full, cannot accept more participants
-            part.setStatus("Rejected");
-            return "rejected";
-        }
-
+    private Boolean acceptedParticipation(Participation part, Event ev) {
         // TODO:
         // -> Add more attributes to the Event and the Participation classes
         // Additional checks can be added here, e.g.,
         // matching event requirements with volunteer skills
-        part.setStatus("Accepted");
-        return "accepted";
+        return (ev.getParticipationList().size() >= ev.getMaxNumbOfVolunteers()) ? false : true;
     }
 }
 

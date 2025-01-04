@@ -1,30 +1,31 @@
-package gr.dit.voluntia.demo.dtos.org;
+package gr.dit.voluntia.demo.dtos.vols;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gr.dit.voluntia.demo.models.Event;
 import lombok.Data;
 
-@Data
-public class CreateNewEventDto {
+import java.util.ArrayList;
+import java.util.List;
 
+@Data
+public class DisplayEventsDto {
     // Nothing to update
     private Boolean nothingToUpdate = true;
+        // if nothingToUpdate is false, then the list updated
+        // otherwise there is nothing for this search
 
-    // The id of the Organization that makes the request to
-    // create a new Event
-    private Long organizationId;
-    private String name;
-    private String description;
-    private String location;
-    private String Date;
-    private String topic;
-    private Integer maxNumberOfPeople;
+    // Input fields -> Filters
+    private String status = "Confirmed";
+    private String date ;       // f.ex: '2024-01-10'
+    private String topic;       // f.ex: 'Environment'
+    private String location;    // f.ex: 'Athens Greece'
 
-    // The new Event that will be created
-    // The returned value
-    private Event event;
+    // Returned fields
+    private List<Event> filteredEvents = new ArrayList<>();
 
-     /**
+
+    /**
      * Description:
      * Custom string representation for debugging and logging purposes.
      * Displays the current state of the ConfirmEventsDto object.
@@ -39,7 +40,7 @@ public class CreateNewEventDto {
 
     /**
      * Description:
-     * Converts the Dto's classe object into a JSON representation.
+     * Converts the Dto's class object into a JSON representation.
      * @return A JSON String containing the object's data
      */
     public String toJson() {

@@ -6,16 +6,19 @@ import gr.dit.voluntia.demo.dtos.auths.SignInDto;
 import gr.dit.voluntia.demo.dtos.auths.SignUpDto;
 import gr.dit.voluntia.demo.dtos.glob.DisplayProfileDto;
 import gr.dit.voluntia.demo.dtos.glob.EditProfileInfoDto;
+import gr.dit.voluntia.demo.dtos.vols.DisplayEventsDto;
 import gr.dit.voluntia.demo.models.Event;
 import gr.dit.voluntia.demo.models.Participation;
 import gr.dit.voluntia.demo.models.User;
 import gr.dit.voluntia.demo.models.Volunteer;
+import gr.dit.voluntia.demo.repositories.EventRepository;
 import gr.dit.voluntia.demo.repositories.VolunteerRepository;
 import gr.dit.voluntia.demo.services.blueprints.AuthenticationService;
 import gr.dit.voluntia.demo.services.blueprints.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,46 +28,66 @@ public class VolunteerService implements UserService, AuthenticationService {
 
     @Autowired
     private VolunteerRepository volunteerRepository;
+    @Autowired
+    private EventRepository eventRepository;
 
     // Methods for Volunteer Activities
     // -> (for every single volunteer  -- things that can do)
     //////////////////////////////////////////////////////////////////////////////////////////
-    /**Description:
-     * Applies for participating on an event */
-    public Participation applyForEvent(Event event) {
-        // Get list of all the Events with status = "Confirmed"
-        // TODO: ...
-        return null;
+
+    /**
+     * Description:
+     * Searches for events based on filters in the DTO (status, date, topic, location).
+     * If no filters are provided, retrieves all events with status = "Confirmed".
+     *
+     * @param dispEvdto The DTO containing input filters (status, date, topic, location).
+     * @return The DTO populated with filtered events or empty if no matches.
+     * */
+    public DisplayEventsDto searchForEvent(DisplayEventsDto dispEvdto) {
+        // Extract filters from the input dto
+        String status = dispEvdto.getStatus();
+        String date = dispEvdto.getDate();
+        String topic = dispEvdto.getTopic();
+        String location = dispEvdto.getLocation();
+
+        // Retrieve filtered events based on provided filters
+        List<Event> filteredEvents;
+
+        if (status == null && date == null && topic == null && location == null) {
+            // No filters provided: default to events with status = "Confirmed"
+            filteredEvents = eventRepository.findEventsByStatus("Confirmed");
+        } else {
+            // Filters are provided: retrieve based on all filters
+            filteredEvents = eventRepository.findEventsByFilters(status, date, topic, location);
+        }
+
+        // Check if any events match the filters
+        if (filteredEvents.isEmpty()) {
+            dispEvdto.setFilteredEvents(Collections.emptyList());
+            dispEvdto.setNothingToUpdate(true);
+            return dispEvdto;
+        }
+
+        // Store all the info to the dto
+        dispEvdto.setFilteredEvents(filteredEvents);
+        dispEvdto.setNothingToUpdate(false);
+
+        return dispEvdto;
     }
 
-    // And also filtered!
-    // Can I do it with filters in only one method?
-    public Participation applyForEvent(Event event, String date) {
-        // Get list of all the Events
-        // with status = "Confirmed"
-        // and event's date = date
-        // TODO: ...
-        return null;
-    }
 
-    public Participation applyForEvent(Event event, String topic) {
-        // Get list of all the Events
-        // with status = "Confirmed"
-        // and event's topic = topic
-        // TODO: ...
-        return null;
-    }
-    public Participation applyForEvent(Event event, String date, String topic) {
-        // Get list of all the Events
-        // with status = "Confirmed"
-        // and event's date = date
-        // and event's topic = topic
-        // TODO: ...
-        return null;
-    }
     /**Description:
-     * Searches and selects the event that they want to participate */
-    public List<Participation> searchEventForParticipation( ) {
+     *  */
+    public Participation applyToEvent( ) {
+        // NOTE: Some background info (for the structure): ...
+        // It will be activated by clicking to the button of the Event's
+        // container on the UI (it will display a popup form to fill in)
+        // Then the controller will send it By the dto: 'ApplyToEventDto'
+
+        // NOTE: The body of the method: ...
+        // This is the backend method that takes the info of the dto and
+        // creates a Participation object with the info of the Dto
+        // stores that participation as "pending" to the participationRepository
         // TODO: ...
         return null;
     }

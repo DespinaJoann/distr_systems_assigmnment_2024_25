@@ -23,6 +23,7 @@ public class Event {
     private String name;
     private String description;
     private String location;
+    private String topic;
     private String date;
     private int maxNumbOfVolunteers;
 
