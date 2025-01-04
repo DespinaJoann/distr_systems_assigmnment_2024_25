@@ -9,6 +9,8 @@ import lombok.Data;
 public class ApplyToEventDto {
 
     // Input values from the form
+    private Boolean bugged = false;
+
     private String eventName;
     private String volunteerId;         // This will be taken from the system because
                                         // user (volunteer) is logged in to the web app
@@ -23,10 +25,6 @@ public class ApplyToEventDto {
                     // To do it I probably must create another class that works on that
                     // Maybe todo (SessionService)
 
-    // Searched values
-    private String eventId;             // Search by event name on table='Event' -> get eventId
-    private String organizationId;      //  and also from this search -> get organizationId
-
 
     // Created value
     private Participation newParticipation;
@@ -40,8 +38,6 @@ public class ApplyToEventDto {
     public String toString() {
         return "ApplyToEventDto{" +
                 "volunteerId='" + volunteerId + '\'' +
-                ", eventId='" + eventId + '\'' +
-                ", organizationId='" + organizationId + '\'' +
                 '}';
     }
 

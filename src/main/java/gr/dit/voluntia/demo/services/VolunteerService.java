@@ -6,12 +6,14 @@ import gr.dit.voluntia.demo.dtos.auths.SignInDto;
 import gr.dit.voluntia.demo.dtos.auths.SignUpDto;
 import gr.dit.voluntia.demo.dtos.glob.DisplayProfileDto;
 import gr.dit.voluntia.demo.dtos.glob.EditProfileInfoDto;
+import gr.dit.voluntia.demo.dtos.vols.ApplyToEventDto;
 import gr.dit.voluntia.demo.dtos.vols.DisplayEventsDto;
 import gr.dit.voluntia.demo.models.Event;
 import gr.dit.voluntia.demo.models.Participation;
 import gr.dit.voluntia.demo.models.User;
 import gr.dit.voluntia.demo.models.Volunteer;
 import gr.dit.voluntia.demo.repositories.EventRepository;
+import gr.dit.voluntia.demo.repositories.ParticipationRepository;
 import gr.dit.voluntia.demo.repositories.VolunteerRepository;
 import gr.dit.voluntia.demo.services.blueprints.AuthenticationService;
 import gr.dit.voluntia.demo.services.blueprints.UserService;
@@ -30,6 +32,8 @@ public class VolunteerService implements UserService, AuthenticationService {
     private VolunteerRepository volunteerRepository;
     @Autowired
     private EventRepository eventRepository;
+    @Autowired
+    private ParticipationRepository participationRepository;
 
     // Methods for Volunteer Activities
     // -> (for every single volunteer  -- things that can do)
@@ -78,18 +82,37 @@ public class VolunteerService implements UserService, AuthenticationService {
 
     /**Description:
      *  */
-    public Participation applyToEvent( ) {
-        // NOTE: Some background info (for the structure): ...
-        // It will be activated by clicking to the button of the Event's
-        // container on the UI (it will display a popup form to fill in)
-        // Then the controller will send it By the dto: 'ApplyToEventDto'
+    public ApplyToEventDto applyToEvent(ApplyToEventDto appTodto ) {
+        // Extract the data info from the dto
+        Long volId = Long.valueOf(appTodto.getVolunteerId());
+        String evName = appTodto.getEventName();
 
-        // NOTE: The body of the method: ...
-        // This is the backend method that takes the info of the dto and
-        // creates a Participation object with the info of the Dto
-        // stores that participation as "pending" to the participationRepository
-        // TODO: ...
-        return null;
+        // Search the event based on its unique name
+        Event ev = eventRepository.findByName(evName);
+        if (ev == null) {
+            appTodto.setVolunteerId(null);
+            return appTodto;
+        }
+
+        // Extract all the attributes from the event
+        Long evId = ev.getId();
+        Long orgId = ev.getOrganizationId();
+
+        // Create a new participation
+        Participation newPart  = new Participation();
+        newPart.setVolunteerId(volId);
+        newPart.setEventId(evId);
+        newPart.setOrganizationId(orgId);
+        newPart.setStatus("pending");
+
+
+        // Save the new participation to the repository
+        participationRepository.save(newPart);
+
+        // Update the dto and return
+        appTodto.setNewParticipation(newPart);
+        appTodto.setBugged(false);
+        return appTodto;
     }
 
 

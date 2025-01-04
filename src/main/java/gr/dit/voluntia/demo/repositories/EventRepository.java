@@ -50,4 +50,6 @@ public interface EventRepository extends JpaRepository<Event, Long>,
     "WHERE ev.status = :status "
     )
     List<Event> findEventsByStatus(String status);
+
+    Event findByName(String evName);
 }
