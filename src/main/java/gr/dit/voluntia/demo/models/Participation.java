@@ -29,7 +29,7 @@ public class Participation {
     private Long organizationId;         // Foreign Key for Organization (the creator of the event)
 
     private LocalDateTime date;
-    private String status = "Pending";  // (Pending, Confirmed, CheckedIn, Rejected)
+    private String status;  // (Pending, Confirmed, CheckedIn, Rejected)
 
     public void updateStatus(String status) {
         this.status = status;

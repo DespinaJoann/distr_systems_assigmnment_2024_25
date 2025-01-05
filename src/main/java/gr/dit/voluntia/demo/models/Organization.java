@@ -3,21 +3,19 @@ package gr.dit.voluntia.demo.models;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+@Setter
+@Getter
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder // @Builder
 @Entity
-@SuperBuilder
-@EqualsAndHashCode(callSuper = true)
 public class Organization extends User {
 
     private String orgName;
@@ -30,12 +28,12 @@ public class Organization extends User {
 
     // Its organization has many events
     @OneToMany(
-            mappedBy = "organization_id",
+            mappedBy = "organizationId",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     private List<Event> listOfCurrentEvents = null;
-    private String accountStatus = "Pending"; // a=> Pending/ Created/ Rejected
+    private String accountStatus = "pending"; // a=> Pending/ Created/ Rejected
 
 
     public void changeAccountStatus(String responseFromAdmin) {

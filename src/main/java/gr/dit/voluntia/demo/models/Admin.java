@@ -4,11 +4,12 @@ import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-@Data
+@Setter
+@Getter
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@SuperBuilder // @Builder
 @Entity
 public class Admin extends User {
 

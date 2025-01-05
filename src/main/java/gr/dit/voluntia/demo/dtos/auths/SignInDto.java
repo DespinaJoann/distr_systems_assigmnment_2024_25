@@ -1,8 +1,12 @@
 package gr.dit.voluntia.demo.dtos.auths;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+
+@Getter
+@Setter
 public class SignInDto {
 
     private String signAs;          // Determine a specific role of the sign in

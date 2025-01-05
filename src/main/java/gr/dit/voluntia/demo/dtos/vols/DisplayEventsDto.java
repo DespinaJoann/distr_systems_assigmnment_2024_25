@@ -4,11 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gr.dit.voluntia.demo.models.Event;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class DisplayEventsDto {
     // Nothing to update
     private Boolean nothingToUpdate = true;
@@ -16,7 +19,7 @@ public class DisplayEventsDto {
         // otherwise there is nothing for this search
 
     // Input fields -> Filters
-    private String status = "Confirmed";
+    private String status;      // f.ex: 'confirmed'
     private String date ;       // f.ex: '2024-01-10'
     private String topic;       // f.ex: 'Environment'
     private String location;    // f.ex: 'Athens Greece'

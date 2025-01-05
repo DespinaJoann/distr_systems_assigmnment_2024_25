@@ -1,0 +1,105 @@
+/* Global Box-Sizing */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Global font settings */
+body {
+    font-family: 'Consolas', monospace;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    background-color: #efeeee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;  /* Κεντράρει το κείμενο */
+}
+
+/* Set up heading styles */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Consolas', monospace;
+    color: #222;
+    margin-bottom: 0.5rem;
+}
+
+/* Global container to control page width */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 15px;
+}
+
+/* Flexbox utility to center content */
+.flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;  /* Κεντράρει το κείμενο στο flex */
+}
+
+/* Utility classes for spacing */
+.mt-1 { margin-top: 1rem; }
+.mt-2 { margin-top: 2rem; }
+.mb-1 { margin-bottom: 1rem; }
+.mb-2 { margin-bottom: 2rem; }
+.p-1 { padding: 1rem; }
+.p-2 { padding: 2rem; }
+
+/* Global Button Styles */
+button,
+input[type="submit"],
+input[type="button"] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Consolas', monospace;
+}
+
+button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover {
+    background-color: #0056b3;
+}
+
+/* Global form styles */
+input, textarea, select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-family: 'Consolas', monospace;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* Global Footer */
+footer {
+    background-color: #222;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+footer a {
+    color: #ddd;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

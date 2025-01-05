@@ -3,10 +3,7 @@ package gr.dit.voluntia.demo.models;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 
@@ -16,13 +13,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Setter
+@Getter
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder // @Builder
 @Entity
-@SuperBuilder
-// This table will inherit the User's (superclass) attributers
-@EqualsAndHashCode(callSuper = true)
 public class Volunteer extends User {
     private String firstName;
     private String lastName;

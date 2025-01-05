@@ -18,6 +18,8 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Long id;
+
+
     private Long organizationId;
 
     private String name;

@@ -7,21 +7,26 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Builder;
 import jakarta.persistence.*;
-
+import lombok.experimental.SuperBuilder;
 
 // This class will be a mapped superclass entity, meaning it will
 // be a base entity, which will pass all its attributes to its
 // subclasses (all the other models), but it will not be an actual
 // table to the Data Base
 
+// This class will be a mapped superclass entity;
+// Meaning it will be a base entity, which will inherits all its attributes
+// to its subclasses (all the other models), but it will not be an actual table
+// to the Data Base
+
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-// This tells JPA that subclasses will store data in their own tables.
-@Inheritance(strategy = InheritanceType.JOINED)
+@SuperBuilder
+@MappedSuperclass
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +37,3 @@ public class User {
     private String email;
     private Boolean isLoggedIn;
 }
-
-
-

@@ -16,8 +16,7 @@ public interface EventRepository extends JpaRepository<Event, Long>,
     Event findByIdAndOrganizationId(Long productId, Long actorId);
 
     // Some extra methods
-    <LocalDateTime> List<Event> findByOrganizationIdAndEventDateAfter(Long organizationId, LocalDateTime date);
-    List<Event> findByLocationAndMaxParticipantsGreaterThan(String location, int maxParticipants);
+    @Query("SELECT ev FROM Event ev WHERE ev.status = 'pending'")
     List<Event> findAllPendingEvents();
 
     /**

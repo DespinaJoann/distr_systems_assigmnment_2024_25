@@ -6,8 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class ConfirmUserDto {
     // Nothing to update
     private Boolean nothingToUpdate = true;
