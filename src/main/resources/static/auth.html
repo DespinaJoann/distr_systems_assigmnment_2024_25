@@ -3,27 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Select Role</title>
     <link rel="stylesheet" href="./css/styles.css">
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+
+    <title>Authentication</title>
 </head>
 <body>
-<main>
-    <h1>Select Role to <span id="actionTitle"></span></h1>
-
-    <form id="loginForm">
-        <label for="role">Role:</label>
-        <select id="role" name="role">
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-            <option value="volunteer">Volunteer</option>
-        </select>
-        <br><br>
-        <button type="submit" id="submitButton"></button>
-    </form>
-</main>
-
-<script src="js/auth.js"></script> <!-- Link to external JS file for authorization page -->
+<h1>Authentication</h1>
+<p>Select your action:</p>
+<!-- Login Button -->
+<button onclick="window.location.href='login.html'">Login</button>
+<br><br>
+<!-- Signup Button-->
+<button onclick="window.location.href='signup.html'">Sign Up</button>
 </body>
 </html>

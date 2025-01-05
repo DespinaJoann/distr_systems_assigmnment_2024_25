@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/styles.css">
+    <title>Login</title>
+</head>
+<body>
+<h1>Login</h1>
+<p>Select your role:</p>
+
+<button onclick="loginAs('volunteer')">Login as Volunteer</button>
+<button onclick="loginAs('organization')">Login as Organization</button>
+<button onclick="loginAs('admin')">Login as Admin</button>
+
+<script>
+    function loginAs(role) {
+        alert('You are logging in as ' + role);
+    }
+</script>
+</body>
+</html>

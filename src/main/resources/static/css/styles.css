@@ -9,12 +9,12 @@
 
 /* Global font settings */
 body {
+    display: block;
     font-family: 'Consolas', monospace;
     font-size: 16px;
     line-height: 1.5;
     color: #333;
     background-color: #efeeee;
-    display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;

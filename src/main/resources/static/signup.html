@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/styles.css">
+    <title>Sign Up</title>
+</head>
+<body>
+<h1>Sign Up</h1>
+<p>Select your role:</p>
+
+<button onclick="signUpAs('volunteer')">Sign Up as Volunteer</button>
+<button onclick="signUpAs('organization')">Sign Up as Organization</button>
+<button onclick="signUpAs('admin')">Sign Up as Admin</button>
+
+<script>
+
+    function signUpAs(role) {
+        alert('You are signing up as ' + role);
+    }
+</script>
+</body>
+</html>
