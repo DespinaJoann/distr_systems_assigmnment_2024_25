@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
 /* Global Box-Sizing */
 *,
 *::before,
@@ -9,21 +11,24 @@
 
 /* Global font settings */
 body {
-    display: block;
-    font-family: 'Consolas', monospace;
+    display: flex; /* Set the body to use Flexbox */
+    flex-direction: column; /* Ensure elements are stacked vertically */
+    justify-content: center; /* Center elements vertically */
+    align-items: center; /* Center elements horizontally */
+    font-family: "Ubuntu", serif;
+    font-weight: 400;
+    font-style: normal;
     font-size: 16px;
     line-height: 1.5;
     color: #333;
     background-color: #efeeee;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    text-align: center;  /* Κεντράρει το κείμενο */
+    min-height: 100vh; /* Ensure the body takes full viewport height */
+    text-align: center; /* Center text alignment */
 }
 
 /* Set up heading styles */
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Consolas', monospace;
+
     color: #222;
     margin-bottom: 0.5rem;
 }
@@ -38,9 +43,11 @@ h1, h2, h3, h4, h5, h6 {
 /* Flexbox utility to center content */
 .flex {
     display: flex;
+    flex-direction: column; /* Ensure elements inside flex are stacked vertically */
     justify-content: center;
     align-items: center;
-    text-align: center;  /* Κεντράρει το κείμενο στο flex */
+    text-align: center;
+    height: 100%; /* Make sure it stretches */
 }
 
 /* Utility classes for spacing */
@@ -68,7 +75,8 @@ input[type="button"] {
 button:hover,
 input[type="submit"]:hover,
 input[type="button"]:hover {
-    background-color: #0056b3;
+    background-color: #007bff;
+    box-shadow:3px 3px 3px #90a5ec;
 }
 
 /* Global form styles */
@@ -79,7 +87,6 @@ input, textarea, select {
     border-radius: 4px;
     font-size: 1rem;
     margin-bottom: 1rem;
-    font-family: 'Consolas', monospace;
 }
 
 input:focus, textarea:focus, select:focus {
@@ -102,4 +109,11 @@ footer a {
 
 footer a:hover {
     text-decoration: underline;
+}
+
+
+.error-messages {
+    padding: 10px;
+    margin-top: 20px;
+    font-size: 14px;
 }

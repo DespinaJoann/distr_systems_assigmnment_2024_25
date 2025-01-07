@@ -1,0 +1,43 @@
+/*
+Animation for background
+It is static, but cool ;)
+*/
+body {
+    margin: 0;
+    height: 100vh; /* Ensure it covers the full viewport */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: linear-gradient(to bottom right, #5687ea 50%, #6290ec 50%); /* Diagonal gradient with static colors */
+}
+
+
+.actions-container {
+    background-color: #97c7f8;
+    border: 3px solid #007bff;
+    border-radius: 10px;
+    width: 50%;
+    height: 400px;
+    display: flex; /* Set the body to use Flexbox */
+    flex-direction: column; /* Ensure elements are stacked vertically */
+    justify-content: center; /* Center elements vertically */
+    align-items: center; /* Center elements horizontally */
+    box-shadow: 5px 5px 5px #3f6fcd;
+}
+
+.actions-container:hover {
+    background-color: #a3d0fc;
+    box-shadow: 8px 8px 8px #446cbb;
+}
+
+.action-options {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    margin: 10px;
+    gap: 5px;
+}
+

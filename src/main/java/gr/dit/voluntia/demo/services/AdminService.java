@@ -41,7 +41,7 @@ public class AdminService implements UserService, AuthenticationService {
 
     // TODO:
     /**Description:
-     * Approve new user and activate their profile*/
+     * Approve new user and activate their profile */
     public ConfirmUserDto confirmUsers(ConfirmUserDto confdto) {
         // Counters for info message visualization
         int countAcceptedOrgs = 0;

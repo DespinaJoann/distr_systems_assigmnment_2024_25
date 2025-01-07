@@ -4,15 +4,19 @@ import gr.dit.voluntia.demo.dtos.auths.SignInDto;
 import gr.dit.voluntia.demo.dtos.auths.SignUpDto;
 import gr.dit.voluntia.demo.models.User;
 import gr.dit.voluntia.demo.services.AuthenticationRooter;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
- * Controller to handle authentication requests and route them
- * through AuthenticationRooter.
+ * Controller to handle authentication requests and route them through AuthenticationRooter.
  */
-@RestController
+@Controller
 @RequestMapping("/auth")
 public class AuthenticationController {
 
@@ -20,47 +24,30 @@ public class AuthenticationController {
     private AuthenticationRooter authenticationRooter;
 
     /**
-     * Unified Endpoint for Login and Signup.
-     * Handles both login and signup based on the "type" parameter.
-     *
-     * @param type The type of operation ("login" or "signup").
-     * @param req  The request body (SignInDto or SignUpDto).
-     * @return ResponseEntity with the appropriate response.
-     */
-    @PostMapping("/{type}")
-    public ResponseEntity<?> handleAuth(@PathVariable String type, @RequestBody Object req) {
-        try {
-            return switch (type.toLowerCase()) {
-                case "login" -> handleLogin((SignInDto) req); // Handle login
-                case "signup" -> handleSignup((SignUpDto) req); // Handle signup
-                default -> ResponseEntity.badRequest().body("Invalid type specified. Use 'login' or 'signup'.");
-            };
-        } catch (ClassCastException e) {
-            return ResponseEntity.badRequest().body("Invalid request format: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    /**
      * Handle Login Requests
      * Validates and routes the login request based on the role.
      */
-    private ResponseEntity<?> handleLogin(SignInDto req) {
+    @PostMapping("/login")
+    public String handleLogin(@ModelAttribute SignInDto req, Model model) {
         try {
             if (req.getSignAs() == null || req.getSignAs().isEmpty()) {
-                return ResponseEntity.badRequest().body("Role (signAs) is required for login.");
+                model.addAttribute("error", "Role (signAs) is required for login.");
+                return "login"; // Επιστρέφει στην σελίδα login
             }
 
             // Handle special admin key
             if ("Admin".equalsIgnoreCase(req.getSignAs()) && (req.getSpecialAdminKey() == null || req.getSpecialAdminKey().isEmpty())) {
-                return ResponseEntity.badRequest().body("Admin key is required for Admin login.");
+                model.addAttribute("error", "Admin key is required for Admin login.");
+                return "login"; // Επιστρέφει στην σελίδα login
             }
 
             User loggedInUser = authenticationRooter.logIn(req);
-            return ResponseEntity.ok(loggedInUser);
+            model.addAttribute("user", loggedInUser);
+            return "dashboard"; // Επιστρέφει στην σελίδα του dashboard
+
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            model.addAttribute("error", e.getMessage());
+            return "login"; // Επιστρέφει στην σελίδα login με το μήνυμα σφάλματος
         }
     }
 
@@ -68,21 +55,27 @@ public class AuthenticationController {
      * Handle Signup Requests
      * Validates and routes the signup request based on the role.
      */
-    private ResponseEntity<?> handleSignup(SignUpDto req) {
+    @PostMapping("/signup")
+    public ResponseEntity<?> handleSignup(@RequestBody SignUpDto req, HttpSession session) {
         try {
-            if (req.getRole() == null || req.getRole().isEmpty()) {
-                return ResponseEntity.badRequest().body("Role is required for signup.");
-            }
-
-            // Handle special admin key
-            if ("Admin".equalsIgnoreCase(req.getRole()) && (req.getSpecialAdminKey() == null || req.getSpecialAdminKey().isEmpty())) {
-                return ResponseEntity.badRequest().body("Admin key is required for Admin signup.");
-            }
-
+            // Process and Create a new User
             User newUser = authenticationRooter.signUp(req);
+
+            // Save the new user to the current session
+            session.setAttribute("user", newUser);
+
+            // Return User as JSON (for frontend usage)
             return ResponseEntity.ok(newUser);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            System.out.println(e.getMessage());
+
+            // Return Error in case of error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred during sign up.");
         }
     }
+
+
 }
+
+
