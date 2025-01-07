@@ -19,12 +19,17 @@ import java.util.List;
 @Entity
 public class Organization extends User {
 
+    @Column(unique = true, nullable = false)
     private String orgName;
+    @Column(unique = true, nullable = false)
     private String phoneNumber;
     private String address;
     private String location;
 
+    @Column(nullable = false)
     private String profileDescription;
+    
+    @Column(nullable = false)
     private String organizationType;
 
     // Its organization has many events

@@ -1,9 +1,10 @@
-// Variable for saving the current role
+// Variable for saving the chosen role
 let currentRole = "";
 
 // Function that is triggered when a user selects a role
-function signUpAs(role) {
-    // Hide the original sign-up form options (volunteer, organization, admin buttons)
+function loginAs (role) {
+
+    // Hide the original log-in form options (volunteer, organization, admin -> buttons)
     document.querySelector('.login-form form').style.display = 'none';
 
     // Clear any previously generated form elements
@@ -15,31 +16,15 @@ function signUpAs(role) {
         volunteer: [
             {label: 'Username', type: 'text', name: 'username', required: true},
             {label: 'Password', type: 'password', name: 'password', required: true},
-            {label: 'Email', type: 'email', name: 'email', required: true},
-            {label: 'First Name', type: 'text', name: 'firstName', required: true},
-            {label: 'Last Name', type: 'text', name: 'lastName', required: true},
-            {label: 'Phone Number', type: 'tel', name: 'phoneNumber', required: true},
-            {label: 'Date of Birth', type: 'date', name: 'dateOfBirth'},
-            {label: 'Profile Description', type: 'textarea', name: 'profileDescription'}
         ],
         organization: [
             {label: 'Username', type: 'text', name: 'username', required: true},
             {label: 'Password', type: 'password', name: 'password', required: true},
-            {label: 'Email', type: 'email', name: 'email', required: true},
-            {label: 'Organization Name', type: 'text', name: 'organizationName', required: true},
-            {label: 'Phone Number', type: 'tel', name: 'phoneNumber', required: true},
-            {label: 'Address', type: 'text', name: 'address'},
-            {label: 'Location', type: 'text', name: 'location'},
-            {label: 'Profile Description', type: 'textarea', name: 'profileDescription'},
-            {label: 'Organization Type', type: 'text', name: 'organizationType'}
         ],
         admin: [
             {label: 'Username', type: 'text', name: 'username', required: true},
             {label: 'Password', type: 'password', name: 'password', required: true},
-            {label: 'Email', type: 'email', name: 'email', required: true},
-            {label: 'First Name', type: 'text', name: 'firstName', required: true},
-            {label: 'Last Name', type: 'text', name: 'lastName', required: true},
-            {label: 'Special Admin Key', type: 'text', name: 'specialAdminKey', required: true},
+            {label: 'Special Admin Key', type: 'text', name: 'specialAdminKey', required: true}
         ]
     };
 
@@ -49,6 +34,7 @@ function signUpAs(role) {
     // Generate form dynamically based on role
     createForm(roleFields[role], role);
 }
+
 
 // Function to create forms dynamically
 function createForm(fields, role) {
@@ -88,7 +74,7 @@ function createForm(fields, role) {
     // Submit Button for the form
     const submitButton = document.createElement('button');
     submitButton.setAttribute('type', 'button'); // Make it type="button" to prevent form submission
-    submitButton.innerText = `Sign Up as ${role.charAt(0).toLowerCase() + role.slice(1)}`;
+    submitButton.innerText = `Login as ${role.charAt(0).toUpperCase() + role.slice(1)}`;
     submitButton.onclick = submitForm; // Assign the submitForm function
     form.appendChild(submitButton);
 
@@ -96,43 +82,46 @@ function createForm(fields, role) {
     formContainer.appendChild(form);
 }
 
+
 // Function to handle form submission via AJAX
 function submitForm() {
     const form = document.querySelector('#dynamic-form form');
     const formData = new FormData(form);
     const data = {};
 
-    // Convert form data to a JSON object
+    // Μετατροπή FormData σε JSON αντικείμενο
     formData.forEach((value, key) => {
         data[key] = value;
     });
 
-    // Add the role to the data object
-    data["role"] = currentRole;
+    // Αντιστοιχίστε τον ρόλο (ROLE_VOLUNTEER, ROLE_ORGANIZATION, ROLE_ADMIN) με βάση την επιλογή του χρήστη
+    const roleMapping = {
+        volunteer: "ROLE_VOLUNTEER",
+        organization: "ROLE_ORGANIZATION",
+        admin: "ROLE_ADMIN"
+    };
 
-    // Send the form data to the server via fetch (AJAX)
-    fetch('/auth/signup', {
+    // Προσθέστε τον ρόλο με βάση την επιλογή του χρήστη
+    data["role"] = roleMapping[currentRole];  // Εδώ ο ρόλος πρέπει να αποστέλλεται στο backend για login
+
+    // Ενημερωμένο AJAX αίτημα για login στο /auth/login
+    fetch('/auth/login', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',  // Specify that we're sending JSON data
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data) // Send the form data as JSON
+        body: JSON.stringify(data)  // Στείλτε τα δεδομένα ως JSON
     })
-        .then(response => {
-            // Ensure that the response is OK
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json(); // Parse the JSON
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log('Success:', data);
-            alert('Signup successful!');
-            window.location.href = './pages/signup_success.html';
+            if (data.redirect) {
+                window.location.href = data.redirect; // Ανακατεύθυνση
+            } else {
+                alert('Login succeeded, but no redirect URL provided.');
+            }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('There was an error.');
-            window.location.href = './pages/signup_error.html';
+            alert('There was an error during login.');
         });
 }

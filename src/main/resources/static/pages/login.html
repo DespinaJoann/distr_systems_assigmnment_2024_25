@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/styles.css">
-    <link rel="stylesheet" href="./css/form.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/form.css">
     <title>Login</title>
 </head>
 <body>
@@ -14,16 +14,16 @@
 </div>
 <div class="login-form">
     <!-- Login form container -->
-     <form action="#">
+     <form action="/auth/login" method="post">
 
         <div class="login-option">
             <!--Volunteer button-->
             <div class="option">
-                <button  onclick="loginAs('volunteer')"> Login as Volunteer </button>
+                <button type="button" onclick="loginAs('volunteer')"> Login as Volunteer </button>
             </div>
             <!--Orgamization button-->
             <div class="option">
-                <button  onclick="loginAs('organization')"> Login as Organization</button>
+                <button type="button" onclick="loginAs('organization')"> Login as Organization</button>
             </div>
         </div>
         <!-- Login option separator -->
@@ -33,20 +33,16 @@
 
         <!--Administrator button-->
         <div class="admin-option">
-            <button  onclick="loginAs('admin')"> Login As admin</button>
+            <button type="button"  onclick="loginAs('admin')"> Login As admin</button>
         </div>
-
-        <p class="link-to">Don't have an account? <a href="/signup.html">Sign up</a></p>
-        <p class="link-to">Go back to the <a href="/index.html">Home Page</a></p>
-
     </form>
+    <p class="link-to">Do you already have an account? <a href="/pages/login.html">Log In</a></p>
+    <p class="link-to">Go back to the <a href="/index.html">Home Page</a></p>
+    <!-- Dynamic Form Container -->
+    <div id="dynamic-form"></div>
+    <div class="error-messages"></div>
 </div>
 
-
-<script>
-    function loginAs(role) {
-        alert('You are logging in as ' + role);
-    }
-</script>
+<script src="../js/login.js"></script>
 </body>
 </html>

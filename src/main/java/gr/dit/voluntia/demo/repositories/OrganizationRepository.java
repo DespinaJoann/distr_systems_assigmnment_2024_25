@@ -1,6 +1,8 @@
 package gr.dit.voluntia.demo.repositories;
 
 import gr.dit.voluntia.demo.models.Organization;
+import gr.dit.voluntia.demo.models.Volunteer;
+import gr.dit.voluntia.demo.services.OrganizationService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +16,8 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
     Organization findByUsernameAndPassword(String username, String password);
 
     // Some extra - general methods
-    Organization findByUsername(String username);
+    @Query("SELECT o FROM Organization o WHERE o.username = :username")
+    Organization findByUsername(@Param("username") String username);
     Organization findByEmail(String email);
 
     @Query("SELECT org FROM Organization org WHERE org.accountStatus = 'pending'")

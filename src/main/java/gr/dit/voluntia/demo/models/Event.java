@@ -16,20 +16,24 @@ import java.util.List;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
 
-
+    @Column(nullable = false)
     private Long organizationId;
 
+    @Column(nullable = false)
     private String name;
     private String description;
     private String location;
     private String topic;
+
+    @Column(nullable = false)
     private String date;
+    @Column(nullable = false)
     private int maxNumbOfVolunteers;
 
-    private String status = "Pending";  // (Pending, Rejected, Approved)
+    @Column(nullable = false)
+    private String status = "pending";  // (Pending, Rejected, Approved)
 
     // Each event could have many participations
     @OneToMany(

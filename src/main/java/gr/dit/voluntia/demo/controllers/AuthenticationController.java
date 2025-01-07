@@ -1,17 +1,25 @@
 package gr.dit.voluntia.demo.controllers;
 
+
 import gr.dit.voluntia.demo.dtos.auths.SignInDto;
 import gr.dit.voluntia.demo.dtos.auths.SignUpDto;
 import gr.dit.voluntia.demo.models.User;
-import gr.dit.voluntia.demo.services.AuthenticationRooter;
+import gr.dit.voluntia.demo.services.CustomUserDetailsService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import gr.dit.voluntia.demo.services.AuthenticationRooter;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
 
 /**
  * Controller to handle authentication requests and route them through AuthenticationRooter.
@@ -23,33 +31,40 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationRooter authenticationRooter;
 
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService; // Χρησιμοποιούμε μόνο το CustomUserDetailsService
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     /**
      * Handle Login Requests
      * Validates and routes the login request based on the role.
      */
+
     @PostMapping("/login")
-    public String handleLogin(@ModelAttribute SignInDto req, Model model) {
-        try {
-            if (req.getSignAs() == null || req.getSignAs().isEmpty()) {
-                model.addAttribute("error", "Role (signAs) is required for login.");
-                return "login"; // Επιστρέφει στην σελίδα login
-            }
+    public ResponseEntity<?> handleLogin(@RequestBody SignInDto req, HttpSession session) {
 
-            // Handle special admin key
-            if ("Admin".equalsIgnoreCase(req.getSignAs()) && (req.getSpecialAdminKey() == null || req.getSpecialAdminKey().isEmpty())) {
-                model.addAttribute("error", "Admin key is required for Admin login.");
-                return "login"; // Επιστρέφει στην σελίδα login
-            }
+        System.out.println("Username: " + req.getUsername());
+        System.out.println("Password: " + req.getPassword());
+        System.out.println("Role: " + req.getSignAs());
 
-            User loggedInUser = authenticationRooter.logIn(req);
-            model.addAttribute("user", loggedInUser);
-            return "dashboard"; // Επιστρέφει στην σελίδα του dashboard
-
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            return "login"; // Επιστρέφει στην σελίδα login με το μήνυμα σφάλματος
-        }
+        User loggedInUser = customUserDetailsService.findUserByUsername(req.getUsername(), req.getSignAs());
+        return ResponseEntity.ok(loggedInUser);
     }
+
+
+    private String getRedirectUrlBasedOnRole(String role) {
+        // Επιστρέφει τη σωστή URL ανακατεύθυνσης σύμφωνα με το ρόλο
+        return switch (role) {
+            case "ROLE_ADMIN" -> "/auth/admin/dashboard";
+            case "ROLE_VOLUNTEER" -> "/auth/volunteer/dashboard";
+            case "ROLE_ORGANIZATION" -> "/auth/organization/dashboard";
+            default -> throw new IllegalArgumentException("Unknown role: " + role);
+        };
+    }
+
+
 
     /**
      * Handle Signup Requests
