@@ -1,6 +1,7 @@
 package gr.dit.voluntia.demo.models;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.*;
@@ -21,14 +22,22 @@ import java.util.List;
 @SuperBuilder // @Builder
 @Entity
 public class Volunteer extends User {
+
+    @Column(unique = true, nullable = false)
     private String firstName;
+    @Column(unique = true, nullable = false)
     private String lastName;
+    @Column(nullable = false)
     private String phoneNumber;
+    @Column(nullable = false)
     private String dateOfBirth;         // String -> "yyyy-MM-dd"
+
     private String profileDescription;
 
     private Boolean hasCheckedIn = false;
-    private String accountStatus = "Pending"; // => Pending/ Created/ Rejected
+
+    @Column(nullable = false)
+    private String accountStatus = "pending"; // => Pending/ Created/ Rejected
 
     // Its volunteer could have many participations
     @OneToMany(

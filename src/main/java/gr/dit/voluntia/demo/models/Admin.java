@@ -1,5 +1,6 @@
 package gr.dit.voluntia.demo.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -13,9 +14,12 @@ import lombok.experimental.SuperBuilder;
 @Entity
 public class Admin extends User {
 
+    @Column(unique = true, nullable = false)
     private String firstName;
+    @Column(unique = true, nullable = false)
     private String lastName;
 
+    @Column(unique = true, nullable = false)
     private String accountKey;     // NOTE:
                                     // In our application the Admin is unique and only one
                                     // This is a special unique-Key, which belongs only to the Admin

@@ -1,9 +1,6 @@
 package gr.dit.voluntia.demo.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,13 +20,17 @@ public class Participation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    @Column(nullable = false)
     private Long volunteerId;           // Foreign Key for Volunteer
+    @Column(nullable = false)
     private Long eventId;               // Foreign Key for Event
+    @Column(nullable = false)
     private Long organizationId;         // Foreign Key for Organization (the creator of the event)
 
-    private LocalDateTime date;
-    private String status;  // (Pending, Confirmed, CheckedIn, Rejected)
+    @Column(nullable = false)
+    private String date;
+    @Column(nullable = false)
+    private String status = "pending";  // (Pending, Confirmed, CheckedIn, Rejected)
 
     public void updateStatus(String status) {
         this.status = status;

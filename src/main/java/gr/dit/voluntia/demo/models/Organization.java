@@ -1,6 +1,7 @@
 package gr.dit.voluntia.demo.models;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.*;
@@ -33,6 +34,7 @@ public class Organization extends User {
             orphanRemoval = true
     )
     private List<Event> listOfCurrentEvents = null;
+    @Column(nullable = false)
     private String accountStatus = "pending"; // a=> Pending/ Created/ Rejected
 
 
