@@ -38,8 +38,7 @@ function signUpAs(role) {
             {label: 'Password', type: 'password', name: 'password', required: true},
             {label: 'Email', type: 'email', name: 'email', required: true},
             {label: 'First Name', type: 'text', name: 'firstName', required: true},
-            {label: 'Last Name', type: 'text', name: 'lastName', required: true},
-            {label: 'Special Admin Key', type: 'text', name: 'specialAdminKey', required: true},
+            {label: 'Last Name', type: 'text', name: 'lastName', required: true}
         ]
     };
 
@@ -96,43 +95,26 @@ function createForm(fields, role) {
     formContainer.appendChild(form);
 }
 
-// Function to handle form submission via AJAX
+
 function submitForm() {
     const form = document.querySelector('#dynamic-form form');
     const formData = new FormData(form);
     const data = {};
 
-    // Convert form data to a JSON object
     formData.forEach((value, key) => {
         data[key] = value;
     });
 
-    // Add the role to the data object
-    data["role"] = currentRole;
-
-    // Send the form data to the server via fetch (AJAX)
-    fetch('/auth/signup', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',  // Specify that we're sending JSON data
-        },
-        body: JSON.stringify(data) // Send the form data as JSON
-    })
-        .then(response => {
-            // Ensure that the response is OK
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json(); // Parse the JSON
-        })
-        .then(data => {
-            console.log('Success:', data);
+    // Send data to backend using axios signup method
+    signup(data)
+        .then((response) => {
+            console.log('Signup successful:', response.data);
             alert('Signup successful!');
-            window.location.href = './pages/signup_success.html';
+            window.location.href = './signup_success.html'; // Redirect on success
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('Error:', error);
-            alert('There was an error.');
-            window.location.href = './pages/signup_error.html';
+            alert('There was an error with your signup.');
+            window.location.href = './signup_error.html';
         });
 }

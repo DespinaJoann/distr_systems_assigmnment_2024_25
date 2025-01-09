@@ -32,6 +32,11 @@ public class Organization extends User {
     @Column(nullable = false)
     private String organizationType;
 
+    @Override
+    public void setRole(String role) {
+        super.setRole("ORGANIZATION");
+    }
+
     // Its organization has many events
     @OneToMany(
             mappedBy = "organizationId",

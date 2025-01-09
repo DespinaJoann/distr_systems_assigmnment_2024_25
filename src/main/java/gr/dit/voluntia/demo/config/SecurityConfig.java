@@ -1,58 +1,62 @@
 package gr.dit.voluntia.demo.config;
 
-import gr.dit.voluntia.demo.services.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
-
-    @Autowired
-    private final CustomUserDetailsService customUserDetailsService;
-
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
-        this.customUserDetailsService = customUserDetailsService;
-    }
-
-    // Ορίζουμε τον AuthenticationManager που θα χρησιμοποιηθεί για την αυθεντικοποίηση
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(customUserDetailsService);
-        return authenticationManagerBuilder.build();
-    }
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // Ορίζουμε τις πολιτικές ασφάλειας
         http
-                .authorizeHttpRequests(authM -> authM
-                        .requestMatchers("/auth/login", "/auth/signup", "/").permitAll()  // Επιτρέπει πρόσβαση στην αρχική σελίδα και στις σελίδες login/signup
-                        .requestMatchers("/dashboard/**").authenticated()  // Η σελίδα dashboard απαιτεί αυθεντικοποίηση
-                        .anyRequest().permitAll()  // Όλες οι άλλες σελίδες είναι δημόσιες
+                .authorizeHttpRequests(auth -> auth
+                        // Δημόσιες σελίδες: login, signup κ.α.
+                        .requestMatchers(
+                                "/",
+                                "/public",
+                                "/auth",
+                                "/login",
+                                "/login/vol",
+                                "/login/org",
+                                "/login/admin",
+                                "/signup",
+                                "/signup/vol",
+                                "/signup/org",
+                                "/signup/admin"
+                        ).permitAll() // Επιτρέπει σε όλους την πρόσβαση σε αυτές τις σελίδες
+
+                        // Μόνο οι συνδεδεμένοι χρήστες να έχουν πρόσβαση στα dashboards
+                        .requestMatchers("/volunteer_dashboard").hasAuthority("ROLE_VOLUNTEER")
+                        .requestMatchers("/organization_dashboard").hasAuthority("ROLE_ORGANIZATION")
+                        .requestMatchers("/admin_dashboard").hasAuthority("ROLE_ADMIN")
+
+                        // Οποιοδήποτε άλλο αίτημα απαιτεί authentication
+                        .anyRequest().authenticated()
                 )
-                .csrf(AbstractHttpConfigurer::disable)  // Απενεργοποιούμε το CSRF για να αποφύγουμε προβλήματα με τις αιτήσεις
                 .formLogin(form -> form
-                        .loginPage("/auth/login")  // Ορίζουμε τη σελίδα login
-                        .defaultSuccessUrl("/dashboard", true)  // Αν ο χρήστης συνδεθεί επιτυχώς, ανακατευθύνεται στο dashboard
-                        .permitAll()
+                        .loginPage("/login") // Η σελίδα login
+                        .permitAll() // Επιτρέπει σε όλους την πρόσβαση στη φόρμα login
                 )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")  // Ορίζουμε το logout URL
-                        .logoutSuccessUrl("/")  // Μετά την αποσύνδεση, ανακατευθύνει στην αρχική σελίδα
-                        .permitAll()
-                );
+                .logout(logout -> logout.permitAll()); // Δημόσιο logout
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // Ή οποιοδήποτε άλλο PasswordEncoder
     }
 }

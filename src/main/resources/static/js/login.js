@@ -82,46 +82,33 @@ function createForm(fields, role) {
     formContainer.appendChild(form);
 }
 
-
-// Function to handle form submission via AJAX
 function submitForm() {
     const form = document.querySelector('#dynamic-form form');
     const formData = new FormData(form);
     const data = {};
 
-    // Μετατροπή FormData σε JSON αντικείμενο
     formData.forEach((value, key) => {
         data[key] = value;
     });
 
-    // Αντιστοιχίστε τον ρόλο (ROLE_VOLUNTEER, ROLE_ORGANIZATION, ROLE_ADMIN) με βάση την επιλογή του χρήστη
-    const roleMapping = {
-        volunteer: "ROLE_VOLUNTEER",
-        organization: "ROLE_ORGANIZATION",
-        admin: "ROLE_ADMIN"
-    };
-
-    // Προσθέστε τον ρόλο με βάση την επιλογή του χρήστη
-    data["role"] = roleMapping[currentRole];  // Εδώ ο ρόλος πρέπει να αποστέλλεται στο backend για login
-
-    // Ενημερωμένο AJAX αίτημα για login στο /auth/login
-    fetch('/auth/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)  // Στείλτε τα δεδομένα ως JSON
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.redirect) {
-                window.location.href = data.redirect; // Ανακατεύθυνση
+    login(data)
+        .then((response) => {
+            // Save the token to a constant
+            const token = response.data.token;
+            if (token) {
+                // Save the token to the local storage
+                localStorage.setItem('jwt', token);
+                console.log('Login successful:', response.data);
+                // Redirect to the dashboard
+                window.location.href = '../../templates/volunteer_dashboard.html';
             } else {
-                alert('Login succeeded, but no redirect URL provided.');
+                alert('Login failed: Token not provided.');
             }
         })
-        .catch(error => {
+        .catch((error) => {
+            // If an error occures, then go back to the home page
             console.error('Error:', error);
-            alert('There was an error during login.');
+            alert('There was an error with your login.');
+            window.location.href = 'index.html';
         });
 }

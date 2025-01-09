@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Voluntia Home</title>
+    <!-- Correcting the CSS paths with Thymeleaf's @{} syntax -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+<div class="header">
+  <h1>Login</h1>
+  <p>Select your role:</p>
+</div>
+<div class="login-form">
+  <!-- Login form container -->
+  <form th:action="@{#}" method="post">
+
+    <div class="login-option">
+      <!--Volunteer button-->
+      <div class="option">
+          <button type="button"
+          th:onclick="|window.location.href='@{/vol_login.html}'|">
+              Login as Volunteer
+          </button>
+      </div>
+      <!--Organization button-->
+      <div class="option">
+          <button type="button"
+          th:onclick="|window.location.href='@{/org_login.html}'|">
+              Login as Organization
+          </button>
+      </div>
+    </div>
+    <!-- Login option separator -->
+    <p class="separator">
+      <span>or</span>
+    </p>
+
+    <!--Administrator button-->
+    <div class="admin-option">
+        <button type="button"
+        th:onclick="|window.location.href='@{/admin_login.html}'|">
+          Login as Administrator
+        </button>
+    </div>
+  </form>
+  <p class="link-to">Do you already have an account? <a th:href="@{/templates/login.html}">Log In</a></p>
+  <p class="link-to">Go back to the <a th:href="@{/templates/index.html}">Home Page</a></p>
+  <!-- Dynamic Form Container -->
+  <div id="dynamic-form"></div>
+  <div class="error-messages"></div>
+</div>
+</body>
+</html>

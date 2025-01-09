@@ -16,6 +16,7 @@ import gr.dit.voluntia.demo.repositories.VolunteerRepository;
 import gr.dit.voluntia.demo.services.blueprints.AuthenticationService;
 import gr.dit.voluntia.demo.services.blueprints.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +36,9 @@ public class AdminService implements UserService, AuthenticationService {
     private VolunteerRepository volunteerRepository;
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Methods for managing other Users
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -139,6 +143,8 @@ public class AdminService implements UserService, AuthenticationService {
 
     @Override
     public User signUp(SignUpDto request) {
+        // Ensure password is hashed before saving
+        String hashedPassword = passwordEncoder.encode(request.getPassword());
 
         if (!uniqueAdmin()) {
             // The admin is already logged in or if the table is not empty,
@@ -148,27 +154,37 @@ public class AdminService implements UserService, AuthenticationService {
         // Create a new admin
         Admin admin = new Admin();
         admin.setUsername(request.getUsername());
-        admin.setPassword(request.getPassword());
+        admin.setPassword(hashedPassword);
         admin.setEmail(request.getEmail());
         admin.setFirstName(request.getFirstName());
         admin.setLastName(request.getLastName());
-        admin.setAccountKey(request.getSpecialAdminKey());
-        admin.setIsLoggedIn(true);
+        admin.setIsLoggedIn(false);
         // Save the new instance to the Data Base
         // Return the new object or null if something went wrong
         return adminRepository.save(admin);
     }
 
-    @Override
-    public User logIn(SignInDto request) {
-        // Attempt to find an admin by the provided credentials (username, password, and account key)
-        return adminRepository.findByUsernameAndPasswordAndAccountKey(
-                request.getUsername(),
-                request.getPassword(),
-                request.getSpecialAdminKey()
-        );
+
+
+    public Admin logIn(String username) {
+        Admin admin = adminRepository.findByUsername(username);
+        if (admin != null) {
+            admin.setIsLoggedIn(true);
+            return admin; // Return admin object
+        }
+        return null; // No matching admin found
     }
 
+    @Override
+    public User logIn(SignInDto request) {
+        // Same login logic using password encoding verification
+        Admin admin = adminRepository.findByUsername(request.getUsername());
+        if (admin != null && passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
+            admin.setIsLoggedIn(true);
+            return admin;
+        }
+        return null; // Invalid credentials
+    }
     @Override
     public User logOut(LogOutDto request) {
         // Retrieve the admin by ID and log them out by setting isLoggedIn to false
@@ -192,8 +208,7 @@ public class AdminService implements UserService, AuthenticationService {
             Admin currentAdmin = admin.get();
 
             // Ensure the provided password and special admin key match before deleting
-            if (currentAdmin.getAccountKey().equals(request.getSpecialAdminKey())
-            && currentAdmin.getPassword().equals(request.getPassword())) {
+            if (currentAdmin.getPassword().equals(request.getPassword())) {
 
                 // If validated, delete the admin from the repository and return the deleted admin
                 adminRepository.deleteById(currentAdmin.getId());

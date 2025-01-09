@@ -15,6 +15,7 @@ import gr.dit.voluntia.demo.repositories.ParticipationRepository;
 import gr.dit.voluntia.demo.services.blueprints.AuthenticationService;
 import gr.dit.voluntia.demo.services.blueprints.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.RequestToViewNameTranslator;
 
@@ -31,8 +32,7 @@ public class OrganizationService implements UserService, AuthenticationService {
     @Autowired
     private ParticipationRepository participationRepository;
     @Autowired
-    private RequestToViewNameTranslator requestToViewNameTranslator;
-
+    private PasswordEncoder passwordEncoder;
     // Methods for Organization Activities
     // -> (for every single organization  -- things that can do)
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -145,10 +145,13 @@ public class OrganizationService implements UserService, AuthenticationService {
     //////////////////////////////////////////////////////////////////////////////////////////
 
     public Organization signUp(SignUpDto request) {
+        // Ensure password is hashed before saving
+        String hashedPassword = passwordEncoder.encode(request.getPassword());
+
         // Create a new organization instance with the
         Organization org = new Organization();
         org.setUsername(request.getUsername());
-        org.setPassword(request.getPassword());
+        org.setPassword(hashedPassword);
         org.setEmail(request.getEmail());
         org.setPhoneNumber(request.getPhoneNumber());
         org.setOrgName(request.getOrganizationName());
@@ -156,18 +159,31 @@ public class OrganizationService implements UserService, AuthenticationService {
         org.setLocation(request.getLocation());
         org.setOrganizationType(request.getOrganizationType());
         org.setProfileDescription(request.getProfileDescription());
-        org.setIsLoggedIn(true);
+        org.setIsLoggedIn(false);
         // Save the created organization instance to the Data Base
         return organizationRepository.save(org);
     }
 
+    public Organization logIn(String username) {
+        Organization org = organizationRepository.findByUsername(username);
+        if (org != null) {
+            org.setIsLoggedIn(true);
+            return org; // Return admin object
+        }
+        return null; // No matching admin found
+    }
+
     @Override
     public User logIn(SignInDto request) {
-        return organizationRepository.findByUsernameAndPassword(
-                request.getUsername(),
-                request.getPassword()
-        );
+        // Same login logic using password encoding verification
+        Organization org = organizationRepository.findByUsername(request.getUsername());
+        if (org != null && passwordEncoder.matches(request.getPassword(), org.getPassword())) {
+            org.setIsLoggedIn(true);
+            return org;
+        }
+        return null; // Invalid credentials
     }
+
 
     @Override
     public User logOut(LogOutDto request) {

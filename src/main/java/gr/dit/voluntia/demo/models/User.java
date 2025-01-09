@@ -40,4 +40,7 @@ public class User {
     private String email;
 
     private Boolean isLoggedIn;
+
+    @Column(nullable = false)
+    private String role; // the role of each User
 }

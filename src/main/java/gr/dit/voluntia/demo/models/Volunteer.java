@@ -39,6 +39,12 @@ public class Volunteer extends User {
     @Column(nullable = false)
     private String accountStatus = "pending"; // => Pending/ Created/ Rejected
 
+
+    @Override
+    public void setRole(String role) {
+        super.setRole("VOLUNTEER");
+    }
+
     // Its volunteer could have many participations
     @OneToMany(
             mappedBy = "volunteerId",

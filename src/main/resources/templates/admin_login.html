@@ -1,0 +1,21 @@
+<body>
+
+<h2>Login as Administrator</h2>
+
+<form th:action="@{/login/admin}" method="POST">
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required placeholder="Username">
+    </div>
+
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required placeholder="Password">
+    </div>
+
+    <div>
+        <button type="submit">Login</button>
+    </div>
+</form>
+
+</body>

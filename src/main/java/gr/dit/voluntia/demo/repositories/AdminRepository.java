@@ -14,8 +14,6 @@ public interface AdminRepository extends JpaRepository<Admin, Long>, JpaSpecific
     @Override
     void deleteById(Long aLong);
 
-    Admin findByEmailAndPasswordAndAccountKey(String email, String password, String accountKey);
-    Admin findByUsernameAndPasswordAndAccountKey(String username, String password, String accountKey);
     Admin findByIsLoggedInTrue();
 
     @Query("SELECT a FROM Admin a WHERE a.username = :username")
