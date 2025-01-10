@@ -1,13 +1,12 @@
 package gr.dit.voluntia.demo.dtos.auths;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 
 @Getter
 @Setter
-public class SignUpDto {
+public class UserForm {
     private String username;
     private String password;
     private String email;

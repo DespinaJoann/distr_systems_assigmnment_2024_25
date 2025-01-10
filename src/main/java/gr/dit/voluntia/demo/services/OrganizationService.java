@@ -3,7 +3,7 @@ package gr.dit.voluntia.demo.services;
 import gr.dit.voluntia.demo.dtos.auths.DeleteDto;
 import gr.dit.voluntia.demo.dtos.auths.LogOutDto;
 import gr.dit.voluntia.demo.dtos.auths.SignInDto;
-import gr.dit.voluntia.demo.dtos.auths.SignUpDto;
+import gr.dit.voluntia.demo.dtos.auths.UserForm;
 import gr.dit.voluntia.demo.dtos.org.CreateNewEventDto;
 import gr.dit.voluntia.demo.dtos.org.DisplayParticipationListsDto;
 import gr.dit.voluntia.demo.dtos.glob.DisplayProfileDto;
@@ -13,17 +13,16 @@ import gr.dit.voluntia.demo.repositories.EventRepository;
 import gr.dit.voluntia.demo.repositories.OrganizationRepository;
 import gr.dit.voluntia.demo.repositories.ParticipationRepository;
 import gr.dit.voluntia.demo.services.blueprints.AuthenticationService;
-import gr.dit.voluntia.demo.services.blueprints.UserService;
+import gr.dit.voluntia.demo.services.blueprints.UserSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.RequestToViewNameTranslator;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class OrganizationService implements UserService, AuthenticationService {
+public class OrganizationService implements UserSettings {
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -141,61 +140,8 @@ public class OrganizationService implements UserService, AuthenticationService {
 
 
 
-    // Methods for Managing itself (login/signin - delete/alter)
-    //////////////////////////////////////////////////////////////////////////////////////////
-
-    public Organization signUp(SignUpDto request) {
-        // Ensure password is hashed before saving
-        String hashedPassword = passwordEncoder.encode(request.getPassword());
-
-        // Create a new organization instance with the
-        Organization org = new Organization();
-        org.setUsername(request.getUsername());
-        org.setPassword(hashedPassword);
-        org.setEmail(request.getEmail());
-        org.setPhoneNumber(request.getPhoneNumber());
-        org.setOrgName(request.getOrganizationName());
-        org.setAddress(request.getAddress());
-        org.setLocation(request.getLocation());
-        org.setOrganizationType(request.getOrganizationType());
-        org.setProfileDescription(request.getProfileDescription());
-        org.setIsLoggedIn(false);
-        // Save the created organization instance to the Data Base
-        return organizationRepository.save(org);
-    }
-
-    public Organization logIn(String username) {
-        Organization org = organizationRepository.findByUsername(username);
-        if (org != null) {
-            org.setIsLoggedIn(true);
-            return org; // Return admin object
-        }
-        return null; // No matching admin found
-    }
-
-    @Override
-    public User logIn(SignInDto request) {
-        // Same login logic using password encoding verification
-        Organization org = organizationRepository.findByUsername(request.getUsername());
-        if (org != null && passwordEncoder.matches(request.getPassword(), org.getPassword())) {
-            org.setIsLoggedIn(true);
-            return org;
-        }
-        return null; // Invalid credentials
-    }
-
-
-    @Override
-    public User logOut(LogOutDto request) {
-        Optional<Organization> org = organizationRepository.findById(request.getUserId());
-        if (org.isPresent()) {
-            // The Optional contains a non-null value
-            org.get().setIsLoggedIn(false);
-            return org.get();
-        }
-
-        return null;
-    }
+    // TODO:
+    /// ///////////////////////////////////////////////////////////////
 
     @Override
     public List<String> displayProfileInfo(DisplayProfileDto request) {
@@ -241,13 +187,18 @@ public class OrganizationService implements UserService, AuthenticationService {
         return null;
     }
 
+    /// ///////////////////////////////////////////////////////////////
+
+
+
+
     // Utility functions
     private Boolean acceptedParticipation(Participation part, Event ev) {
         // TODO:
         // -> Add more attributes to the Event and the Participation classes
         // Additional checks can be added here, e.g.,
         // matching event requirements with volunteer skills
-        return (ev.getParticipationList().size() >= ev.getMaxNumbOfVolunteers()) ? false : true;
+        return ev.getParticipationList().size() < ev.getMaxNumbOfVolunteers();
     }
 }
 

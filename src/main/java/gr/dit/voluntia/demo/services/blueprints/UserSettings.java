@@ -7,7 +7,7 @@ import gr.dit.voluntia.demo.models.User;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserSettings {
 
     List<String> displayProfileInfo(DisplayProfileDto request);
     User editProfileInfo(EditProfileInfoDto request);

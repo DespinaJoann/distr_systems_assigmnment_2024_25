@@ -3,7 +3,7 @@ package gr.dit.voluntia.demo.services;
 import gr.dit.voluntia.demo.dtos.auths.DeleteDto;
 import gr.dit.voluntia.demo.dtos.auths.LogOutDto;
 import gr.dit.voluntia.demo.dtos.auths.SignInDto;
-import gr.dit.voluntia.demo.dtos.auths.SignUpDto;
+import gr.dit.voluntia.demo.dtos.auths.UserForm;
 import gr.dit.voluntia.demo.dtos.glob.DisplayProfileDto;
 import gr.dit.voluntia.demo.dtos.glob.EditProfileInfoDto;
 import gr.dit.voluntia.demo.dtos.vols.ApplyToEventDto;
@@ -13,7 +13,7 @@ import gr.dit.voluntia.demo.repositories.EventRepository;
 import gr.dit.voluntia.demo.repositories.ParticipationRepository;
 import gr.dit.voluntia.demo.repositories.VolunteerRepository;
 import gr.dit.voluntia.demo.services.blueprints.AuthenticationService;
-import gr.dit.voluntia.demo.services.blueprints.UserService;
+import gr.dit.voluntia.demo.services.blueprints.UserSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ import java.util.Optional;
 
 
 @Service
-public class VolunteerService implements UserService, AuthenticationService {
+public class VolunteerService implements UserSettings {
 
     @Autowired
     private VolunteerRepository volunteerRepository;
@@ -116,60 +116,9 @@ public class VolunteerService implements UserService, AuthenticationService {
     }
 
 
-    // Methods for Managing itself (login/signin - delete/alter)
-    //////////////////////////////////////////////////////////////////////////////////////////
 
-    public Volunteer signUp(SignUpDto request) {
-        // Ensure password is hashed before saving
-        String hashedPassword = passwordEncoder.encode(request.getPassword());
-
-        // Create a new Volunteer object and fill it with the data
-        Volunteer vol = new Volunteer();
-        vol.setUsername(request.getUsername());
-        vol.setPassword(hashedPassword);
-        vol.setEmail(request.getEmail());
-        vol.setFirstName(request.getFirstName());
-        vol.setLastName(request.getLastName());
-        vol.setPhoneNumber(request.getPhoneNumber());
-        vol.setDateOfBirth(request.getDateOfBirth());
-        vol.setProfileDescription(request.getProfileDescription());
-        vol.setIsLoggedIn(false);
-        // Save the new volunteer to the Data Base
-        return volunteerRepository.save(vol);
-    }
-
-    public Volunteer logIn(String username) {
-        Volunteer vol = volunteerRepository.findByUsername(username);
-        if (vol != null) {
-            vol.setIsLoggedIn(true);
-            return vol; // Return admin object
-        }
-        return null; // No matching admin found
-    }
-
-    @Override
-    public User logIn(SignInDto request) {
-        // Same login logic using password encoding verification
-        Volunteer vol = volunteerRepository.findByUsername(request.getUsername());
-        if (vol != null && passwordEncoder.matches(request.getPassword(), vol.getPassword())) {
-            vol.setIsLoggedIn(true);
-            return vol;
-        }
-        return null; // Invalid credentials
-    }
-
-    @Override
-    public User logOut(LogOutDto request) {
-        Optional<Volunteer> vol = volunteerRepository.findById(request.getUserId());
-        if (vol.isPresent()) {
-            // The Optional contains a non-null value
-            vol.get().setIsLoggedIn(false);
-            return vol.get();
-        }
-
-        return null;
-    }
-
+    // TODO:
+    /// ///////////////////////////////////////////////////////////////
 
     @Override
     public List<String> displayProfileInfo(DisplayProfileDto request) {
@@ -212,6 +161,10 @@ public class VolunteerService implements UserService, AuthenticationService {
         }
         return null;
     }
+
+    /// ///////////////////////////////////////////////////////////////
+
+
 }
 
 

@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/form.css}">
+    <title>Administrator Login Form</title>
+</head>
 <body>
 
 <h2>Login as Administrator</h2>
@@ -17,5 +26,7 @@
         <button type="submit">Login</button>
     </div>
 </form>
+
+<p class="link-to">Go back to the <a th:href="@{/}">Home Page</a></p>
 
 </body>

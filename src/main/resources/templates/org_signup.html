@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/form.css}">
+    <title>Organization Signup Form</title>
+</head>
+<body>
+
+<h2>Signup as Organization</h2>
+
+<form th:action="@{/signup/org}" method="POST">
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required placeholder="username">
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required placeholder="password">
+    </div>
+    <div>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required placeholder="user@example.com">
+    </div>
+    <div>
+        <label for="orgName">Organization Name:</label>
+        <input type="text" id="orgName" name="orgName" required placeholder="Lorem">
+    </div>
+    <div>
+        <label for="phoneNumber">Phone number:</label>
+        <input type="text" id="phoneNumber" name="phoneNumber" required placeholder="3022116677">
+    </div>
+
+    <div>
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required placeholder=" 132 My Street, Kingston, New York 12401 United States">
+    </div>
+
+    <div>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required placeholder="New York, United States">
+    </div>
+
+    <div>
+        <label for="orgType">Organization Type:</label>
+        <input type="text" id="orgType" name="orgType" required placeholder="non-profit">
+    </div>
+
+    <div>
+        <label for="profileDescription">Profile Description:</label>
+        <input type="text" id="profileDescription" name="profileDescription" required placeholder="SWhat is the goal of your organization and the plans?">
+    </div>
+    <div>
+        <button type="submit">Register</button>
+    </div>
+</form>
+
+<p class="link-to">Do you already have an account? <a th:href="@{/login}">Log In</a></p>
+<p class="link-to">Go back to the <a th:href="@{/}">Home Page</a></p>
+</body>
+</html>

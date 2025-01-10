@@ -3,7 +3,6 @@ package gr.dit.voluntia.demo.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,14 +10,21 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        // Δημόσιες σελίδες: login, signup κ.α.
+                        // Εξαίρεση στατικών πόρων από authentication
+                        .requestMatchers(
+                                "/css/**", // CSS αρχεία
+                                "/js/**",  // JavaScript αρχεία
+                                "/images/**", // Εικόνες
+                                "/favicon.ico" // Favicon
+                        ).permitAll()
+
+                        // Δημόσιες σελίδες
                         .requestMatchers(
                                 "/",
                                 "/public",
@@ -31,9 +37,9 @@ public class SecurityConfig {
                                 "/signup/vol",
                                 "/signup/org",
                                 "/signup/admin"
-                        ).permitAll() // Επιτρέπει σε όλους την πρόσβαση σε αυτές τις σελίδες
+                        ).permitAll()
 
-                        // Μόνο οι συνδεδεμένοι χρήστες να έχουν πρόσβαση στα dashboards
+                        // Dashboards με ειδικά roles
                         .requestMatchers("/volunteer_dashboard").hasAuthority("ROLE_VOLUNTEER")
                         .requestMatchers("/organization_dashboard").hasAuthority("ROLE_ORGANIZATION")
                         .requestMatchers("/admin_dashboard").hasAuthority("ROLE_ADMIN")
@@ -42,8 +48,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Η σελίδα login
-                        .permitAll() // Επιτρέπει σε όλους την πρόσβαση στη φόρμα login
+                        .loginPage("/login") // Σελίδα login
+                        .permitAll() // Πρόσβαση στη φόρμα login σε όλους
                 )
                 .logout(logout -> logout.permitAll()); // Δημόσιο logout
 
@@ -57,6 +63,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Ή οποιοδήποτε άλλο PasswordEncoder
+        return new BCryptPasswordEncoder(); // BCrypt password encoder
     }
 }

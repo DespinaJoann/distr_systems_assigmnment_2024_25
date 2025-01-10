@@ -30,7 +30,7 @@ public class Organization extends User {
     private String profileDescription;
     
     @Column(nullable = false)
-    private String organizationType;
+    private String orgType;
 
     @Override
     public void setRole(String role) {

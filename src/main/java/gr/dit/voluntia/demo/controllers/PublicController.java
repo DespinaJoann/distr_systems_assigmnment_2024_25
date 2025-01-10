@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/")
-public class HomeController {
+public class PublicController {
 
     @GetMapping("/")
     public String getHomePage() {
@@ -17,4 +17,16 @@ public class HomeController {
     public String GetAuthoriziationOptionsPage () {
         return "auth";
     }
+
+    @GetMapping("/login")
+    public String GetLoginPage () {
+        return "loginAs";
+    }
+
+    @GetMapping("/signup")
+    public String GetSignUpPage () {
+        return "signupAs";
+    }
+
+
 }

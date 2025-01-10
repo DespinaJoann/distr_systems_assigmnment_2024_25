@@ -1,8 +1,6 @@
 package gr.dit.voluntia.demo.repositories;
 
 import gr.dit.voluntia.demo.models.Organization;
-import gr.dit.voluntia.demo.models.Volunteer;
-import gr.dit.voluntia.demo.services.OrganizationService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;

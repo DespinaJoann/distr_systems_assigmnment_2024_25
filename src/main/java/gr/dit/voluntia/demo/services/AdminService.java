@@ -5,7 +5,7 @@ import gr.dit.voluntia.demo.dtos.admins.ConfirmUserDto;
 import gr.dit.voluntia.demo.dtos.auths.DeleteDto;
 import gr.dit.voluntia.demo.dtos.auths.LogOutDto;
 import gr.dit.voluntia.demo.dtos.auths.SignInDto;
-import gr.dit.voluntia.demo.dtos.auths.SignUpDto;
+import gr.dit.voluntia.demo.dtos.auths.UserForm;
 import gr.dit.voluntia.demo.dtos.glob.DisplayProfileDto;
 import gr.dit.voluntia.demo.dtos.glob.EditProfileInfoDto;
 import gr.dit.voluntia.demo.models.*;
@@ -14,7 +14,7 @@ import gr.dit.voluntia.demo.repositories.EventRepository;
 import gr.dit.voluntia.demo.repositories.OrganizationRepository;
 import gr.dit.voluntia.demo.repositories.VolunteerRepository;
 import gr.dit.voluntia.demo.services.blueprints.AuthenticationService;
-import gr.dit.voluntia.demo.services.blueprints.UserService;
+import gr.dit.voluntia.demo.services.blueprints.UserSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ import java.util.Optional;
 // The failure or the success response will be voiced from the Controller
 
 @Service
-public class AdminService implements UserService, AuthenticationService {
+public class AdminService implements UserSettings {
 
     @Autowired
     private AdminRepository adminRepository;
@@ -43,7 +43,6 @@ public class AdminService implements UserService, AuthenticationService {
     // Methods for managing other Users
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    // TODO:
     /**Description:
      * Approve new user and activate their profile */
     public ConfirmUserDto confirmUsers(ConfirmUserDto confdto) {
@@ -99,7 +98,6 @@ public class AdminService implements UserService, AuthenticationService {
 
 
 
-    // TODO:
     /**Description:
      * Approve new event and change its status*/
     public ConfirmEventsDto confirmEvent (ConfirmEventsDto confdto) {
@@ -138,66 +136,8 @@ public class AdminService implements UserService, AuthenticationService {
     }
 
 
-    // Methods for Managing itself (login/signin - delete/alter)
-    //////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public User signUp(SignUpDto request) {
-        // Ensure password is hashed before saving
-        String hashedPassword = passwordEncoder.encode(request.getPassword());
-
-        if (!uniqueAdmin()) {
-            // The admin is already logged in or if the table is not empty,
-            // then return null (-> the controller will display and error msg)
-            return null;
-        }
-        // Create a new admin
-        Admin admin = new Admin();
-        admin.setUsername(request.getUsername());
-        admin.setPassword(hashedPassword);
-        admin.setEmail(request.getEmail());
-        admin.setFirstName(request.getFirstName());
-        admin.setLastName(request.getLastName());
-        admin.setIsLoggedIn(false);
-        // Save the new instance to the Data Base
-        // Return the new object or null if something went wrong
-        return adminRepository.save(admin);
-    }
-
-
-
-    public Admin logIn(String username) {
-        Admin admin = adminRepository.findByUsername(username);
-        if (admin != null) {
-            admin.setIsLoggedIn(true);
-            return admin; // Return admin object
-        }
-        return null; // No matching admin found
-    }
-
-    @Override
-    public User logIn(SignInDto request) {
-        // Same login logic using password encoding verification
-        Admin admin = adminRepository.findByUsername(request.getUsername());
-        if (admin != null && passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
-            admin.setIsLoggedIn(true);
-            return admin;
-        }
-        return null; // Invalid credentials
-    }
-    @Override
-    public User logOut(LogOutDto request) {
-        // Retrieve the admin by ID and log them out by setting isLoggedIn to false
-        Optional<Admin> admin = adminRepository.findById(request.getUserId());
-        if (admin.isPresent()) {
-            // The Optional contains a non-null value
-            admin.get().setIsLoggedIn(false);
-            return admin.get();
-        }
-
-        // Return null if no admin is found with the provided ID
-        return null;
-    }
+    // TODO:
+    /// ///////////////////////////////////////////////////////////////
 
     @Override
     public User deleteAccount(DeleteDto request) {
@@ -218,7 +158,6 @@ public class AdminService implements UserService, AuthenticationService {
         // Return null if no admin is found or the credentials don't match
         return null;
     }
-
     // Business logic for User actions
     @Override
     public List<String> displayProfileInfo(DisplayProfileDto request) {
@@ -245,20 +184,10 @@ public class AdminService implements UserService, AuthenticationService {
 
     }
 
+    /// ///////////////////////////////////////////////////////////////
 
-    /**Description:
-     * Helper method to check if there is already a logged-in admin or if the database is empty
-     * */
-    public Boolean uniqueAdmin() {
-        // Check if there is already an admin logged in
-        Optional<Admin> existingAdmin = Optional.ofNullable(adminRepository.findByIsLoggedInTrue());
-        if (existingAdmin.isPresent()) {
-            return false; // Return false if there is already a logged-in admin
-        }
 
-        // Check if the database is empty (i.e., no admins exist)
-        return adminRepository.findAll().isEmpty(); // Return true if the table is empty
-    }
+
 
     // Utility function
     private Boolean approveOrg(Organization org) {
@@ -275,7 +204,7 @@ public class AdminService implements UserService, AuthenticationService {
         }
         // Check for bad words in profile description or info
         String profDescr = org.getProfileDescription();
-        String orgInfo = org.getOrganizationType();
+        String orgInfo = org.getOrgType();
         if (containsEvilContent(profDescr) || containsEvilContent(orgInfo)) {
             // Delete organizations with evil content
             // TODO: call a function that sends a message to this Org

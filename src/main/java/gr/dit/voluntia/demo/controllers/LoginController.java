@@ -8,14 +8,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class LoginController {
 
-    @GetMapping("/login")
-    public String getLoginPage() {
-        return "login";
+    @GetMapping("/login/vol")
+    public String GetLoginAsVolunteerPage( ) {
+        return "vol_login";
+    }
+
+    @GetMapping("/login/org")
+    public String GetLoginAsOrganizationPage( ) {
+        return "org_login";
+    }
+
+    @GetMapping("/login/admin")
+    public String GetLoginAsAdminPage( ) {
+        return "admin_login";
     }
 
     @PostMapping("/login/vol")
     public String loginAsVolunteer(@RequestParam String username, @RequestParam String password) {
-        // Ανάλογη λογική για το login του Volunteer
         return "redirect:/volunteer_dashboard";
     }
 
