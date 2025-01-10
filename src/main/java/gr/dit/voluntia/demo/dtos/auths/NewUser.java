@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserForm {
+public class NewUser {
     private String username;
     private String password;
     private String email;
@@ -19,12 +19,11 @@ public class UserForm {
     private String dateOfBirth = " ";
 
     private String profileDescription = " ";
-    private String organizationName = " ";
+    private String orgName = " ";
     private String address = " ";
     private String location = " ";
-    private String organizationType = " ";
+    private String orgType = " ";
 
-    private String specialAdminKey = " ";     // Only for the Admin
 
     @Override
     public String toString() {
@@ -38,11 +37,10 @@ public class UserForm {
             ", phoneNumber='" + phoneNumber + '\'' +
             ", dateOfBirth='" + dateOfBirth + '\'' +
             ", profileDescription='" + profileDescription + '\'' +
-            ", organizationName='" + organizationName + '\'' +
+            ", organizationName='" + orgName + '\'' +
             ", address='" + address + '\'' +
             ", location='" + location + '\'' +
-            ", organizationType='" + organizationType + '\'' +
-            ", specialAdminKey='" + specialAdminKey + '\'' +
+            ", organizationType='" + orgType + '\'' +
             '}';
     }
 

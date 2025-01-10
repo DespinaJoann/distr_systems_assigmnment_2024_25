@@ -1,9 +1,6 @@
 package gr.dit.voluntia.demo.services;
 
 import gr.dit.voluntia.demo.dtos.auths.DeleteDto;
-import gr.dit.voluntia.demo.dtos.auths.LogOutDto;
-import gr.dit.voluntia.demo.dtos.auths.SignInDto;
-import gr.dit.voluntia.demo.dtos.auths.UserForm;
 import gr.dit.voluntia.demo.dtos.glob.DisplayProfileDto;
 import gr.dit.voluntia.demo.dtos.glob.EditProfileInfoDto;
 import gr.dit.voluntia.demo.dtos.vols.ApplyToEventDto;
@@ -12,7 +9,6 @@ import gr.dit.voluntia.demo.models.*;
 import gr.dit.voluntia.demo.repositories.EventRepository;
 import gr.dit.voluntia.demo.repositories.ParticipationRepository;
 import gr.dit.voluntia.demo.repositories.VolunteerRepository;
-import gr.dit.voluntia.demo.services.blueprints.AuthenticationService;
 import gr.dit.voluntia.demo.services.blueprints.UserSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
