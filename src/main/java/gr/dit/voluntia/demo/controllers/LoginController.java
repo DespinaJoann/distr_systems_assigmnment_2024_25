@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LoginController {
 
     @GetMapping("/login/vol")
-    public String GetLoginAsVolunteerPage( ) {
+    public String getLoginAsVolunteerPage( ) {
         return "vol_login";
     }
 
     @GetMapping("/login/org")
-    public String GetLoginAsOrganizationPage( ) {
+    public String getLoginAsOrganizationPage( ) {
         return "org_login";
     }
 
     @GetMapping("/login/admin")
-    public String GetLoginAsAdminPage( ) {
+    public String getLoginAsAdminPage( ) {
         return "admin_login";
     }
 

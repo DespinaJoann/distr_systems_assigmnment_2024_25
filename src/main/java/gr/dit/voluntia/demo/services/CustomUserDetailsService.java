@@ -29,31 +29,37 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Αναζητούμε πρώτα στους Admin
+        // First things first, search on the Admin repository
         Admin admin = adminRepository.findByUsername(username);
         if (admin != null) {
-            return new org.springframework.security.core.userdetails.User(
+            return new CustomUserDetails(
+                    admin.getId(),
                     admin.getUsername(),
                     admin.getPassword(),
-                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"))
+            );
         }
 
-        // Αναζητούμε στη συνέχεια στις Οργανώσεις
+        // Then, search on the Organization's
         Organization organization = organizationRepository.findByUsername(username);
         if (organization != null) {
-            return new org.springframework.security.core.userdetails.User(
+            return new CustomUserDetails(
+                    organization.getId(),
                     organization.getUsername(),
                     organization.getPassword(),
-                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_ORGANIZATION")));
+                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_ORGANIZATION"))
+            );
         }
 
-        // Αναζητούμε τέλος στους Εθελοντές
+        // After all, search on the Volunteer's
         Volunteer volunteer = volunteerRepository.findByUsername(username);
         if (volunteer != null) {
-            return new org.springframework.security.core.userdetails.User(
+            return new CustomUserDetails(
+                    volunteer.getId(),
                     volunteer.getUsername(),
                     volunteer.getPassword(),
-                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_VOLUNTEER")));
+                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_VOLUNTEER"))
+            );
         }
 
         throw new UsernameNotFoundException("User not found with username: " + username);

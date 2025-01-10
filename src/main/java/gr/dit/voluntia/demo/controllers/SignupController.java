@@ -41,7 +41,7 @@ public class SignupController {
         // Ensure correct role is set
         newUser.setRole("VOLUNTEER");
         // Call service method to handle logic
-        usersService.registerVolunteer(newUser);
+        usersService.saveVolunteer(newUser);
         // Redirect to login page after successful registration
         return "redirect:/login/vol";
     }
@@ -49,14 +49,14 @@ public class SignupController {
     @PostMapping("/signup/org")
     public String processOrganizationSignup(NewUser newUser) {
         newUser.setRole("ORGANIZATION");
-        usersService.registerOrganization(newUser);
+        usersService.saveOrganization(newUser);
         return "redirect:/login/org";
     }
 
     @PostMapping("/signup/admin")
     public String processAdminSignup(NewUser newUser) {
         newUser.setRole("ADMIN");
-        usersService.registerAdmin(newUser);
+        usersService.saveAdmin(newUser);
         return "redirect:/login/admin";
     }
 }
