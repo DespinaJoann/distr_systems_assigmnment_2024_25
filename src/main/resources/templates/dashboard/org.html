@@ -1,0 +1,74 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <title>Organization's Dashboard</title>
+</head>
+<body>
+
+<!-- Theme Toggle Button -->
+<button id="theme-toggle" onclick="toggleTheme()">🌙</button>
+
+<!-- Dashboard Container -->
+<div class="dashboard-container">
+    <!-- Sidebar (Navigation) -->
+    <div class="sidebar">
+        <h3>Welcome, <span th:text="${currentUser.username}"></span></h3>
+        <ul>
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">My Tasks</a></li>
+            <li><a href="#">Messages</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- User Info Button (Circular) -->
+    <div class="user-info-container">
+        <button id="user-info-btn" onclick="toggleUserInfo()">👤</button>
+        <div class="user-info" id="user-info">
+            <h3>Welcome, <span th:text="${currentUser.username}"></span></h3>
+            <p>Role: <span th:text="${currentUser.role}"></span></p>
+            <p>ID: <span th:text="${currentUser.id}"></span></p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Hey!</h1>
+        <p>Manage your tasks and view important updates here.</p>
+        <p class="link-to">
+            <a th:href="@{/static}">Go back to the Home Page</a>
+        </p>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <a th:href="@{/static}">Go back to the Home Page</a>
+</footer>
+
+<script>
+    // Toggle user info dropdown
+    function toggleUserInfo() {
+        var userInfo = document.getElementById('user-info');
+        userInfo.classList.toggle('show');
+    }
+
+    // Toggle Dark and Light Theme
+    function toggleTheme() {
+        var body = document.body;
+        body.classList.toggle('dark-theme');
+        var themeButton = document.getElementById('theme-toggle');
+        if (body.classList.contains('dark-theme')) {
+            themeButton.innerHTML = '🌞';  // Light theme icon
+        } else {
+            themeButton.innerHTML = '🌙';  // Dark theme icon
+        }
+    }
+</script>
+
+</body>
+</html>

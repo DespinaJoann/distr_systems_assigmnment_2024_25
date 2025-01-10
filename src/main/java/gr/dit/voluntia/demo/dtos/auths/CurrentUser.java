@@ -14,10 +14,6 @@ public class CurrentUser {
     private String password;
     private String role; // ADMIN, VOLUNTEER, ORGANIZATION
 
-
-    /**
-     * DESCRIPTION:
-     * Method for retrieving the current User from the security context */
     public static CurrentUser fromSecurityContext() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CurrentUser currentUser = new CurrentUser();

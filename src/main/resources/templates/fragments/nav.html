@@ -1,0 +1,11 @@
+
+<!-- User Info Dropdown -->
+<div class="user-info">
+    <button id="user-info-btn" onclick="toggleDropdown()">Hello, <span th:text="${user.name}">User</span> &#9660;</button>
+    <div id="user-info-dropdown" class="dropdown-content">
+        <a href="#">Profile</a>
+        <a href="#">Settings</a>
+        <a th:href="@{/logout}">Logout</a>
+    </div>
+</div>
+

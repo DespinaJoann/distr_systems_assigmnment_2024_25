@@ -29,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // First things first, search on the Admin repository
+        // Search in Admin table
         Admin admin = adminRepository.findByUsername(username);
         if (admin != null) {
             return new CustomUserDetails(
@@ -40,7 +40,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             );
         }
 
-        // Then, search on the Organization's
+        // Search in Organization table
         Organization organization = organizationRepository.findByUsername(username);
         if (organization != null) {
             return new CustomUserDetails(
@@ -51,7 +51,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             );
         }
 
-        // After all, search on the Volunteer's
+        // Search in Volunteer table
         Volunteer volunteer = volunteerRepository.findByUsername(username);
         if (volunteer != null) {
             return new CustomUserDetails(
@@ -62,6 +62,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             );
         }
 
+        // If user is not found
         throw new UsernameNotFoundException("User not found with username: " + username);
     }
 }

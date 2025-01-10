@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 public class SecurityConfig {
@@ -36,9 +37,6 @@ public class SecurityConfig {
                                 "/public",
                                 "/auth",
                                 "/login",
-                                "/login/vol",
-                                "/login/org",
-                                "/login/admin",
                                 "/signup",
                                 "/signup/vol",
                                 "/signup/org",
@@ -46,24 +44,27 @@ public class SecurityConfig {
                         ).permitAll()
 
                         // Dashboards accessible only from the authority role users
-                        .requestMatchers("/volunteer_dashboard").hasAuthority("ROLE_VOLUNTEER")
-                        .requestMatchers("/organization_dashboard").hasAuthority("ROLE_ORGANIZATION")
-                        .requestMatchers("/admin_dashboard").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/dashboard/vol").hasAuthority("ROLE_VOLUNTEER")
+                        .requestMatchers("/dashboard/org").hasAuthority("ROLE_ORGANIZATION")
+                        .requestMatchers("/dashboard/admin").hasAuthority("ROLE_ADMIN")
 
                         // Any other request requires authentication
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")                    // login page
-                        .loginProcessingUrl("/login")           // Managing/processing path for login
-                        .defaultSuccessUrl("/dashboard", true)  // Redirect after success
-                        .permitAll() // All users can have access to login page
+                        .loginPage("/login")
+                        .loginProcessingUrl("/process-login")
+                        .successHandler(customSuccessHandler())
+                        .failureUrl("/login?error=true")
+                        .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")       // logout URL
-                        .logoutSuccessUrl("/")      // Redirect to home page after logout
-                        .permitAll());              // logout is Public
-
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .permitAll()
+                );
         return http.build();
     }
 
@@ -74,14 +75,26 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // BCrypt password encoder
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(customUserDetailsService);       // We use our CustomUserDetailsService
-        provider.setPasswordEncoder(passwordEncoder());                 // Configure BCrypt password encoder, for password safety
-        return provider;
+    public AuthenticationSuccessHandler customSuccessHandler() {
+        return (request, response, authentication) -> {
+            String role = authentication.getAuthorities().stream()
+                    .findFirst()
+                    .get()
+                    .getAuthority();
+
+            if (role.equals("ROLE_ADMIN")) {
+                response.sendRedirect("/dashboard/admin");
+            } else if (role.equals("ROLE_ORGANIZATION")) {
+                response.sendRedirect("/dashboard/org");
+            } else if (role.equals("ROLE_VOLUNTEER")) {
+                response.sendRedirect("/dashboard/vol");
+            } else {
+                response.sendRedirect("/");
+            }
+        };
     }
 }

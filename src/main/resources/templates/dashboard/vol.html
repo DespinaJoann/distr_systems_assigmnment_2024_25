@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <title>Volunteer's Dashboard</title>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul class="menu">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">My Tasks</a></li>
+            <li><a href="#">Messages</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="top-bar">
+            <!-- User Info -->
+            <div class="user-info" id="user-info" onclick="toggleUserInfo()">
+                <div class="user-avatar">
+                    <span th:text="${currentUser.username.charAt(0)}"></span>
+                </div>
+            </div>
+            <!-- Theme Toggle Button -->
+            <button id="theme-toggle" onclick="toggleTheme()">L</button>
+        </div>
+
+        <!-- Cards Container -->
+        <div class="cards-container">
+            <div class="card">
+                <h3>Task 1</h3>
+                <p>Description of task 1...</p>
+            </div>
+            <div class="card">
+                <h3>Task 2</h3>
+                <p>Description of task 2...</p>
+            </div>
+            <div class="card">
+                <h3>Task 3</h3>
+                <p>Description of task 3...</p>
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <a th:href="@{/static}">Go back to the Home Page</a>
+</footer>
+
+<script>
+    // Toggle user info dropdown
+    function toggleUserInfo() {
+        const userInfo = document.querySelector('.user-info');
+        userInfo.classList.toggle('open');
+    }
+
+    // Toggle Dark/Light Theme
+    function toggleTheme() {
+        const body = document.body;
+        body.classList.toggle('dark-theme');
+        const themeButton = document.getElementById('theme-toggle');
+        themeButton.textContent = body.classList.contains('dark-theme') ? 'D' : 'L';
+    }
+</script>
+
+</body>
+</html>
