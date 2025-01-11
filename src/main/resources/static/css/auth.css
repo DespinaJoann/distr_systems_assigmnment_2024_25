@@ -9,13 +9,13 @@ body {
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    background: linear-gradient(to bottom right, #5687ea 50%, #6290ec 50%); /* Diagonal gradient with static colors */
+    background: linear-gradient(to bottom right,#212020 50%,   #353535 50%); /* Diagonal gradient with static colors */
 }
 
 
 .actions-container {
-    background-color: #97c7f8;
-    border: 3px solid #007bff;
+    background-color: #4e4e4e;
+    border: 3px solid #940cef;
     border-radius: 10px;
     width: 50%;
     height: 400px;
@@ -23,14 +23,12 @@ body {
     flex-direction: column; /* Ensure elements are stacked vertically */
     justify-content: center; /* Center elements vertically */
     align-items: center; /* Center elements horizontally */
-    box-shadow: 5px 5px 5px #3f6fcd;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Subtle shadow */
 }
 
-.actions-container:hover {
-    background-color: #a3d0fc;
-    box-shadow: 8px 8px 8px #446cbb;
+.action-container a {
+    color: #76ff14;
 }
-
 .action-options {
     display: flex;
     flex-direction: row;

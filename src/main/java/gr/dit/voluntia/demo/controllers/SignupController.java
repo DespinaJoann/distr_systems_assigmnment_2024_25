@@ -17,22 +17,22 @@ public class SignupController {
 
 
     @GetMapping("/signup/vol")
-    public String GetSignupAsVolunteerPage(Model model) {
+    public String getSignupAsVolunteerPage(Model model) {
         // Initialize an empty new user object tha will be sent to the thymeleaf template
         model.addAttribute("user", new NewUser());
-        return "vol_signup";
+        return "/signup/vol";
     }
 
     @GetMapping("/signup/org")
-    public String GetSignupAsOrganizationPage(Model model) {
+    public String getSignupAsOrganizationPage(Model model) {
         model.addAttribute("user", new NewUser());
-        return "org_signup";
+        return "/signup/org";
     }
 
     @GetMapping("/signup/admin")
     public String GetSignupAsAdminPage(Model model) {
         model.addAttribute("user", new NewUser());
-        return "admin_signup";
+        return "/signup/admin";
     }
 
 

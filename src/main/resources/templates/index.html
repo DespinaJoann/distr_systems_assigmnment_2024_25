@@ -5,19 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Voluntia Home</title>
-  <link rel="stylesheet" th:href="@{/css/style.css}"/>
   <link rel="stylesheet" th:href="@{/css/home.css}"/>
 </head>
 <body>
-<div class="home-page-container">
-  <h1>Voluntia</h1>
-  <p class="description">
-    Welcome to Voluntia, the ultimate platform for connecting individuals and organizations who are passionate about making a difference in their community. Whether you're looking to lend a helping hand, join forces with like-minded volunteers, or organize impactful initiatives, Voluntia is here to empower you every step of the way.
-  </p>
-  <!-- Dynamic Button with Thymeleaf -->
-  <button type="button" id="get-started" th:onclick="|window.location.href='@{/auth}'|">
-    Get Started
-  </button>
+
+<div class="context">
+  <div class="home-page-container">
+    <h1>Voluntia</h1>
+    <p class="description">
+      Welcome to Voluntia, the ultimate platform for connecting individuals and organizations who are passionate about making a difference in their community. Whether you're looking to lend a helping hand, join forces with like-minded volunteers, or organize impactful initiatives, Voluntia is here to empower you every step of the way.
+    </p>
+    <!-- Dynamic Button with Thymeleaf -->
+    <button type="button" id="get-started" th:onclick="|window.location.href='@{/auth}'|">
+      Get Started
+    </button>
+  </div>
 </div>
+
+<!-- The background animation -->
+<div class="area">
+  <ul class="circles">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+</div>
+
 </body>
 </html>

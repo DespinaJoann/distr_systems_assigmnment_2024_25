@@ -22,7 +22,7 @@ import java.util.Optional;
 // The failure or the success response will be voiced from the Controller
 
 @Service
-public class AdminService implements UserSettings {
+public class AdminService  {
 
     @Autowired
     private AdminRepository adminRepository;
@@ -130,59 +130,6 @@ public class AdminService implements UserSettings {
 
         return confdto;
     }
-
-
-    // TODO:
-    /// ///////////////////////////////////////////////////////////////
-
-    @Override
-    public User deleteAccount(DeleteDto request) {
-        // Retrieve the admin by ID and validate the provided password and special key
-        Optional<Admin> admin = adminRepository.findById(request.getUserId());
-        if (admin.isPresent()) {
-            // The Optional contains a non-null value
-            Admin currentAdmin = admin.get();
-
-            // Ensure the provided password and special admin key match before deleting
-            if (currentAdmin.getPassword().equals(request.getPassword())) {
-
-                // If validated, delete the admin from the repository and return the deleted admin
-                adminRepository.deleteById(currentAdmin.getId());
-                return currentAdmin;
-            }
-        }
-        // Return null if no admin is found or the credentials don't match
-        return null;
-    }
-    // Business logic for User actions
-    @Override
-    public List<String> displayProfileInfo(DisplayProfileDto request) {
-        // Retrieve the admin's profile information and return it as a list of strings
-        Optional<Admin> admin = adminRepository.findById(request.getUserId());
-        return admin.<List<String>>map(
-                value -> List.of(
-                        value.toString().split(",")
-                )).orElse(null); // Return null if no admin is found
-    }
-
-    @Override
-    public User editProfileInfo(EditProfileInfoDto request) {
-        // Retrieve the admin by ID and update their profile information based on the provided request
-        return adminRepository.findById(request.getUserId()).map(admin -> {
-            admin.setUsername(request.getUsername() != null ? request.getUsername() : admin.getUsername());
-            admin.setPassword(request.getPassword() != null ? request.getPassword() : admin.getPassword());
-            admin.setEmail(request.getEmail() != null ? request.getEmail() : admin.getEmail());
-            admin.setFirstName(request.getFirstName() != null ? request.getFirstName() : admin.getFirstName());
-            admin.setLastName(request.getLastName() != null ? request.getLastName() : admin.getLastName());
-            // Save the updated admin profile and return it
-            return adminRepository.save(admin);
-        }).orElse(null); // Return null if no admin is found
-
-    }
-
-    /// ///////////////////////////////////////////////////////////////
-
-
 
 
     // Utility function

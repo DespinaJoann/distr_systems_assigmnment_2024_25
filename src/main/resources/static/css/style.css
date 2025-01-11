@@ -62,21 +62,22 @@ h1, h2, h3, h4, h5, h6 {
 button,
 input[type="submit"],
 input[type="button"] {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1rem;
-    border-radius: 4px;
-    cursor: pointer;
+    background-color: #007bff; /* Blue button */
+    color: white; /* White text */
+    font-size: 16px;
+    padding: 10px 20px; /* Internal spacing */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
     font-family: 'Consolas', monospace;
 }
 
 button:hover,
 input[type="submit"]:hover,
 input[type="button"]:hover {
-    background-color: #007bff;
-    box-shadow:3px 3px 3px #90a5ec;
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight zoom effect */
 }
 
 /* Global form styles */
@@ -96,9 +97,10 @@ input:focus, textarea:focus, select:focus {
 
 /* Global Footer */
 footer {
-    background-color: #222;
-    color: white;
+    background-color: #676767;
+    color: #a023f3;
     padding: 1rem;
+    border-radius: 14px;
     text-align: center;
 }
 

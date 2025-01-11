@@ -29,7 +29,6 @@ public class Organization extends User {
     @Column(nullable = false)
     private String profileDescription;
     
-    @Column(nullable = false)
     private String orgType;
 
     @Override

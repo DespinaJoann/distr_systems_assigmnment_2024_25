@@ -43,7 +43,7 @@ public class PublicController {
 
     @GetMapping("/profile/no/found")
     public String profileNotFound(HttpServletRequest request, HttpServletResponse response) {
-        return "bag";
+        return "userNoFound";
     }
 
 

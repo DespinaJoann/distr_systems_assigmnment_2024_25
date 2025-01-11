@@ -57,12 +57,17 @@ public class UsersService {
         org.setOrgName(request.getOrgName());
         org.setAddress(request.getAddress());
         org.setLocation(request.getLocation());
-        org.setOrgType(request.getOrgType());
+        if (request.getOrgType() == null || request.getOrgType().trim().isEmpty()) {
+            org.setOrgType("general");
+        } else {
+            org.setOrgType(request.getOrgType());
+        }
         org.setProfileDescription(request.getProfileDescription());
         org.setRole("ORGANIZATION");
         org.setIsLoggedIn(false);
         organizationRepository.save(org);
     }
+
 
     // Register Admin
     public void saveAdmin(NewUser request) {
@@ -85,6 +90,42 @@ public class UsersService {
         Optional<Admin> existingAdmin = Optional.ofNullable(adminRepository.findByIsLoggedInTrue());
         return existingAdmin.isEmpty() && adminRepository.findAll().isEmpty();
     }
+
+    public void updateProfile(NewUser updatedUser) {
+        switch (updatedUser.getRole()) {
+            case "VOLUNTEER" , "ROLE_VOLUNTEER":
+                // Handle Volunteer Profile Update
+                Volunteer volunteer = volunteerRepository.findByUsername(updatedUser.getUsername());
+                volunteer.setFirstName(updatedUser.getFirstName());
+                volunteer.setLastName(updatedUser.getLastName());
+                volunteer.setEmail(updatedUser.getEmail());
+                volunteerRepository.save(volunteer);
+                break;
+
+            case "ORGANIZATION", "ROLE_ORGANIZATION":
+                // Handle Organization Profile Update
+                Organization organization = organizationRepository.findByUsername(updatedUser.getUsername());
+                organization.setAddress(updatedUser.getAddress());
+                organization.setLocation(updatedUser.getLocation());
+                organization.setOrgType(updatedUser.getOrgType());
+                organization.setEmail(updatedUser.getEmail());
+                organizationRepository.save(organization);
+                break;
+
+            case "ADMIN", "ROLE_ADMIN":
+                // Handle Admin Profile Update
+                Admin admin = adminRepository.findByUsername(updatedUser.getUsername());
+                admin.setFirstName(updatedUser.getFirstName());
+                admin.setLastName(updatedUser.getLastName());
+                admin.setEmail(updatedUser.getEmail());
+                adminRepository.save(admin);
+                break;
+
+            default:
+                throw new IllegalArgumentException("Invalid role");
+        }
+    }
+
 }
 
 

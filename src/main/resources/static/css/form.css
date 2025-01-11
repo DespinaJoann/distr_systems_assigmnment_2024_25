@@ -17,12 +17,11 @@ body {
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    background: linear-gradient(to bottom right, #a953de 50%, #b270dc 50%); /* Diagonal gradient with static colors */
+    background: linear-gradient(to bottom right, #353535 50%, #2a2929 50%); /* Diagonal gradient with static colors */
 }
 
 
 .actions-container {
-    background-color: #bb9de9;
     border: 3px solid #007bff;
     border-radius: 10px;
     width: 50%;
@@ -43,16 +42,13 @@ body {
 .login-form {
     width: 100%;
     max-width: 435px;
-    background-color: #c0a2ed;
+    background-color: #666667;
     border-radius: 6px;
     padding: 41px 30px;
     box-shadow: 0 10px 20px #00000026;
+    border: 3px solid #007bff;
 }
 
-.login-form h3 {
-    font-size: 20px;
-    text-align: center;
-}
 
 /* Google & Apple button styling */
 
@@ -67,6 +63,10 @@ body {
     width: calc(100% / 2 - 12px);
 }
 
+.login-form a {
+    font-weight: bold;
+    color: #52e813;
+}
 
 
 .login-form p {
