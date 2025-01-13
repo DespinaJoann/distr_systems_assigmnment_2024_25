@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/table.css}">
+    <title>Confirm Events</title>
+</head>
+<body>
+<div class="container">
+    <h1>Confirm Events</h1>
+
+    <div th:if="${message}" class="message">
+        <p th:text="${message}"></p>
+    </div>
+
+    <div th:if="${pendingEvents.size() > 0}">
+        <table class="styled-table">
+            <thead>
+            <tr>
+                <th>Event Name</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="event : ${pendingEvents}">
+                <td th:text="${event.name}"></td>
+                <td th:text="${event.description}"></td>
+                <td th:text="${event.date}"></td>
+                <td>
+                    <form th:action="@{/dashboard/admin/confirm-events/approve/{id}(id=${event.id})}" method="post">
+                        <button type="submit" class="btn btn-approve">Approve</button>
+                    </form>
+                    <form th:action="@{/dashboard/admin/confirm-events/reject/{id}(id=${event.id})}" method="post">
+                        <button type="submit" class="btn btn-reject">Reject</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${pendingEvents.size() == 0}">
+        <p class="info-message">No pending events to review!</p>
+    </div>
+</div>
+</body>
+</html>

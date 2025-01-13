@@ -32,7 +32,7 @@ public class AdminController {
             model.addAttribute("pendingOrgs", pendingOrgs);
             model.addAttribute("pendingVols", pendingVols);
         }
-        return "dashboard/confirm-users"; // confirm-users.html
+        return "dashboard/admins-func/confirm-users"; // confirm-users.html
     }
 
     @GetMapping("/confirm-events")
@@ -43,7 +43,7 @@ public class AdminController {
         } else {
             model.addAttribute("pendingEvents", pendingEvents);
         }
-        return "dashboard/confirm-events"; // confirm-events.html
+        return "dashboard/admins-func/confirm-events"; // confirm-events.html
 
     }
 
