@@ -2,6 +2,7 @@ package gr.dit.voluntia.demo.controllers;
 
 import gr.dit.voluntia.demo.dtos.auths.CurrentUser;
 import gr.dit.voluntia.demo.dtos.auths.NewUser;
+import gr.dit.voluntia.demo.services.AdminService;
 import gr.dit.voluntia.demo.services.UsersService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,13 +16,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/dashboard")
 public class DashboardController {
 
-    UsersService usersService;
+    private final AdminService adminService;
+
+    public DashboardController(AdminService adminService) {
+        this.adminService = adminService;
+    }
 
     @GetMapping("/admin")
     public String adminDashboard(Model model) {
+        // Retrieve current user from the security context
         CurrentUser currentUser = CurrentUser.fromSecurityContext();
         model.addAttribute("currentUser", currentUser);
+
+        // Load the pending organizations and volunteers
+        model.addAttribute("pendingOrgs", adminService.getPendingOrganizations());
+        model.addAttribute("pendingVols", adminService.getPendingVolunteers());
+
+        // Just for debugging
         System.out.println(currentUser.toString());
+
         return "dashboard/admin"; // admin.html
     }
 
