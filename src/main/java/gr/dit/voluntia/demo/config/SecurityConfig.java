@@ -45,8 +45,12 @@ public class SecurityConfig {
 
                         // Dashboards accessible only from the authority role users
                         .requestMatchers("/dashboard/vol").hasAuthority("ROLE_VOLUNTEER")
+                        .requestMatchers("/dashboard/vol/**").hasAuthority("ROLE_VOLUNTEER")
                         .requestMatchers("/dashboard/org").hasAuthority("ROLE_ORGANIZATION")
+                        .requestMatchers("/dashboard/org/**").hasAuthority("ROLE_ORGANIZATION")
                         .requestMatchers("/dashboard/admin").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/dashboard/admin/**").hasAuthority("ROLE_ADMIN")
+
 
                         // Any other request requires authentication
                         .anyRequest().authenticated()

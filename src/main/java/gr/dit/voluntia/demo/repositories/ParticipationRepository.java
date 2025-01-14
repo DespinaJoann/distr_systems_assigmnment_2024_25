@@ -16,16 +16,21 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
     List<Participation> findAllByVolunteerId(Long actorId);
     List<Participation> findAllByEventId(Long eventId);
 
-
-    // Custom queries for more complex activities
-    @Query(
+    @Query (
     "SELECT p " +
     "FROM Participation p " +
-     "WHERE p.status = 'Pending' " +
-            "AND p.organizationId = :organizationId"
+    "WHERE " +
+            "p.organizationId = :orgId " +
+            "AND p.status = :status"
     )
-    List<Participation> findPendingParticipationsForOrganization(
-            @Param("organizationId") Long organizationId
+    List<Participation> findParticipationsForOrganizationByStatus (
+            @Param("orgId") Long orgId,
+            @Param("status") String status
     );
+
+    List<Participation> findByStatus(String rejected);
+
+
+
 
 }

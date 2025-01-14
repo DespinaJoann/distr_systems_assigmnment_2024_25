@@ -1,116 +1,144 @@
-/* General Styling */
 body {
-    background-color: #2b2b2b;
-    color: #dcdcdc;
+    background-color: #f8f9fa; /* Light, neutral background */
+    color: #333; /* Dark text for contrast */
     margin: 0;
     padding: 0;
 }
 
-h1, h2 {
-    color: #ffffff;
-}
-
-/* Container Styling */
-.container {
-    padding: 20px;
-    margin: 0 auto;
-    max-width: 800px;
-}
-
-/* Styled Table */
-.styled-table {
+/* Table Styling */
+table {
     width: 100%;
     border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 0.9em;
-    background-color: #1e1e1e;
-    color: #dcdcdc;
+    margin-bottom: 20px;
+    background-color: #ffffff; /* White table background */
+    border-radius: 8px; /* Rounded corners */
+    overflow: hidden; /* Ensures rounded corners are visible */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
-.styled-table thead tr {
-    background-color: #3a3a3a;
+th, td {
+    padding: 12px 15px; /* Generous padding for clean layout */
     text-align: left;
+    border-bottom: 1px solid #e0e0e0; /* Thin light-gray line for separation */
+    color: #333; /* Dark text */
+}
+
+th {
+    color: #212529; /* Slightly darker text for headers */
+    background-color: #f1f3f5; /* Light gray header background */
     font-weight: bold;
+    text-transform: uppercase; /* Capitalized text */
+    font-size: 0.9rem;
 }
 
-.styled-table th, .styled-table td {
-    padding: 12px 15px;
-    border: 1px solid #444;
+td {
+    color: #495057; /* Medium-dark gray text */
+    font-size: 0.85rem;
 }
 
-.styled-table tr:nth-of-type(even) {
-    background-color: #2a2a2a;
+tr:nth-child(even) {
+    background-color: #f8f9fa; /* Light gray row alternation */
 }
 
-/* Buttons */
-.btn {
-    padding: 8px 16px;
-    border: none;
+tr:hover {
+    background-color: #e9ecef; /* Subtle highlight on hover */
     cursor: pointer;
-    border-radius: 4px;
-    font-size: 0.85em;
 }
 
-.btn-approve {
-    background-color: #4caf50;
-    color: white;
+/* Action Buttons */
+.action-button {
+    background-color: #007bff; /* Soft blue */
+    color: #ffffff; /* White text */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.btn-reject {
-    background-color: #f44336;
-    color: white;
+.action-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight zoom effect */
 }
 
-.btn:hover {
-    opacity: 0.9;
-}
-
-/* Info Message */
-.info-message {
-    background-color: #3a3a3a;
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-size: 0.9em;
-    color: #dcdcdc;
+/* Expand Button */
+.expand-button {
+    background-color: #17a2b8; /* Soft teal */
+    color: #ffffff; /* White text */
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: inline-block;
     text-align: center;
 }
 
-/* Cards */
-.cards-container {
-    display: flex;
-    gap: 20px;
+.expand-button:hover {
+    background-color: #138496; /* Slightly darker teal */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Transparent black */
+    overflow: auto;
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #ffffff; /* White modal background */
+    margin: 5% auto;
+    padding: 20px;
+    border: none;
+    width: 80%;
+    max-width: 700px;
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); /* Soft shadow */
+    color: #333; /* Dark text */
+}
+
+.close {
+    color: #666; /* Medium gray */
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    transition: color 0.2s ease;
+}
+
+.close:hover,
+.close:focus {
+    color: #000; /* Black on hover */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* No Data Message */
+.no-data {
+    text-align: center;
+    color: #dc3545; /* Bright red */
+    font-style: italic;
+    font-size: 1rem;
     margin-top: 20px;
 }
 
-.card {
-    background-color: #1e1e1e;
-    border: 1px solid #3a3a3a;
+/* Expandable Content */
+.expandable-content {
+    display: none;
+    padding: 15px;
+    background-color: #f8f9fa; /* Light gray background for expandable section */
     border-radius: 8px;
-    padding: 20px;
-    text-align: center;
-    flex: 1;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-}
-
-.card h3 {
-    color: #ffffff;
-}
-
-.card-link {
-    display: inline-block;
-    margin-top: 15px;
-    padding: 10px 20px;
-    background-color: #3a3a3a;
-    color: #dcdcdc;
-    text-decoration: none;
-    border-radius: 4px;
-}
-
-.card-link:hover {
-    background-color: #4caf50;
-    color: white;
-}
-
-.info-message {
-    background-color: darkorchid;
+    margin-top: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    color: #495057; /* Medium-dark gray text */
 }

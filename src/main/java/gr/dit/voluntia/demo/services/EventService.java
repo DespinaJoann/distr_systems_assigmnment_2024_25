@@ -2,87 +2,75 @@ package gr.dit.voluntia.demo.services;
 
 import gr.dit.voluntia.demo.models.Event;
 import gr.dit.voluntia.demo.repositories.EventRepository;
-import gr.dit.voluntia.demo.services.blueprints.ActionBasedProductsService;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EventService implements ActionBasedProductsService<Event> {
+public class EventService {
 
+    @Autowired
     private EventRepository eventRepository;
 
-    // Implemented methods from the blueprints/ActionBasedProductsService interface
 
-    @Override
-    public Event findProductById(Long productId) {
-        return eventRepository.findById(productId).orElse(null);
+    public List<Event> getAllRejectedEventsWithOrganizationId(Long orgId) {
+        List<Event> evList = eventRepository.findEventsByOrgIdAndStatus("rejected", orgId);
+        return evList == null ? new ArrayList<Event>() : evList;
     }
 
-    @Override
-    public Event findProductForUser(Long actorId, Long productId) {
-        return eventRepository.findByIdAndOrganizationId(productId, actorId);
+
+    public List<Event> getAllExpiredEventsWithOrganizationId(Long orgId) {
+        List<Event> evList = eventRepository.findEventsByOrgIdAndStatus("expired", orgId);
+        return evList == null ? new ArrayList<Event>() : evList;
     }
 
-    @Override
-    public List<Event> findAllProductsForUser(Long actorId) {
-        return eventRepository.findAllByOrganizationId(actorId);
-    }
+    /**
+     * Description:
+     * Finds all expired events for a specific organization.
+     *
+     * @param orgId the organization ID
+     * @return List of expired events
+     * * */
+    @Transactional
+    public List<Event> calculateExpiredEvents(Long orgId) {
+        // Fetch all events for the organization
+        List<Event> events = eventRepository.findByOrganizationId(orgId);
 
-    @Override
-    public Event saveProduct(Event product) {
-        return eventRepository.save(product);
-    }
+        // Get today's date
+        LocalDate now = LocalDate.now();
 
-    @Override
-    public Event deleteProduct(Event product) {
-        eventRepository.delete(product);
-        return product;
-    }
+        // Define the date format (assuming the format is always YYYY-MM-DD)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    @Override
-    public Event updateProduct(Event product) {
-        Optional<Event> existing = eventRepository.findById(product.getId());
+        // List to hold expired events
+        List<Event> expiredEvents = new ArrayList<>();
 
-        if (existing.isPresent()) {
-            Event updated = existing.get();
-            updated.setName(product.getName());
-            updated.setDescription(product.getDescription());
-            updated.setLocation(product.getLocation());
-            updated.setDate(product.getDate());
-            updated.setMaxNumbOfVolunteers(product.getMaxNumbOfVolunteers());
-            updated.setStatus(product.getStatus());
-            return eventRepository.save(updated);
+        // Loop through the events and add expired ones to the list
+        for (Event event : events) {
+            // Assuming Event has a 'date' field (String in YYYY-MM-DD format)
+            String eventDateStr = event.getDate();
+
+            // Parse the event's date from the string
+            LocalDate eventDate = LocalDate.parse(eventDateStr, formatter);
+
+            // If the event date has passed, add it to the expired list
+            if (eventDate.isBefore(now)) {
+                event.setStatus("expired");  // Mark the event as expired
+                eventRepository.save(event);  // Save the event with "expired" status
+                expiredEvents.add(event);     // Add to the expired events list
+            }
         }
-        return null;
+
+        return expiredEvents;
     }
 
-    @Override
-    public List<Event> saveProducts(List<Event> products) {
-        return eventRepository.saveAll(products);
+    public Boolean eventExistsByName(String name) {
+        return eventRepository.existsByName(name);
     }
-
-    @Override
-    public List<Event> deleteProducts(List<Event> products) {
-        return products.stream()
-                .map(this::updateProduct)
-                .toList();
-    }
-
-    @Override
-    public List<Event> updateProducts(List<Event> products) {
-        eventRepository.deleteAll(products);
-        return products;
-    }
-
-
-    // Extra methods for Event's Use case specific
-    public List<Event> findAllEventsWithName(String name) {
-        return eventRepository.findAllByName(name);
-    }
-
-
 }
-
-

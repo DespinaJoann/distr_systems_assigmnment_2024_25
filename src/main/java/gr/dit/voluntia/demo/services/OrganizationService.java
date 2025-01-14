@@ -1,201 +1,270 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.dtos.auths.DeleteDto;
-import gr.dit.voluntia.demo.dtos.org.CreateNewEventDto;
-import gr.dit.voluntia.demo.dtos.org.DisplayParticipationListsDto;
-import gr.dit.voluntia.demo.dtos.glob.DisplayProfileDto;
-import gr.dit.voluntia.demo.dtos.glob.EditProfileInfoDto;
+import gr.dit.voluntia.demo.links.ParticipationObj;
 import gr.dit.voluntia.demo.models.*;
 import gr.dit.voluntia.demo.repositories.EventRepository;
 import gr.dit.voluntia.demo.repositories.OrganizationRepository;
 import gr.dit.voluntia.demo.repositories.ParticipationRepository;
-import gr.dit.voluntia.demo.services.blueprints.UserSettings;
+import gr.dit.voluntia.demo.repositories.VolunteerRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-public class OrganizationService implements UserSettings {
+public class OrganizationService {
 
     @Autowired
     private OrganizationRepository organizationRepository;
     @Autowired
     private EventRepository eventRepository;
     @Autowired
-    private ParticipationRepository participationRepository;
+    private  ParticipationRepository participationRepository;
     @Autowired
-    private PasswordEncoder passwordEncoder;
-    // Methods for Organization Activities
-    // -> (for every single organization  -- things that can do)
-    //////////////////////////////////////////////////////////////////////////////////////////
+    private VolunteerRepository volunteerRepository;
+    @Autowired
+    private EventService eventService;
+
+
     /**
      * Description:
-     * Creates a new event for the organization.
-     *
-     * @param createDto to create new event
-     * */
-    public Event createEvent(
-            CreateNewEventDto createDto
-    ) {
-        // Create a new Event instance and populate it with data from the request
-        Event event = new Event();
-        event.setOrganizationId(createDto.getOrganizationId());
-        event.setName(createDto.getName());
-        event.setDescription(createDto.getDescription());
-        event.setLocation(createDto.getLocation());
-        event.setDate(createDto.getDate());
-        event.setTopic(createDto.getTopic());
-        event.setMaxNumbOfVolunteers(createDto.getMaxNumberOfPeople());
+     * Deletes all rejected events for a specific organization.
+     * @param orgId the organization ID
+     * * */
+    public void deleteAllRejectedEvents(Long orgId) {
+        List<Event> evList = getRejectedEventIdsByOrganization(orgId);
+        List<Long> eventIds = evList.stream()
+                .map(Event::getId)
+                .collect(Collectors.toList());
 
-        event.setParticipationList(null);    // Initialize the list as empty
-        event.setStatus("Pending");          // Event is pending and sends a request to the
-                                             // Admin and waits until Admin make it confirmed
+        eventRepository.deleteAllByIdIn(eventIds);
+    }
 
-        // Save the created Event to the event table
-        event = eventRepository.save(event);
-
-        // Return the created event
-        return event;
+    private List<Event> getRejectedEventIdsByOrganization(Long orgId) {
+        return eventService.getAllRejectedEventsWithOrganizationId(orgId);
     }
 
     /**
      * Description:
-     * Reviews pending volunteer participations for a given organization and updates their status to "Accepted" or "Rejected".
-     *
-     * This method retrieves all "Pending" participations for the organization, evaluates them based on event criteria,
-     * and updates their status. It counts the number of accepted and rejected participations and updates the provided
-     * {@link DisplayParticipationListsDto} with the results.
-     *
-     * @param dispPartDto A {@link DisplayParticipationListsDto} containing the organization ID and participation details.
-     *                    It will be updated with the review results and task completion status.
-     * @return The updated {@link DisplayParticipationListsDto} with the review results and task completion flag.
-     * */
+     * Deletes all expired events for a specific organization.
+     * This checks if the event's date has passed compared to today's date.
+     * @param orgId the organization ID
+     * * */
+    @Transactional
+    public void deleteAllExpiredEvents(Long orgId) {
+        // First Things First be sure that the Expired Events are calculated
+        getAllExpiredEvents(orgId);
 
-    public DisplayParticipationListsDto reviewVolunteerParticipation(DisplayParticipationListsDto dispPartDto) {
-
-        // Counters for info message visualization
-        int countAccepted = 0;
-        int countRejected = 0;
-
-        // Get All participation that have status "Pending" and the event belongs to this organization
-        List<Participation> pendingParticipations = participationRepository.findPendingParticipationsForOrganization(
-                dispPartDto.getOrganizationId()
-        );
-
-        // If the list is empty, nothing to review
-        if (pendingParticipations.isEmpty()) {
-            dispPartDto.setNothingToUpdate(true);
-            return dispPartDto; 
+        // Fetch all events for the organization
+        List<Event> exprEvs = eventService.getAllExpiredEventsWithOrganizationId(orgId);
+        for (Event ev : exprEvs) {
+            eventRepository.delete(ev);
         }
+    }
 
-        // If the list is not empty -> loop over all the list and review
-        for (Participation part : pendingParticipations) {
-            // Find the event that connects to the participation
-            Optional<Event> optEv = eventRepository.findById(part.getEventId());
-            if (optEv.isPresent()) {
-                Event event = optEv.get();                                 // Get the event object
-                boolean reviewResult = acceptedParticipation(part, event);    // Review the participation
 
-                // Increment counters based on result
-                if (reviewResult) {
-                    countAccepted++;
-                    part.setStatus("Accepted");
-                    // Save the acccepted participation to the repository
-                    // TODO: 
-                    // Maybe call an other function to send e message to
-                    // the Volunteer for the acceptance
+    /**
+     * Description:
+     * Retrieves all expired events for a specific organization.
+     * @param orgId the organization ID
+     * @return List of expired events
+     * * */
+    @Transactional
+    public List<Event> getAllExpiredEvents(Long orgId) {
+        return eventService.calculateExpiredEvents(orgId);
+    }
 
-                    participationRepository.save(part);
-                } else {
-                    countRejected++;
-                    part.setStatus("Rejected");
-                    // Delete the rejected participation to the repository
-                    // TODO: 
-                    // Maybe call an other function to send e message to
-                    // the Volunteer for the rejection
-                    participationRepository.delete(part);
-                }
-                
-                // Print the result status for each event (For debugging purposes)
-                System.out.println("Participation for volunteer " + part.getVolunteerId() +
-                        " in event " + event.getName() + " was " + reviewResult + ".");
+
+    /**
+     * Description:
+     * Retrieves all rejected events for a specific organization.
+     * @param orgId the organization ID
+     * @return List of rejected events
+     * * */
+    @Transactional
+    public List<Event> getAllRejectedEvents(Long orgId) {
+        return eventRepository.findByOrganizationIdAndStatus(orgId, "rejected");
+    }
+
+    /**
+     * Description:
+     * Checks if an organization is rejected.
+     * @param orgId the organization ID
+     * @return true if the organization is rejected
+     * * */
+    public boolean isOrganizationRejected(Long orgId) {
+        Organization org = organizationRepository.findById(orgId).get();
+        return org.getAccountStatus().equals("rejected") ? true : false;
+    }
+
+    /**
+     * Description:
+     * Deletes all rejected participations for a specific organization.
+     * @param orgId the organization ID
+     * * */
+    @Transactional
+    public void deleteAllRejectedParticipations(Long orgId) {
+        List<ParticipationObj> rejectedPartList = getAllParticipationsOfAnOrgWithStatus(orgId, "rejected");
+        for (ParticipationObj p : rejectedPartList) {
+            participationRepository.deleteById(p.getPartId());
+        }
+    }
+
+
+    /**
+     * Description:
+     * Saves a new event for an organization and saves it to the repository.
+     * @param ev the event from the frontend
+     * @param orgId the ID of the host organization
+     * * */
+    @Transactional
+    public void saveEvent(Event ev, Long orgId) {
+
+        // Insert only valid values to the Event object, if not fill those
+        // attributes as an empty String
+        ev.setName((ev.getName() == null || ev.getName().isBlank())
+                    ? ""
+                    : ev.getName());
+        ev.setDescription((ev.getDescription() == null || ev.getDescription().isBlank())
+                    ? ""
+                    : ev.getDescription());
+        ev.setDate((ev.getDate() == null || ev.getDate().isBlank())
+                    ? ""
+                    : ev.getDate());
+        ev.setLocation((ev.getLocation() == null || ev.getLocation().isBlank())
+                ? ""
+                : ev.getLocation());
+        ev.setTopic((ev.getTopic() == null || ev.getTopic().isBlank())
+                ? ""
+                : ev.getTopic());
+
+        // Initialize participation List, Number of Volunteers and status
+        ev.setParticipationList(new ArrayList<>());
+        ev.setNumberOfVolunteers(0);
+        ev.setStatus("pending");
+
+        // Set organization ID
+        ev.setOrganizationId(orgId);
+
+        // Save to database
+        eventRepository.save(ev);
+    }
+
+    /**
+     * Description:
+     * Returns all the active events of that organization
+     * @return List<Event> the current active events
+     * * */
+    @Transactional
+    public List<Event> getActiveEvents(Long orgId) {
+        return organizationRepository.findById(orgId)
+                .map(Organization::getListOfCurrentEvents)
+                .orElse(new ArrayList<>());
+    }
+
+    /**
+     * Description:
+     * Retrieves all participations for a specific organization based on the status code.
+     * @param orgId the ID of the organization
+     * @param status the status that we will search
+     * @return a list of {@link ParticipationObj} containing pending participations
+     * * */
+    @Transactional
+    public List<ParticipationObj> getAllParticipationsOfAnOrgWithStatus(Long orgId, String status) {
+        List<Participation> participations = participationRepository.findParticipationsForOrganizationByStatus(orgId, status);
+        List<ParticipationObj> result = new ArrayList<>();
+
+        for (Participation part : participations) {
+            Event event = eventRepository.findById(part.getEventId()).orElse(null);
+            Volunteer volunteer = volunteerRepository.findById(part.getVolunteerId()).orElse(null);
+
+            if (event != null && volunteer != null) {
+                ParticipationObj obj = ParticipationObj.builder()
+                        .partId(part.getId())
+                        .event(event)
+                        .vol(volunteer)
+                        .status(status)
+                        .build();
+                result.add(obj);
             }
         }
 
-        // Update Dto object with the results
-        dispPartDto.setAcceptedParticipations(countAccepted);
-        dispPartDto.setRejectedParticipations(countRejected);
-        dispPartDto.setUpdatedParticipations(pendingParticipations);
-        dispPartDto.setNothingToUpdate(false);
-
-        return dispPartDto;
+        return result;
     }
 
+        /**
+         * Description:
+         * Approves a participation for an organization.
+         * @param partId the ID of the participation
+         * * */
+    @Transactional
+    public void approveParticipationById(Long partId) {
+        Participation part = participationRepository.findById(partId)
+                .orElseThrow(() -> new IllegalArgumentException("Participation not found"));
 
+        Event event = eventRepository.findById(part.getEventId())
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
 
-    // TODO:
-    /// ///////////////////////////////////////////////////////////////
+        Volunteer volunteer = volunteerRepository.findById(part.getVolunteerId())
+                .orElseThrow(() -> new IllegalArgumentException("Volunteer not found"));
 
-    @Override
-    public List<String> displayProfileInfo(DisplayProfileDto request) {
-        Optional<Organization> org = organizationRepository.findById(request.getUserId());
-        return org.<List<String>>map(
-                value -> List.of(
-                        value.toString().split(",")
-                )).orElse(null);
+        Organization organization = organizationRepository.findById(part.getOrganizationId())
+                .orElseThrow(() -> new IllegalArgumentException("Organization not found"));
+
+        updateListsForParticipation(part, event, volunteer, organization, "rejected");
     }
 
-    @Override
-    public User editProfileInfo(EditProfileInfoDto request) {
-        return organizationRepository.findById(request.getUserId()).map(org -> {
-            org.setUsername(request.getUsername() != null ? request.getUsername() : org.getUsername());
-            org.setPassword(request.getPassword() != null ? request.getPassword() : org.getPassword());
-            org.setEmail(request.getEmail() != null ? request.getEmail() : org.getEmail());
-            org.setOrgName(request.getOrganizationName() != null ? request.getOrganizationName() : org.getOrgName());
-            org.setPhoneNumber(request.getPhoneNumber() != null ? request.getPhoneNumber() : org.getPhoneNumber());
-            org.setAddress(request.getAddress() != null ? request.getAddress() : org.getAddress());
-            org.setLocation(request.getLocation() != null ? request.getLocation() : org.getLocation());
+    /**
+     * Description:
+     * Rejects a participation for an organization.
+     * @param partId the ID of the participation
+     * * */
+    @Transactional
+    public void rejectParticipationById(Long partId) {
+        Participation part = participationRepository.findById(partId)
+                .orElseThrow(() -> new IllegalArgumentException("Participation not found for ID: " + partId));
 
-            return organizationRepository.save(org);
-        }).orElse(null);
+        Organization org = organizationRepository.findById(part.getOrganizationId())
+                .orElseThrow(() -> new IllegalArgumentException("Organization not found for ID: " + part.getOrganizationId()));
+        Event ev = eventRepository.findById(part.getEventId())
+                .orElseThrow(() -> new IllegalArgumentException("Event not found for ID: " + part.getEventId()));
+        Volunteer vol = volunteerRepository.findById(part.getVolunteerId())
+                .orElseThrow(() -> new IllegalArgumentException("Volunteer not found for ID: " + part.getVolunteerId()));
 
+        updateListsForParticipation(part, ev, vol, org, "rejected");
     }
 
-    @Override
-    public User deleteAccount(DeleteDto request) {
-        Optional<Organization> org = organizationRepository.findById(request.getUserId());
-        if (org.isPresent()) {
-            // The Optional contains a non-null value
-            Organization currentOrg = org.get();
-
-            // Validate password and special key before deleting for security purposes
-            if (currentOrg.getPassword().equals(request.getPassword())) {
-
-                // Delete the admin from the repository
-                organizationRepository.deleteById(currentOrg.getId());
-                return currentOrg;
-            }
+    /**
+     * Description:
+     * Updates participation details and adjusts associated lists (events, volunteers, organizations).
+     * @param part   the participation object
+     * @param ev     the event related to the participation
+     * @param vol    the volunteer related to the participation
+     * @param org    the organization managing the participation
+     * @param status the new status to set for the participation
+     * * */
+    private void updateListsForParticipation(Participation part, Event ev, Volunteer vol, Organization org, String status) {
+        if ("approved".equals(status)) {
+            org.getListOfCurrentEvents().add(ev);
+            ev.getParticipationList().add(part);
+            ev.setNumberOfVolunteers(ev.getNumberOfVolunteers() + 1);
+            vol.getListOfParticipation().add(part);
+        } else if ("rejected".equals(status)) {
+            org.getListOfCurrentEvents().remove(ev);
+            ev.getParticipationList().remove(part);
+            vol.getListOfParticipation().remove(part);
         }
 
-        return null;
+        part.setStatus(status);
+        participationRepository.save(part);
     }
 
-    /// ///////////////////////////////////////////////////////////////
 
 
 
-
-    // Utility functions
-    private Boolean acceptedParticipation(Participation part, Event ev) {
-        // TODO:
-        // -> Add more attributes to the Event and the Participation classes
-        // Additional checks can be added here, e.g.,
-        // matching event requirements with volunteer skills
-        return ev.getParticipationList().size() < ev.getMaxNumbOfVolunteers();
-    }
 }
-
-

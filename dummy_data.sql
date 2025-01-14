@@ -1,4 +1,4 @@
--- insert admins > 1
+-- insert admin > 1
 INSERT INTO admin (email, is_logged_in, password, username, account_key, first_name, last_name)
 VALUES
 -- Creation of the only allowed Admin

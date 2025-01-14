@@ -1,6 +1,6 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.dtos.auths.NewUser;
+import gr.dit.voluntia.demo.links.NewUser;
 import gr.dit.voluntia.demo.models.Admin;
 import gr.dit.voluntia.demo.models.Organization;
 import gr.dit.voluntia.demo.models.Volunteer;

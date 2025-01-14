@@ -11,14 +11,22 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Long>,
         JpaSpecificationExecutor<Event> {
 
+    // Remove all events from the list
+    void deleteAllByIdIn(List<Long> ids);
+
+    Event findByName(String evName);
+    Event findByIdAndOrganizationId(Long productId, Long actorId);
     List<Event> findAllByName(String name);
     List<Event> findAllByOrganizationId(Long actorId);
-    Event findByIdAndOrganizationId(Long productId, Long actorId);
+    List<Event> findByOrganizationIdAndStatus(Long organizationId, String status);
+    List<Event> findByOrganizationId(Long orgId);
 
     // Some extra methods
     @Query("SELECT ev FROM Event ev WHERE ev.status = 'pending'")
     List<Event> findAllPendingEvents();
 
+    @Query("SELECT ev FROM Event ev WHERE ev.status = 'confirmed'")
+    List<Event> findAllConfirmedEvents();
     /**
      * Finds events by applying optional filters for status, date,
      * topic and location.
@@ -50,5 +58,14 @@ public interface EventRepository extends JpaRepository<Event, Long>,
     )
     List<Event> findEventsByStatus(String status);
 
-    Event findByName(String evName);
+    @Query(
+            "SELECT ev " +
+                    "FROM Event ev " +
+                    "WHERE " +
+                    "ev.status = :status AND ev.organizationId = :orgId"
+    )
+    List<Event> findEventsByOrgIdAndStatus(String status, Long orgId);
+
+
+    Boolean existsByName(String name);
 }

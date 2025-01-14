@@ -29,8 +29,7 @@ public class Event {
 
     @Column(nullable = false)
     private String date;
-    @Column(nullable = false)
-    private int maxNumbOfVolunteers;
+    private int numberOfVolunteers;
 
     @Column(nullable = false)
     private String status = "pending";  // (Pending, Rejected, Approved)

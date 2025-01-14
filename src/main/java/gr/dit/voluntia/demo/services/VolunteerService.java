@@ -1,26 +1,23 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.dtos.auths.DeleteDto;
-import gr.dit.voluntia.demo.dtos.glob.DisplayProfileDto;
-import gr.dit.voluntia.demo.dtos.glob.EditProfileInfoDto;
-import gr.dit.voluntia.demo.dtos.vols.ApplyToEventDto;
-import gr.dit.voluntia.demo.dtos.vols.DisplayEventsDto;
+import gr.dit.voluntia.demo.links.ParticipationObj;
 import gr.dit.voluntia.demo.models.*;
 import gr.dit.voluntia.demo.repositories.EventRepository;
+import gr.dit.voluntia.demo.repositories.OrganizationRepository;
 import gr.dit.voluntia.demo.repositories.ParticipationRepository;
 import gr.dit.voluntia.demo.repositories.VolunteerRepository;
-import gr.dit.voluntia.demo.services.blueprints.UserSettings;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 
 @Service
-public class VolunteerService implements UserSettings {
+public class VolunteerService {
 
     @Autowired
     private VolunteerRepository volunteerRepository;
@@ -29,137 +26,138 @@ public class VolunteerService implements UserSettings {
     @Autowired
     private ParticipationRepository participationRepository;
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    // Methods for Volunteer Activities
-    // -> (for every single volunteer  -- things that can do)
-    //////////////////////////////////////////////////////////////////////////////////////////
+    private OrganizationRepository organizationRepository;
 
     /**
      * Description:
-     * Searches for events based on filters in the DTO (status, date, topic, location).
-     * If no filters are provided, retrieves all events with status = "Confirmed".
-     *
-     * @param dispEvdto The DTO containing input filters (status, date, topic, location).
-     * @return The DTO populated with filtered events or empty if no matches.
-     * */
-    public DisplayEventsDto searchForEvent(DisplayEventsDto dispEvdto) {
-        // Extract filters from the input dto
-        String status = dispEvdto.getStatus();
-        String date = dispEvdto.getDate();
-        String topic = dispEvdto.getTopic();
-        String location = dispEvdto.getLocation();
-
-        // Retrieve filtered events based on provided filters
-        List<Event> filteredEvents;
-
-        if (status == null && date == null && topic == null && location == null) {
-            // No filters provided: default to events with status = "Confirmed"
-            filteredEvents = eventRepository.findEventsByStatus("Confirmed");
-        } else {
-            // Filters are provided: retrieve based on all filters
-            filteredEvents = eventRepository.findEventsByFilters(status, date, topic, location);
-        }
-
-        // Check if any events match the filters
-        if (filteredEvents.isEmpty()) {
-            dispEvdto.setFilteredEvents(Collections.emptyList());
-            dispEvdto.setNothingToUpdate(true);
-            return dispEvdto;
-        }
-
-        // Store all the info to the dto
-        dispEvdto.setFilteredEvents(filteredEvents);
-        dispEvdto.setNothingToUpdate(false);
-
-        return dispEvdto;
+     * Checks if a volunteer is rejected.
+     * @param volId the volunteer ID
+     * @return true if the volunteer is rejected
+     * * */
+    public boolean isVolunteerRejected(Long volId) {
+        Volunteer vol = volunteerRepository.findById(volId).get();
+        return vol.getAccountStatus().equals("rejected") ? true : false;
     }
 
 
-    /**Description:
-     *  */
-    public ApplyToEventDto applyToEvent(ApplyToEventDto appTodto ) {
-        // Extract the data info from the dto
-        Long volId = Long.valueOf(appTodto.getVolunteerId());
-        String evName = appTodto.getEventName();
+    /**
+     * Description:
+     * Retrieves all confirmed events.
+     * @return a list of confirmed events or an empty list if no events
+     * are found
+     * * */
+    @Transactional
+    public List<Event> getAllConfirmedEvents() {
+        List<Event> confEvs = eventRepository.findAllConfirmedEvents();
+        return confEvs == null ? new ArrayList<>() : confEvs;
+    }
 
-        // Search the event based on its unique name
-        Event ev = eventRepository.findByName(evName);
-        if (ev == null) {
-            appTodto.setVolunteerId(null);
-            return appTodto;
-        }
 
-        // Extract all the attributes from the event
-        Long evId = ev.getId();
-        Long orgId = ev.getOrganizationId();
+    /**
+     * Description:
+     *  Creates a new participation with status "pending" for a given event.
+     * @param ev the event for which the volunteer wants to apply
+     * @param volId the ID of the volunteer applying
+     * * */
+    public void applyToEvent(Event ev, Long volId) {
+        // Get today's date and parse it to string with patter YYYY-MM-DD
+        LocalDate currDate = LocalDate.now();
+        String applyDate = currDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-        // Create a new participation
-        Participation newPart  = new Participation();
-        newPart.setVolunteerId(volId);
-        newPart.setEventId(evId);
-        newPart.setOrganizationId(orgId);
-        newPart.setStatus("pending");
-
+        // Create a new participation object
+        Participation part = new Participation();
+        part.setEventId(ev.getId());
+        part.setVolunteerId(volId);
+        part.setDate(applyDate);
+        part.setStatus("pending");
 
         // Save the new participation to the repository
-        participationRepository.save(newPart);
-
-        // Update the dto and return
-        appTodto.setNewParticipation(newPart);
-        appTodto.setBugged(false);
-        return appTodto;
+        participationRepository.save(part);
     }
 
 
+    /**
+     * Description:
+     * Retrieves all participations with a specific status for a given volunteer.
+     * @param volId  the ID of the volunteer
+     * @param status the status of the participation (e.g., "accepted", "rejected", "pending")
+     * @return a list of participations matching the status or an empty list if none are found
+     * * */
+    public List<ParticipationObj> getAllParticipationWithStatus(Long volId, String status) {
+        Volunteer vol = volunteerRepository.findById(volId).orElse(null);
+        if (vol == null) {
+            return new ArrayList<>();
+        }
 
-    // TODO:
-    /// ///////////////////////////////////////////////////////////////
-
-    @Override
-    public List<String> displayProfileInfo(DisplayProfileDto request) {
-        Optional<Volunteer> vol = volunteerRepository.findById(request.getUserId());
-        return vol.<List<String>>map(
-                value -> List.of(
-                        value.toString().split(",")
-                )).orElse(null);
-    }
-
-    @Override
-    public User editProfileInfo(EditProfileInfoDto request) {
-        return volunteerRepository.findById(request.getUserId()).map(vol -> {
-            vol.setUsername(request.getUsername() != null ? request.getUsername() : vol.getUsername());
-            vol.setPassword(request.getPassword() != null ? request.getPassword() : vol.getPassword());
-            vol.setEmail(request.getEmail() != null ? request.getEmail() : vol.getEmail());
-            vol.setPhoneNumber(request.getPhoneNumber() != null ? request.getPhoneNumber() : vol.getPhoneNumber());
-            vol.setFirstName(request.getFirstName() != null ? request.getFirstName() : vol.getFirstName());
-            vol.setLastName(request.getLastName() != null ? request.getLastName() : vol.getLastName());
-
-            return volunteerRepository.save(vol);
-        }).orElse(null);
-
-    }
-
-    @Override
-    public User deleteAccount(DeleteDto request) {
-        Optional<Volunteer> vol = volunteerRepository.findById(request.getUserId());
-        if (vol.isPresent()) {
-            // The Optional contains a non-null value
-            Volunteer currentVol = vol.get();
-
-            // Validate password and special key before deleting for security purposes
-            if (currentVol.getPassword().equals(request.getPassword())) {
-
-                // Delete the admin from the repository
-                volunteerRepository.deleteById(currentVol.getId());
-                return currentVol;
+        // Filter participations locally based on the status
+        List<Participation> filteredParticipations = new ArrayList<>();
+        for (Participation participation : vol.getListOfParticipation()) {
+            if (status.equals(participation.getStatus())) {
+                filteredParticipations.add(participation);
             }
         }
-        return null;
+        return parseToParticipationObjListWithStatus(filteredParticipations, status);
     }
 
-    /// ///////////////////////////////////////////////////////////////
+    /**
+     * Description:
+     * Deletes all rejected participations of a given volunteer.
+     * @param volId the ID of the volunteer
+     * * */
+    public void deleteAllRejectedParticipation(Long volId) {
+        // Retrieve volunteer object by their ID
+        Volunteer vol = volunteerRepository.findById(volId).orElse(null);
+        if (vol == null) {
+            throw new IllegalArgumentException("Volunteer not found with ID: " + volId);
+        }
 
+        // Filter rejected participations locally
+        List<Participation> rejectedParts = new ArrayList<>();
+        Iterator<Participation> iterator = vol.getListOfParticipation().iterator();
+
+        while (iterator.hasNext()) {
+            Participation participation = iterator.next();
+            if ("rejected".equals(participation.getStatus())) {
+                rejectedParts.add(participation);
+                iterator.remove(); // Remove from local list
+            }
+        }
+
+        // Delete rejected participations from the database
+        participationRepository.deleteAll(rejectedParts);
+
+        // Save the updated volunteer to reflect the changes in the local list
+        volunteerRepository.save(vol);
+    }
+
+    /**
+     * Description:
+     * Converts a List of Participation to a list of ParticipationObj
+     * @param partList the list of participation
+     * @param status the providing status
+     * * */
+    private List<ParticipationObj> parseToParticipationObjListWithStatus (List<Participation> partList, String status) {
+        List<ParticipationObj> result = new ArrayList<>();
+
+        for (Participation part : partList) {
+            Event ev = eventRepository.findById(part.getEventId()).orElse(null);
+            Volunteer vol = volunteerRepository.findById(part.getVolunteerId()).orElse(null);
+            Organization org = organizationRepository.findById(part.getOrganizationId()).orElse(null);
+
+            if (ev != null && vol != null && org != null) {
+                ParticipationObj obj = ParticipationObj.builder()
+                        .partId(part.getId())
+                        .event(ev)
+                        .vol(vol)
+                        .org(org)
+                        .status(status)
+                        .build();
+                result.add(obj);
+            }
+        }
+
+        return result;
+    }
 
 }
 

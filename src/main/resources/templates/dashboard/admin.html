@@ -5,69 +5,188 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/table.css}">
     <title>Admin's Dashboard</title>
 </head>
 <body>
 
 <div class="dashboard-container">
-    <!-- Sidebar -->
     <div class="sidebar">
         <h2>Dashboard</h2>
         <ul class="menu">
             <li><a href="#">Home</a></li>
             <li><a href="#">My Tasks</a></li>
-            <li><a href="#">Edit Profile</a></li>   <!-- TODO: -->
+            <li><a href="#">Edit Profile</a></li>
             <li><a th:href="@{/logout}">Logout</a></li>
         </ul>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <div class="top-bar">
-            <!-- User Info -->
             <div class="user-info" id="user-info" onclick="toggleUserInfo()">
                 <div class="user-avatar">
                     <span th:text="${currentUser.username.charAt(0)}"></span>
                 </div>
             </div>
-            <!-- Theme Toggle Button -->
             <button id="theme-toggle" onclick="toggleTheme()">L</button>
         </div>
 
-        <!-- Cards Container -->
-        <!-- Cards Container -->
         <div class="cards-container">
+            <!-- Confirm Users Section -->
             <div class="card">
                 <h3>Confirm Users</h3>
                 <p>Approve or reject pending volunteers and organizations.</p>
-                <a th:href="@{/dashboard/admin/confirm-users}" class="card-link">Go to Confirm Users</a>
+                <button onclick="openModal('users-modal')">View Users</button>
             </div>
+
+            <!-- Confirm Events Section -->
             <div class="card">
                 <h3>Confirm Events</h3>
                 <p>Approve or reject pending events submitted by users.</p>
-                <a th:href="@{/dashboard/admin/confirm-events}" class="card-link">Go to Confirm Events</a>
+                <button onclick="openModal('events-modal')">View Events</button>
             </div>
         </div>
-
     </div>
 </div>
+
 <footer>
-    <a th:href="@{/static}">Go back to the Home Page</a>
+    <a th:href="@{/}">Go back to the Home Page</a>
 </footer>
 
+<!-- Modal for Users -->
+<div id="users-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('users-modal')">&times;</span>
+        <h4>Pending Organizations</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>Organization Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+                <th>Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="org : ${pendingOrgs}">
+                <td th:text="${org.orgName}"></td>
+                <td th:text="${org.email}"></td>
+                <td>
+                    <form th:action="@{/dashboard/admin/approve-org/{id}(id=${org.id})}" method="post">
+                        <button class="action-button" type="submit">Approve</button>
+                    </form>
+                    <form th:action="@{/dashboard/admin/reject-org/{id}(id=${org.id})}" method="post">
+                        <button class="action-button"  type="submit">Reject</button>
+                    </form>
+                </td>
+                <td>
+                    <button class="expand-button" onclick="toggleDetails('org-details-${org.id}')">🔎</button>
+                    <div id="org-details-${org.id}" class="expandable-content">
+                        <p th:text="${org.username}"></p>
+                        <p th:text="${org.orgType}"></p>
+                        <p th:text="${org.phoneNumber}"></p>
+                        <p th:text="${org.address}"></p>
+                        <p th:text="${org.location}"></p>
+                        <p th:text="${org.orgType}"></p>
+                        <p th:text="${org.profileDescription}"></p>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(pendingOrgs)}">
+                <td colspan="4" class="no-data">No pending organizations available.</td>
+            </tr>
+            </tbody>
+        </table>
+        <h4>Pending Volunteers</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="vol : ${pendingVols}">
+                <td th:text="${vol.firstName} + ' ' + ${vol.lastName}"></td>
+                <td th:text="${vol.email}"></td>
+                <td>
+                    <form th:action="@{/dashboard/admin/approve-vol/{id}(id=${vol.id})}" method="post">
+                        <button class="action-button"  type="submit">Approve</button>
+                    </form>
+                    <form th:action="@{/dashboard/admin/reject-vol/{id}(id=${vol.id})}" method="post">
+                        <button class="action-button" type="submit">Reject</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(pendingVols)}">
+                <td colspan="3" class="no-data">No pending volunteers available.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal for Events -->
+<div id="events-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('events-modal')">&times;</span>
+        <h4>Pending Events</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>Event Name</th>
+                <th>Date</th>
+                <th>Host</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="event : ${pendingEvents}">
+                <td th:text="${event.name}"></td>
+                <td th:text="${event.date}"></td>
+                <td th:text="${event.organizationId}"></td>
+                <td>
+                    <form th:action="@{/dashboard/admin/approve-event/{id}(id=${event.id})}" method="post">
+                        <button class="action-button"  type="submit">Approve</button>
+                    </form>
+                    <form th:action="@{/dashboard/admin/reject-event/{id}(id=${event.id})}" method="post">
+                        <button class="action-button"  type="submit">Reject</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(pendingEvents)}">
+                <td colspan="4" class="no-data">No pending events available.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <script>
-    // Toggle user info dropdown
     function toggleUserInfo() {
         const userInfo = document.querySelector('.user-info');
         userInfo.classList.toggle('open');
     }
 
-    // Toggle Dark/Light Theme
     function toggleTheme() {
         const body = document.body;
         body.classList.toggle('dark-theme');
         const themeButton = document.getElementById('theme-toggle');
         themeButton.textContent = body.classList.contains('dark-theme') ? 'D' : 'L';
+    }
+
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = "block";
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+    }
+
+    function toggleDetails(id) {
+        const details = document.getElementById(id);
+        details.style.display = details.style.display === "none" ? "block" : "none";
     }
 </script>
 

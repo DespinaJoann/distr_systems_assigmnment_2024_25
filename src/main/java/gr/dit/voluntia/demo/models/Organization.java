@@ -44,7 +44,7 @@ public class Organization extends User {
     )
     private List<Event> listOfCurrentEvents = null;
     @Column(nullable = false)
-    private String accountStatus = "pending"; // a=> Pending/ Created/ Rejected
+    private String accountStatus = "pending"; // a=> pending / accepted / rejected
 
 
     public void changeAccountStatus(String responseFromAdmin) {

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
-    <title>Volunteer's Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/table.css}">
+    <title>Organization's Dashboard</title>
 </head>
 <body>
 
@@ -16,59 +17,172 @@
         <ul class="menu">
             <li><a href="#">Home</a></li>
             <li><a href="#">My Tasks</a></li>
-            <li><a href="#">Messages</a></li>
-            <li><a href="#">Settings</a></li>
+            <li><a href="#">Edit Profile</a></li>
             <li><a th:href="@{/logout}">Logout</a></li>
         </ul>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
+        <!-- Top Bar -->
         <div class="top-bar">
-            <!-- User Info -->
             <div class="user-info" id="user-info" onclick="toggleUserInfo()">
                 <div class="user-avatar">
                     <span th:text="${currentUser.username.charAt(0)}"></span>
                 </div>
             </div>
-            <!-- Theme Toggle Button -->
-            <button id="theme-toggle" onclick="toggleTheme()">L</button>
+            <button id="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">L</button>
         </div>
 
-        <!-- Cards Container -->
+        <div class="search-all-confirmed-events">
+            <!-- TODO:
+            Auto tha  periexei olo to periexomeno tou allConfirmedEvs
+            Tha periexei ena scroll bar kai
+            kathe event tha einai se mikro card kai tha ginetai display
+            an to event : allConfirmedEvs exei status="expired" tote tha
+            exei kokkino xroma to card os backgroun allios prasino
+            -->
+
+        </div>
+
+
+        <!-- Cards Section -->
         <div class="cards-container">
             <div class="card">
-                <h3>Task 1</h3>
-                <p>Description of task 1...</p>
-            </div>
-            <div class="card">
-                <h3>Task 2</h3>
-                <p>Description of task 2...</p>
-            </div>
-            <div class="card">
-                <h3>Task 3</h3>
-                <p>Description of task 3...</p>
+                <h3>Check participations</h3>
+                <p>View all the participation and the status.</p>
+                <button onclick="openModal('view-modal')">View</button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Footer -->
 <footer>
-    <a th:href="@{/static}">Go back to the Home Page</a>
+    <a th:href="@{/}">Go back to the Home Page</a>
 </footer>
 
+<!-- Modal for Rejected Account -->
+<div th:if="${rejected}" id="rejected-user-modal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('rejected-user-modal')">&times;</span>
+        <h4 th:text="${message}"></h4>
+        <h3><a th:href="@{/logout}">Logout</a></h3>
+    </div>
+</div>
+
+
+<!-- Modal for View Participations -->
+<div id="view-modal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('delete-modal')">&times;</span>
+        <!----------------------------------------------------------------------------- -->
+        <h4>Accepted Applications</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>Event</th>
+                <th>Host</th>
+                <th>Location</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="pr : ${acceptedParts}">
+                <td th:text="${pr.ev.name}"></td>
+                <td th:text="${pr.org.name}"></td>
+                <td th:text="${pr.location}"></td>
+                <td th:text="${pr.status}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(acceptedParts)}">
+                <td colspan="6" class="no-data">No application is accepted</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!----------------------------------------------------------------------------- -->
+
+        <h4>Pending Applications</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>Event</th>
+                <th>Host</th>
+                <th>Location</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="pr : ${pendingParts}">
+                <td th:text="${pr.ev.name}"></td>
+                <td th:text="${pr.org.name}"></td>
+                <td th:text="${pr.location}"></td>
+                <td th:text="${pr.status}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(acceptedParts)}">
+                <td colspan="6" class="no-data">No application is pending.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!----------------------------------------------------------------------------- -->
+
+        <h4>Rejected Applications</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Volunteers</th>
+                <th>Topic</th>
+                <th>Expand</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="pr : ${pendingParts}">
+                <td th:text="${pr.ev.name}"></td>
+                <td th:text="${pr.org.name}"></td>
+                <td th:text="${pr.location}"></td>
+                <td th:text="${pr.status}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(acceptedParts)}">
+                <td colspan="6" class="no-data">None application rejected!</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <form th:action="@{/dashboard/org//delete-rejected-parts}" method="get">
+            <button class="delete-all-events" type="submit">Delete All Rejected Applications</button>
+        </form>
+    </div>
+</div>
+
 <script>
-    // Toggle user info dropdown
+    // JavaScript Functions
     function toggleUserInfo() {
-        const userInfo = document.querySelector('.user-info');
-        userInfo.classList.toggle('open');
+        document.querySelector('.user-info').classList.toggle('open');
     }
 
-    // Toggle Dark/Light Theme
     function toggleTheme() {
         const body = document.body;
         body.classList.toggle('dark-theme');
-        const themeButton = document.getElementById('theme-toggle');
-        themeButton.textContent = body.classList.contains('dark-theme') ? 'D' : 'L';
+        document.getElementById('theme-toggle').textContent = body.classList.contains('dark-theme') ? 'D' : 'L';
+    }
+
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) modal.style.display = "block";
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) modal.style.display = "none";
+    }
+
+    function toggleDetails(id) {
+        const details = document.getElementById(id);
+        if (details) details.style.display = details.style.display === "none" ? "block" : "none";
     }
 </script>
 

@@ -1,7 +1,7 @@
 package gr.dit.voluntia.demo.controllers;
 
 
-import gr.dit.voluntia.demo.dtos.auths.NewUser;
+import gr.dit.voluntia.demo.links.NewUser;
 import gr.dit.voluntia.demo.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,7 +30,7 @@ public class SignupController {
     }
 
     @GetMapping("/signup/admin")
-    public String GetSignupAsAdminPage(Model model) {
+    public String getSignupAsAdminPage(Model model) {
         model.addAttribute("user", new NewUser());
         return "/signup/admin";
     }

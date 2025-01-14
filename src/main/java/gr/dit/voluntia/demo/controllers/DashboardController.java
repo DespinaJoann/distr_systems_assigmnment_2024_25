@@ -1,15 +1,21 @@
 package gr.dit.voluntia.demo.controllers;
 
-import gr.dit.voluntia.demo.dtos.auths.CurrentUser;
-import gr.dit.voluntia.demo.dtos.auths.NewUser;
+import gr.dit.voluntia.demo.links.CurrentUser;
+import gr.dit.voluntia.demo.links.ParticipationObj;
+import gr.dit.voluntia.demo.models.Event;
+import gr.dit.voluntia.demo.models.Organization;
+import gr.dit.voluntia.demo.models.Participation;
+import gr.dit.voluntia.demo.models.Volunteer;
 import gr.dit.voluntia.demo.services.AdminService;
-import gr.dit.voluntia.demo.services.UsersService;
+import gr.dit.voluntia.demo.services.OrganizationService;
+import gr.dit.voluntia.demo.services.VolunteerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Controller
@@ -17,10 +23,109 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class DashboardController {
 
     private final AdminService adminService;
+    private final OrganizationService organizationService;
+    private final VolunteerService volunteerService;
 
-    public DashboardController(AdminService adminService) {
+    public DashboardController(AdminService adminService, OrganizationService organizationService, VolunteerService volunteerService) {
         this.adminService = adminService;
+        this.organizationService = organizationService;
+        this.volunteerService = volunteerService;
     }
+
+
+
+    @GetMapping("/vol")
+    public String volunteerDashboard(Model model) {
+        CurrentUser currentUser = CurrentUser.fromSecurityContext();
+        model.addAttribute("currentUser", currentUser);
+
+        // Check if the volunteer is rejected by the admin
+        if (volunteerService.isVolunteerRejected(currentUser.getId())) {
+            model.addAttribute("rejected", true); // Mark the organization as rejected
+            model.addAttribute("message", "Your organization has been rejected by the admin. You will be logged out shortly.");
+            return "dashboard/vol"; // Return the org dashboard page
+        }
+
+        // Fetch the organization’s data (volunteer participation statuses, events, etc.)
+        List<Event> allConfirmedEvs = volunteerService.getAllConfirmedEvents();
+        List<Participation> rejectedParts = volunteerService.getAllParticipationWithStatus(currentUser.getId(),"rejected");
+        List<Participation> acceptedParts = volunteerService.getAllParticipationWithStatus(currentUser.getId(),"accepted");
+        List<Participation> pendingParts = volunteerService.getAllParticipationWithStatus(currentUser.getId(),"pending");
+
+        // Add data to the model
+        model.addAttribute("allConfirmedEvs", allConfirmedEvs);
+        model.addAttribute("rejectedParts", rejectedParts);
+        model.addAttribute("acceptedParts", acceptedParts);
+        model.addAttribute("pendingParts", pendingParts);
+
+        // Messages to display if the respective lists are empty
+        if (allConfirmedEvs.isEmpty()) {
+            model.addAttribute("message", "There is no active event!");
+        }
+
+        if (rejectedParts.isEmpty()) {
+            model.addAttribute("message", "There is no rejected participation.");
+        }
+
+        if (acceptedParts.isEmpty()) {
+            model.addAttribute("message", "There is no accepted participation.");
+        }
+        if (rejectedParts.isEmpty()) {
+            model.addAttribute("message", "There is no rejected participation.");
+        }
+
+        System.out.println(currentUser.toString());
+        return "dashboard/vol"; // vol.html
+    }
+
+
+    @GetMapping("/org")
+    public String organizationDashboard(Model model) {
+        // Get the current logged-in user
+        CurrentUser currentUser = CurrentUser.fromSecurityContext();
+        model.addAttribute("currentUser", currentUser);
+
+        // Check if the organization is rejected by the admin
+        if (organizationService.isOrganizationRejected(currentUser.getId())) {
+            model.addAttribute("rejected", true); // Mark the organization as rejected
+            model.addAttribute("message", "Your organization has been rejected by the admin. You will be logged out shortly.");
+            return "dashboard/org"; // Return the org dashboard page
+        }
+
+        // Fetch the organization’s data (volunteer participation statuses, events, etc.)
+        List<ParticipationObj> pendingParts = organizationService.getAllParticipationsOfAnOrgWithStatus(currentUser.getId(), "pending");
+        List<Event> rejectedEvents = organizationService.getAllRejectedEvents(currentUser.getId());
+        List<Event> activeEvents = organizationService.getActiveEvents(currentUser.getId());
+        List<Event> expiredEvents = organizationService.getAllExpiredEvents(currentUser.getId());
+
+        // Add data to the model
+        model.addAttribute("pendingParts", pendingParts);
+        model.addAttribute("rejectedEvents", rejectedEvents);
+        model.addAttribute("activeEvents", activeEvents);
+        model.addAttribute("expiredEvents", expiredEvents);
+        model.addAttribute("event", new Event());
+
+        // Messages to display if the respective lists are empty
+        if (pendingParts.isEmpty()) {
+            model.addAttribute("message", "No participation is pending!");
+        }
+
+        if (rejectedEvents.isEmpty()) {
+            model.addAttribute("message", "No rejected events.");
+        }
+
+        if (activeEvents.isEmpty()) {
+            model.addAttribute("message", "No active events.");
+        }
+
+        if (expiredEvents.isEmpty()) {
+            model.addAttribute("message", "No expired events.");
+        }
+
+        return "dashboard/org"; // Return the org dashboard page (Thymeleaf template)
+    }
+
+
 
     @GetMapping("/admin")
     public String adminDashboard(Model model) {
@@ -28,30 +133,27 @@ public class DashboardController {
         CurrentUser currentUser = CurrentUser.fromSecurityContext();
         model.addAttribute("currentUser", currentUser);
 
-        // Load the pending organizations and volunteers
-        model.addAttribute("pendingOrgs", adminService.getPendingOrganizations());
-        model.addAttribute("pendingVols", adminService.getPendingVolunteers());
+        // Pending organizations, volunteers and events
+        List<Organization> pendingOrgs = adminService.getPendingOrganizations();
+        List<Volunteer> pendingVols = adminService.getPendingVolunteers();
+        List<Event> pendingEvents = adminService.getPendingEvents();
+        Event newEvent = new Event();
 
-        // Just for debugging
-        System.out.println(currentUser.toString());
+        // If the resulting lists are null, initialize them as empty
+        if (pendingOrgs == null) pendingOrgs = new ArrayList<>();
+        if (pendingVols == null) pendingVols = new ArrayList<>();
+        if (pendingEvents == null) pendingEvents = new ArrayList<>();
+
+        model.addAttribute("pendingOrgs", pendingOrgs);
+        model.addAttribute("pendingVols", pendingVols);
+        model.addAttribute("pendingEvents", pendingEvents);
+        model.addAttribute("event", newEvent);
+        // Message for no pending items
+        if (pendingOrgs.isEmpty() && pendingVols.isEmpty() && pendingEvents.isEmpty()) {
+            model.addAttribute("message", "All users and events have been confirmed!");
+        }
 
         return "dashboard/admin"; // admin.html
-    }
-
-    @GetMapping("/org")
-    public String organizationDashboard(Model model) {
-        CurrentUser currentUser = CurrentUser.fromSecurityContext();
-        model.addAttribute("currentUser", currentUser);
-        System.out.println(currentUser.toString());
-        return "dashboard/org"; // org.html
-    }
-
-    @GetMapping("/vol")
-    public String volunteerDashboard(Model model) {
-        CurrentUser currentUser = CurrentUser.fromSecurityContext();
-        model.addAttribute("currentUser", currentUser);
-        System.out.println(currentUser.toString());
-        return "dashboard/vol"; // vol.html
     }
 
   /**
