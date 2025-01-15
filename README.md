@@ -1,4 +1,21 @@
-# **Voluntia**
+# :seedling: **Voluntia**
+
+
+![Java 17+](https://img.shields.io/badge/Java-17%2B-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Relational%20Database-brightgreen)
+![Config](https://img.shields.io/badge/Update-application.properties-pink)
+
+![Java](https://img.shields.io/badge/Java-Primary%20Language-blue)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-Backend%20Framework-green)
+![Hibernate ORM](https://img.shields.io/badge/Hibernate-ORM-orange)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-brightgreen)
+![Spring Security](https://img.shields.io/badge/Spring%20Security-Authentication%20%26%20Authorization-red)
+![Maven](https://img.shields.io/badge/Maven-Build%20Tool-yellow)
+
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-Template%20Engine-blueviolet)
+![HTML/CSS](https://img.shields.io/badge/HTML%20%2F%20CSS-Frontend-orange)
+![JavaScript](https://img.shields.io/badge/JavaScript-Interactivity-yellowgreen)
+
 
 ## **Project Overview**
 **Voluntia** is a web-based platform developed as part of the course *"Distributed Systems"* at Harokopio University of Athens (HUA) during the academic year 2024-2025. 
@@ -114,4 +131,4 @@ A `dummy_data.sql` file is included to populate the database with test data. The
 ---
 
 ## **License**
-This project is licensed under the **Apache License 2.0**.
+This project is licensed under the **Apache-2.0 License**.
