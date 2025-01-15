@@ -1,6 +1,3 @@
-# :seedling: **Voluntia**
-
-
 ![Java 17+](https://img.shields.io/badge/Java-17%2B-blue)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Relational%20Database-brightgreen)
 ![Config](https://img.shields.io/badge/Update-application.properties-pink)
@@ -16,6 +13,7 @@
 ![HTML/CSS](https://img.shields.io/badge/HTML%20%2F%20CSS-Frontend-orange)
 ![JavaScript](https://img.shields.io/badge/JavaScript-Interactivity-yellowgreen)
 
+# :seedling: **Voluntia**
 
 ## **Project Overview**
 **Voluntia** is a web-based platform developed as part of the course *"Distributed Systems"* at Harokopio University of Athens (HUA) during the academic year 2024-2025. 
