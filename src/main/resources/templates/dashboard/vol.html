@@ -6,7 +6,8 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/table.css}">
-    <title>Organization's Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/modal.css}">
+    <title>Volunteer's Dashboard</title>
 </head>
 <body>
 
@@ -16,7 +17,7 @@
         <h2>Dashboard</h2>
         <ul class="menu">
             <li><a href="#">Home</a></li>
-            <li><a href="#">My Tasks</a></li>
+            <li><a href="#" onclick="openModal('view-modal')">My Participations</a></li>
             <li><a href="#">Edit Profile</a></li>
             <li><a th:href="@{/logout}">Logout</a></li>
         </ul>
@@ -24,7 +25,7 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Top Bar -->
+        <!-- Top Bar with user info and theme toggle -->
         <div class="top-bar">
             <div class="user-info" id="user-info" onclick="toggleUserInfo()">
                 <div class="user-avatar">
@@ -34,49 +35,60 @@
             <button id="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">L</button>
         </div>
 
-        <div class="search-all-confirmed-events">
-            <!-- TODO:
-            Auto tha  periexei olo to periexomeno tou allConfirmedEvs
-            Tha periexei ena scroll bar kai
-            kathe event tha einai se mikro card kai tha ginetai display
-            an to event : allConfirmedEvs exei status="expired" tote tha
-            exei kokkino xroma to card os backgroun allios prasino
-            -->
-
+        <!-- Card for applying to events -->
+        <div class="card">
+            <h3>Check Participations</h3>
+            <p>View all the participation and their status.</p>
+            <button onclick="toggleParticipations()">View</button>
         </div>
 
+        <!-- Table for confirmed events -->
+        <div id="participations-table" class="search-all-confirmed-events" style="display: block;">
+            <h2>Apply To an Event</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="event : ${allConfirmedEvs}">
+                    <td th:text="${event.name}"></td>
+                    <td th:text="${event.date}"></td>
+                    <td th:text="${event.description}"></td>
+                    <td>
+                        <form th:action="@{/dashboard/vol/apply-to-event}" method="post">
+                            <input type="hidden" name="eventId" th:value="${event.id}"/>
+                            <button type="submit" class="apply-btn">Apply</button>
+                        </form>
+                    </td>
+                </tr>
 
-        <!-- Cards Section -->
-        <div class="cards-container">
-            <div class="card">
-                <h3>Check participations</h3>
-                <p>View all the participation and the status.</p>
-                <button onclick="openModal('view-modal')">View</button>
-            </div>
+                <tr th:if="${#lists.isEmpty(allConfirmedEvs)}">
+                    <td colspan="4" class="no-data">No confirmed events available.</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+
 
 <!-- Footer -->
 <footer>
     <a th:href="@{/}">Go back to the Home Page</a>
 </footer>
 
-<!-- Modal for Rejected Account -->
-<div th:if="${rejected}" id="rejected-user-modal" class="modal" aria-hidden="true">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('rejected-user-modal')">&times;</span>
-        <h4 th:text="${message}"></h4>
-        <h3><a th:href="@{/logout}">Logout</a></h3>
-    </div>
-</div>
-
 
 <!-- Modal for View Participations -->
 <div id="view-modal" class="modal" aria-hidden="true">
     <div class="modal-content">
-        <span class="close" onclick="closeModal('delete-modal')">&times;</span>
-        <!----------------------------------------------------------------------------- -->
+        <span class="close" onclick="closeModal('view-modal')">&times;</span>
+
+        <!-- Accepted Participations -->
         <h4>Accepted Applications</h4>
         <table>
             <thead>
@@ -89,19 +101,18 @@
             </thead>
             <tbody>
             <tr th:each="pr : ${acceptedParts}">
-                <td th:text="${pr.ev.name}"></td>
-                <td th:text="${pr.org.name}"></td>
-                <td th:text="${pr.location}"></td>
+                <td th:text="${pr.event.name}"></td>
+                <td th:text="${pr.org.orgName}"></td>
+                <td th:text="${pr.event.location}"></td>
                 <td th:text="${pr.status}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(acceptedParts)}">
-                <td colspan="6" class="no-data">No application is accepted</td>
+                <td colspan="4" class="no-data">No accepted applications.</td>
             </tr>
             </tbody>
         </table>
 
-        <!----------------------------------------------------------------------------- -->
-
+        <!-- Pending Participations -->
         <h4>Pending Applications</h4>
         <table>
             <thead>
@@ -114,52 +125,45 @@
             </thead>
             <tbody>
             <tr th:each="pr : ${pendingParts}">
-                <td th:text="${pr.ev.name}"></td>
-                <td th:text="${pr.org.name}"></td>
-                <td th:text="${pr.location}"></td>
+                <td th:text="${pr.event.name}"></td>
+                <td th:text="${pr.org.orgName}"></td>
+                <td th:text="${pr.event.location}"></td>
                 <td th:text="${pr.status}"></td>
             </tr>
-            <tr th:if="${#lists.isEmpty(acceptedParts)}">
-                <td colspan="6" class="no-data">No application is pending.</td>
+            <tr th:if="${#lists.isEmpty(pendingParts)}">
+                <td colspan="4" class="no-data">No pending applications.</td>
             </tr>
             </tbody>
         </table>
 
-        <!----------------------------------------------------------------------------- -->
-
+        <!-- Rejected Participations -->
         <h4>Rejected Applications</h4>
         <table>
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Date</th>
+                <th>Event</th>
+                <th>Host</th>
                 <th>Location</th>
-                <th>Volunteers</th>
-                <th>Topic</th>
-                <th>Expand</th>
+                <th>Status</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="pr : ${pendingParts}">
-                <td th:text="${pr.ev.name}"></td>
-                <td th:text="${pr.org.name}"></td>
-                <td th:text="${pr.location}"></td>
+            <tr th:each="pr : ${rejectedParts}">
+                <td th:text="${pr.event.name}"></td>
+                <td th:text="${pr.org.orgName}"></td>
+                <td th:text="${pr.event.location}"></td>
                 <td th:text="${pr.status}"></td>
             </tr>
-            <tr th:if="${#lists.isEmpty(acceptedParts)}">
-                <td colspan="6" class="no-data">None application rejected!</td>
+            <tr th:if="${#lists.isEmpty(rejectedParts)}">
+                <td colspan="4" class="no-data">No rejected applications.</td>
             </tr>
             </tbody>
         </table>
-
-        <form th:action="@{/dashboard/org//delete-rejected-parts}" method="get">
-            <button class="delete-all-events" type="submit">Delete All Rejected Applications</button>
-        </form>
     </div>
 </div>
 
+
 <script>
-    // JavaScript Functions
     function toggleUserInfo() {
         document.querySelector('.user-info').classList.toggle('open');
     }
@@ -172,18 +176,19 @@
 
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
-        if (modal) modal.style.display = "block";
+        modal.style.display = "block";
     }
 
     function closeModal(modalId) {
         const modal = document.getElementById(modalId);
-        if (modal) modal.style.display = "none";
+        modal.style.display = "none";
     }
 
-    function toggleDetails(id) {
-        const details = document.getElementById(id);
-        if (details) details.style.display = details.style.display === "none" ? "block" : "none";
+    function toggleParticipations() {
+        const table = document.getElementById('participations-table');
+        table.style.display = table.style.display === 'none' ? 'block' : 'none';
     }
+
 </script>
 
 </body>

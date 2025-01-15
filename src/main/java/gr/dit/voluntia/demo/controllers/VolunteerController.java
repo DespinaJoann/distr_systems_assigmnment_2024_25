@@ -1,6 +1,6 @@
 package gr.dit.voluntia.demo.controllers;
 
-import gr.dit.voluntia.demo.links.CurrentUser;
+import gr.dit.voluntia.demo.linkers.CurrentUser;
 import gr.dit.voluntia.demo.models.Event;
 import gr.dit.voluntia.demo.services.VolunteerService;
 import org.springframework.stereotype.Controller;
@@ -19,23 +19,6 @@ public class VolunteerController {
         this.volunteerService = volunteerService;
     }
 
-    /**
-     * Handles the deletion of all rejected participations for the current volunteer.
-     * Redirects the user back to the dashboard page after deletion.
-     *
-     * @return a redirection to the volunteer dashboard
-     */
-    @PostMapping("/delete-rejected-parts")
-    public String deleteRejectedParticipations() {
-        // Get the current user's ID
-        Long volId = CurrentUser.fromSecurityContext().getId();
-
-        // Call the service to delete all rejected participations
-        volunteerService.deleteAllRejectedParticipation(volId);
-
-        // Redirect back to the dashboard
-        return "redirect:/dashboard/vol";
-    }
 
     /**
      * Handles the application of a volunteer to a specific event.
@@ -44,7 +27,7 @@ public class VolunteerController {
      * @param eventId the ID of the event to apply for
      * @return a redirection to the events list page
      */
-    @PostMapping("/applyToEvent")
+    @PostMapping("/apply-to-event")
     public String applyToEvent(@RequestParam Long eventId, Model model) {
         // Get the current user's ID
         Long volId = CurrentUser.fromSecurityContext().getId();

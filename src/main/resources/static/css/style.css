@@ -113,9 +113,8 @@ footer a:hover {
     text-decoration: underline;
 }
 
-
-.error-messages {
-    padding: 10px;
-    margin-top: 20px;
-    font-size: 14px;
+.error-message {
+    color: red;
+    font-weight: bold;
+    margin-bottom: 10px;
 }

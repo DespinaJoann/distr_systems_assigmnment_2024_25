@@ -1,7 +1,6 @@
 package gr.dit.voluntia.demo.controllers;
 
-import gr.dit.voluntia.demo.links.CurrentUser;
-import gr.dit.voluntia.demo.links.NewUser;
+import gr.dit.voluntia.demo.linkers.CurrentUser;
 import gr.dit.voluntia.demo.models.Event;
 import gr.dit.voluntia.demo.services.EventService;
 import gr.dit.voluntia.demo.services.OrganizationService;
@@ -51,17 +50,4 @@ public class OrganizationController {
         return "redirect:/dashboard/org"; // Redirect back to the dashboard
     }
 
-    // Delete all rejected events for the organization
-    @GetMapping("/delete-rejected-events")
-    public String deleteRejectedEvents(@RequestParam Long orgId) {
-        organizationService.deleteAllRejectedEvents(orgId); // Delete all rejected events for the organization
-        return "redirect:/dashboard/org"; // Redirect back to the dashboard
-    }
-
-    // Delete all expired events for the organization
-    @GetMapping("/delete-expired-events")
-    public String deleteExpiredEvents(@RequestParam Long orgId) {
-        organizationService.deleteAllExpiredEvents(orgId); // Delete all expired events for the organization
-        return "redirect:/dashboard/org"; // Redirect back to the dashboard
-    }
 }

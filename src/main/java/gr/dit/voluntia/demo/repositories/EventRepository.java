@@ -8,8 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface EventRepository extends JpaRepository<Event, Long>,
-        JpaSpecificationExecutor<Event> {
+public interface EventRepository extends JpaRepository<Event, Long> {
 
     // Remove all events from the list
     void deleteAllByIdIn(List<Long> ids);
@@ -27,6 +26,7 @@ public interface EventRepository extends JpaRepository<Event, Long>,
 
     @Query("SELECT ev FROM Event ev WHERE ev.status = 'confirmed'")
     List<Event> findAllConfirmedEvents();
+
     /**
      * Finds events by applying optional filters for status, date,
      * topic and location.

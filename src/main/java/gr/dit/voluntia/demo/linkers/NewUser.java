@@ -1,4 +1,4 @@
-package gr.dit.voluntia.demo.links;
+package gr.dit.voluntia.demo.linkers;
 
 import lombok.Getter;
 import lombok.Setter;

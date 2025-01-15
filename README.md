@@ -31,7 +31,7 @@ This `API` powers a volunteer management platform by offering core endpoints for
 │   │   │               │   ├── HomeController.java
 │   │   │               │   └── ReactRoutingForwardingController.java
 │   │   │               ├── DemoApplication.java
-│   │   │               ├── links
+│   │   │               ├── linkers
 │   │   │               │   ├── admin
 │   │   │               │   │   ├── ConfirmEventsDto.java
 │   │   │               │   │   └── ConfirmUserDto.java

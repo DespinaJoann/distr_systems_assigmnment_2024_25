@@ -1,6 +1,6 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.links.ParticipationObj;
+import gr.dit.voluntia.demo.linkers.ParticipationObj;
 import gr.dit.voluntia.demo.models.*;
 import gr.dit.voluntia.demo.repositories.EventRepository;
 import gr.dit.voluntia.demo.repositories.OrganizationRepository;
@@ -8,7 +8,6 @@ import gr.dit.voluntia.demo.repositories.ParticipationRepository;
 import gr.dit.voluntia.demo.repositories.VolunteerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -39,6 +38,17 @@ public class VolunteerService {
         return vol.getAccountStatus().equals("rejected") ? true : false;
     }
 
+    /**
+     * Description:
+     * Checks if a volunteer is pending.
+     * @param volId the volunteer ID
+     * @return true if the volunteer is pending
+     * * */
+    public boolean isVolunteerPending(Long volId) {
+        Volunteer vol = volunteerRepository.findById(volId).get();
+        return vol.getAccountStatus().equals("pending") ? true : false;
+    }
+
 
     /**
      * Description:
@@ -67,6 +77,7 @@ public class VolunteerService {
         // Create a new participation object
         Participation part = new Participation();
         part.setEventId(ev.getId());
+        part.setOrganizationId(ev.getOrganizationId());
         part.setVolunteerId(volId);
         part.setDate(applyDate);
         part.setStatus("pending");
@@ -99,36 +110,6 @@ public class VolunteerService {
         return parseToParticipationObjListWithStatus(filteredParticipations, status);
     }
 
-    /**
-     * Description:
-     * Deletes all rejected participations of a given volunteer.
-     * @param volId the ID of the volunteer
-     * * */
-    public void deleteAllRejectedParticipation(Long volId) {
-        // Retrieve volunteer object by their ID
-        Volunteer vol = volunteerRepository.findById(volId).orElse(null);
-        if (vol == null) {
-            throw new IllegalArgumentException("Volunteer not found with ID: " + volId);
-        }
-
-        // Filter rejected participations locally
-        List<Participation> rejectedParts = new ArrayList<>();
-        Iterator<Participation> iterator = vol.getListOfParticipation().iterator();
-
-        while (iterator.hasNext()) {
-            Participation participation = iterator.next();
-            if ("rejected".equals(participation.getStatus())) {
-                rejectedParts.add(participation);
-                iterator.remove(); // Remove from local list
-            }
-        }
-
-        // Delete rejected participations from the database
-        participationRepository.deleteAll(rejectedParts);
-
-        // Save the updated volunteer to reflect the changes in the local list
-        volunteerRepository.save(vol);
-    }
 
     /**
      * Description:

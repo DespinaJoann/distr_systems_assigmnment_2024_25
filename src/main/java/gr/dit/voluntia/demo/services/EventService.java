@@ -19,12 +19,24 @@ public class EventService {
     private EventRepository eventRepository;
 
 
+    /**
+     * Description:
+     * Retrieves all rejected events for a specific organization.
+     * @param orgId the organization ID.
+     * @return List<Event> of expired events.
+     * * */
     public List<Event> getAllRejectedEventsWithOrganizationId(Long orgId) {
         List<Event> evList = eventRepository.findEventsByOrgIdAndStatus("rejected", orgId);
         return evList == null ? new ArrayList<Event>() : evList;
     }
 
 
+    /**
+     * Description:
+     * Retrieves all rejected events for a specific organization.
+     * @param orgId the organization ID.
+     * @return List<Event> of expired events.
+     * * */
     public List<Event> getAllExpiredEventsWithOrganizationId(Long orgId) {
         List<Event> evList = eventRepository.findEventsByOrgIdAndStatus("expired", orgId);
         return evList == null ? new ArrayList<Event>() : evList;
@@ -33,9 +45,8 @@ public class EventService {
     /**
      * Description:
      * Finds all expired events for a specific organization.
-     *
-     * @param orgId the organization ID
-     * @return List of expired events
+     * @param orgId the organization ID.
+     * @return List<Event> of expired events.
      * * */
     @Transactional
     public List<Event> calculateExpiredEvents(Long orgId) {

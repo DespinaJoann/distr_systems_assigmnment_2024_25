@@ -1,4 +1,4 @@
-package gr.dit.voluntia.demo.links;
+package gr.dit.voluntia.demo.linkers;
 import gr.dit.voluntia.demo.models.Event;
 import gr.dit.voluntia.demo.models.Organization;
 import gr.dit.voluntia.demo.models.Volunteer;

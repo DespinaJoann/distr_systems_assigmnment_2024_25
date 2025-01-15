@@ -47,8 +47,8 @@
                 <button onclick="openModal('active-modal')">View</button>
             </div>
             <div class="card">
-                <h3>Clean Up</h3>
-                <p>Delete rejected events.</p>
+                <h3>Rejections</h3>
+                <p>Display rejected events.</p>
                 <button onclick="openModal('delete-modal')">View</button>
             </div>
             <div class="card">
@@ -190,11 +190,7 @@
             </tr>
             </tbody>
         </table>
-        <form th:action="@{/dashboard/org/delete-rejected-events}" method="get">
-            <button class="delete-all-events" type="submit">Delete All Rejected Events</button>
-        </form>
 
-        <span class="close" onclick="closeModal('delete-modal')">&times;</span>
         <h4>Expired Events</h4>
         <table>
             <thead>
@@ -226,9 +222,6 @@
             </tr>
             </tbody>
         </table>
-        <form th:action="@{/dashboard/org/delete-rejected-events}" method="get">
-            <button class="delete-all-events" type="submit">Delete All Rejected Events</button>
-        </form>
     </div>
 </div>
 

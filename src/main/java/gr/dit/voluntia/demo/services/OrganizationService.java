@@ -1,6 +1,6 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.links.ParticipationObj;
+import gr.dit.voluntia.demo.linkers.ParticipationObj;
 import gr.dit.voluntia.demo.models.*;
 import gr.dit.voluntia.demo.repositories.EventRepository;
 import gr.dit.voluntia.demo.repositories.OrganizationRepository;
@@ -9,11 +9,9 @@ import gr.dit.voluntia.demo.repositories.VolunteerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -100,6 +98,17 @@ public class OrganizationService {
     public boolean isOrganizationRejected(Long orgId) {
         Organization org = organizationRepository.findById(orgId).get();
         return org.getAccountStatus().equals("rejected") ? true : false;
+    }
+
+    /**
+     * Description:
+     * Checks if an organization is pending.
+     * @param orgId the organization ID
+     * @return true if the organization is rejected
+     * * */
+    public boolean isOrganizationPending(Long orgId) {
+        Organization org = organizationRepository.findById(orgId).get();
+        return org.getAccountStatus().equals("pending") ? true : false;
     }
 
     /**

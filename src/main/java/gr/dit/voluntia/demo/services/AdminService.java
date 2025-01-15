@@ -49,7 +49,7 @@ public class AdminService  {
     public void approveEventById(Long eventId) {
         Optional<Event> event = eventRepository.findById(eventId);
         event.ifPresent(e -> {
-            e.setStatus("approved");
+            e.setStatus("confirmed");
             eventRepository.save(e);
         });
     }
@@ -131,7 +131,7 @@ public class AdminService  {
     public void approveVolunteerById(Long volId) {
         Optional<Volunteer> volunteer = volunteerRepository.findById(volId);
         volunteer.ifPresent(vol -> {
-            vol.setAccountStatus("confirmed");
+            vol.setAccountStatus("approved");
             volunteerRepository.save(vol);
         });
     }

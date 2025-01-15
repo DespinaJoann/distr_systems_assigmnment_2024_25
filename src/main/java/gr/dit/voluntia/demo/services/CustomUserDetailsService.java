@@ -15,6 +15,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
+
+/**
+ * Implementation of {@link UserDetailsService} to handle user authentication
+ * and authorization based on the username provided.
+ *
+ * This service fetches user details from one of three repositories: 
+ * {@link AdminRepository}, {@link OrganizationRepository}, or {@link VolunteerRepository}.
+ * It assigns roles to users based on their type (Admin, Organization, or Volunteer).
+ * * */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -27,6 +36,19 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private VolunteerRepository volunteerRepository;
 
+
+    /**
+     * Description:
+     * Loads user details based on the provided username. It searches for the user 
+     * in the Admin, Organization, and Volunteer repositories in this order.
+     * 
+     * If the user is found, a {@link CustomUserDetails} object is created with 
+     * appropriate roles assigned. If no user is found, an exception is thrown.
+     *
+     * @param username the username of the user to be authenticated.
+     * @return a {@link UserDetails} object containing user information and roles.
+     * @throws UsernameNotFoundException if no user is found with the given username.
+     * * */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // Search in Admin table

@@ -27,4 +27,6 @@ public interface VolunteerRepository extends JpaRepository<Volunteer, Long>, Jpa
 
 
     User findByUsernameAndPassword(String username, String password);
+
+    boolean existsAllByUsername(String username);
 }

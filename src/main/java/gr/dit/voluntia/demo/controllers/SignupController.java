@@ -1,11 +1,17 @@
 package gr.dit.voluntia.demo.controllers;
 
 
-import gr.dit.voluntia.demo.links.NewUser;
+import gr.dit.voluntia.demo.linkers.CurrentUser;
+import gr.dit.voluntia.demo.linkers.NewUser;
+import gr.dit.voluntia.demo.models.Event;
+import gr.dit.voluntia.demo.repositories.AdminRepository;
+import gr.dit.voluntia.demo.repositories.OrganizationRepository;
+import gr.dit.voluntia.demo.repositories.VolunteerRepository;
 import gr.dit.voluntia.demo.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
 
@@ -14,6 +20,12 @@ public class SignupController {
 
     @Autowired
     private UsersService usersService;
+    @Autowired
+    private VolunteerRepository volunteerRepository;
+    @Autowired
+    private OrganizationRepository organizationRepository;
+    @Autowired
+    private AdminRepository adminRepository;
 
 
     @GetMapping("/signup/vol")
@@ -35,9 +47,14 @@ public class SignupController {
         return "/signup/admin";
     }
 
-
     @PostMapping("/signup/vol")
-    public String processVolunteerSignup(NewUser newUser) {
+    public String processVolunteerSignup(NewUser newUser, Model model) {
+       // Check if user already exists
+        if (volunteerRepository.findByUsername(newUser.getUsername()) != null) {
+            model.addAttribute("message", "User with this username already exists. Please try again");
+            return "redirect:/signup/vol";
+        }
+
         // Ensure correct role is set
         newUser.setRole("VOLUNTEER");
         // Call service method to handle logic
@@ -47,14 +64,25 @@ public class SignupController {
     }
 
     @PostMapping("/signup/org")
-    public String processOrganizationSignup(NewUser newUser) {
+    public String processOrganizationSignup(NewUser newUser, Model model) {
+        if (organizationRepository.findByUsername(newUser.getUsername()) != null) {
+            model.addAttribute("message", "User with this username already exists. Please try again");
+            return "redirect:/signup/org";
+        }
+
         newUser.setRole("ORGANIZATION");
         usersService.saveOrganization(newUser);
         return "redirect:/login/org";
     }
 
     @PostMapping("/signup/admin")
-    public String processAdminSignup(NewUser newUser) {
+    public String processAdminSignup(NewUser newUser, Model model) {
+        if (adminRepository.findByUsername(newUser.getUsername()) != null
+            || adminRepository.count() > 0) {
+            model.addAttribute("message", "Admin is only one for this app!");
+            return "redirect:/signup/admin";
+        }
+
         newUser.setRole("ADMIN");
         usersService.saveAdmin(newUser);
         return "redirect:/login/admin";

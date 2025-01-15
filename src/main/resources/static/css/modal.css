@@ -17,7 +17,6 @@ body {
 /* Dashboard Container */
 .dashboard-container {
     display: flex;
-    flex-direction: row;
     width: 100%;
 }
 
@@ -133,34 +132,81 @@ body {
     gap: 20px;
     margin-top: 20px;
 }
-
+/* Card Styles */
 .card {
-    color: #13141A; /* Dark text for light theme */
+    color: #13141A;
     background-color: #a053d3;
-    border: 1px solid #bcc4cc; /* Subtle border */
-    border-radius: 12px; /* Rounded corners for a modern look */
+    border: 1px solid #bcc4cc;
+    border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05); /* Clean shadow */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
     overflow: hidden;
     position: relative;
+    margin-bottom: 20px; /* Added margin to separate card and table */
 }
 
 .card:hover {
-    background-color: #9143c5; /* Slightly darker on hover */
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1); /* Enhanced shadow */
-    transform: translateY(-5px); /* Subtle lift effect */
+    background-color: #9143c5;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
 }
 
-.card h3 {
-    margin-bottom: 10px;
-    color: #3C3F4E; /* Muted blue-gray */
-    font-weight: bold;
+/* Table Styles */
+#participations-table {
+    display: block;
+    margin-top: 20px; /* Ensures space between card and table */
+    overflow: hidden;
 }
 
-.card p {
-    color: #13141A; /* Consistent dark text */
-    font-size: 0.9rem;
+#participations-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#participations-table th,
+#participations-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+#participations-table th {
+    background-color: #f4f4f4;
+}
+
+#participations-table td {
+    background-color: #fff;
+}
+
+#participations-table .no-data {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+}
+
+button.apply-btn {
+    background-color: #6c63ff;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button.apply-btn:hover {
+    background-color: #5a54d9;
+}
+
+/* Handling overflow and responsive table */
+@media (max-width: 768px) {
+    #participations-table table {
+        font-size: 14px;
+    }
+
+    #participations-table th, #participations-table td {
+        padding: 8px;
+    }
 }
 
 /* Dark Theme */
@@ -213,3 +259,99 @@ body.dark-theme #theme-toggle:hover {
     background-color: #4C3BCF; /* Bright purple hover */
     color: #ECDFCC;
 }
+
+
+/* Modal Styling */
+.modal {
+    display: none; /* Initially hidden */
+    position: fixed;
+    z-index: 1000; /* Ensures the modal is above other content */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Transparent black background */
+    overflow: hidden; /* Hide overflowing content */
+    animation: fadeIn 0.3s ease-in-out; /* Fade-in animation */
+}
+
+.modal-content {
+    background-color: #ffffff; /* White background for content */
+    margin: 5% auto;
+    padding: 20px;
+    border: none;
+    width: 80%;
+    max-width: 700px;
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    color: #333; /* Dark text color */
+    animation: slideDown 0.3s ease-in-out; /* Slide down animation */
+}
+
+.close {
+    color: #666; /* Light gray color */
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    transition: color 0.2s ease, transform 0.2s ease; /* Smooth transitions */
+}
+
+.close:hover,
+.close:focus {
+    color: #000; /* Black when hovered or focused */
+    transform: scale(1.1); /* Slight zoom effect */
+    cursor: pointer;
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0; /* Fully transparent */
+    }
+    to {
+        opacity: 1; /* Fully visible */
+    }
+}
+
+/* Slide Down Animation */
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px); /* Start 20px above */
+    }
+    to {
+        transform: translateY(0); /* Return to original position */
+    }
+}
+
+/* No Data Message */
+.no-data {
+    text-align: center;
+    color: #dc3545; /* Bright red */
+    font-style: italic;
+    font-size: 1rem;
+    margin-top: 20px;
+}
+
+/* Expandable Content */
+.expandable-content {
+    display: none;
+    padding: 15px;
+    background-color: #f8f9fa; /* Light gray background */
+    border-radius: 8px; /* Rounded corners */
+    margin-top: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    color: #495057; /* Dark gray text */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 90%; /* Adjust width for smaller screens */
+        padding: 15px; /* Reduce padding for smaller screens */
+    }
+
+    .close {
+        font-size: 24px; /* Adjust close button size */
+    }
+}
+

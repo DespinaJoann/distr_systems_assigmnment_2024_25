@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Rejected</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/error.css}">
+</head>
+<body>
+<div class="rejected-container">
+  <div class="card-container">
+    <div class="card">
+      <h1>Your account has been rejected</h1>
+      <img th:src="@{/images/monitor-screen.png}" alt="Pending Approval" class="card-image">
+      <p>Unfortunately, your account has been rejected by the administrator.</p>
+      <p class="link-to">Go back to the <a th:href="@{/}">Home Page</a></p>
+    </div>
+  </div>
+</body>
+</html>

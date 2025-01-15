@@ -1,6 +1,6 @@
 package gr.dit.voluntia.demo.services;
 
-import gr.dit.voluntia.demo.links.NewUser;
+import gr.dit.voluntia.demo.linkers.NewUser;
 import gr.dit.voluntia.demo.models.Admin;
 import gr.dit.voluntia.demo.models.Organization;
 import gr.dit.voluntia.demo.models.Volunteer;
@@ -14,9 +14,13 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 /**
- * Definition: A class that manges only for the Authentication requests based on the role of the User.
- *  - Redirects to the appropriate services.
- * */
+ * Service class responsible for managing user-related operations, 
+ * including registration, profile updates, and ensuring proper 
+ * authentication based on user roles (Volunteer, Organization, or Admin).
+ *
+ * This service acts as a bridge to handle user authentication requests 
+ * and redirects them to the appropriate data layer or business logic based on user roles.
+ * * */
 @Service
 public class UsersService {
 
@@ -29,7 +33,11 @@ public class UsersService {
     @Autowired
     private AdminRepository adminRepository;
 
-    // Register Volunteer
+    /**
+     * Description:
+     * Registers a new Volunteer user.
+     * @param request A {@link NewUser} object containing the User details to be registered.
+     * * */    
     public void saveVolunteer(NewUser request) {
         String hashedPassword = passwordEncoder.encode(request.getPassword());
         Volunteer vol = new Volunteer();
@@ -46,7 +54,11 @@ public class UsersService {
         volunteerRepository.save(vol);
     }
 
-    // Register Organization
+    /**
+     * Description:
+     * Registers a new Organization user.
+     * @param request A {@link NewUser} object containing the User details to be registered.
+     * * */    
     public void saveOrganization(NewUser request) {
         String hashedPassword = passwordEncoder.encode(request.getPassword());
         Organization org = new Organization();
@@ -69,7 +81,11 @@ public class UsersService {
     }
 
 
-    // Register Admin
+    /**
+     * Description:
+     * Registers a new Admin user.
+     * @param request A {@link NewUser} object containing the User details to be registered.
+     * * */    
     public void saveAdmin(NewUser request) {
         String hashedPassword = passwordEncoder.encode(request.getPassword());
         if (!uniqueAdmin()) {
@@ -91,6 +107,13 @@ public class UsersService {
         return existingAdmin.isEmpty() && adminRepository.findAll().isEmpty();
     }
 
+    /**
+     * Description:
+     * Updates the profile of a user based on their role.
+     * Handles updates for Volunteer, Organization, and Admin profiles.
+     * Throws {@link IllegalArgumentException} for invalid roles.
+     * @param updatedUser A {@link NewUser} object containing the updated user details.
+     * * */
     public void updateProfile(NewUser updatedUser) {
         switch (updatedUser.getRole()) {
             case "VOLUNTEER" , "ROLE_VOLUNTEER":

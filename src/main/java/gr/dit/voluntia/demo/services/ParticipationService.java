@@ -14,9 +14,14 @@ public class ParticipationService  {
     @Autowired
     private ParticipationRepository participationRepository;
 
-    // Extra methods
-    public List<Participation> findAllParticipationForEvent(Long eventId) {
-        return participationRepository.findAllByEventId(eventId);
+    /**
+     * Description:
+     * Retrives all participations of a specific event.
+     * @param evId the ID of the event.
+     * @return List<Participation>the participation list
+     * * */
+    public List<Participation> findAllParticipationForEvent(Long evId) {
+        return participationRepository.findAllByEventId(evId);
     }
 
 }

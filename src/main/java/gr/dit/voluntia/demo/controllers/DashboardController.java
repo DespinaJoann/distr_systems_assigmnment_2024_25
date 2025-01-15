@@ -1,10 +1,9 @@
 package gr.dit.voluntia.demo.controllers;
 
-import gr.dit.voluntia.demo.links.CurrentUser;
-import gr.dit.voluntia.demo.links.ParticipationObj;
+import gr.dit.voluntia.demo.linkers.CurrentUser;
+import gr.dit.voluntia.demo.linkers.ParticipationObj;
 import gr.dit.voluntia.demo.models.Event;
 import gr.dit.voluntia.demo.models.Organization;
-import gr.dit.voluntia.demo.models.Participation;
 import gr.dit.voluntia.demo.models.Volunteer;
 import gr.dit.voluntia.demo.services.AdminService;
 import gr.dit.voluntia.demo.services.OrganizationService;
@@ -40,17 +39,18 @@ public class DashboardController {
         model.addAttribute("currentUser", currentUser);
 
         // Check if the volunteer is rejected by the admin
+        if (volunteerService.isVolunteerPending(currentUser.getId())) {
+            return "errors/user-not-approved";
+        }
         if (volunteerService.isVolunteerRejected(currentUser.getId())) {
-            model.addAttribute("rejected", true); // Mark the organization as rejected
-            model.addAttribute("message", "Your organization has been rejected by the admin. You will be logged out shortly.");
-            return "dashboard/vol"; // Return the org dashboard page
+            return "errors/user-rejected";
         }
 
         // Fetch the organization’s data (volunteer participation statuses, events, etc.)
         List<Event> allConfirmedEvs = volunteerService.getAllConfirmedEvents();
-        List<Participation> rejectedParts = volunteerService.getAllParticipationWithStatus(currentUser.getId(),"rejected");
-        List<Participation> acceptedParts = volunteerService.getAllParticipationWithStatus(currentUser.getId(),"accepted");
-        List<Participation> pendingParts = volunteerService.getAllParticipationWithStatus(currentUser.getId(),"pending");
+        List<ParticipationObj> rejectedParts = volunteerService.getAllParticipationWithStatus(currentUser.getId(),"rejected");
+        List<ParticipationObj> acceptedParts = volunteerService.getAllParticipationWithStatus(currentUser.getId(),"accepted");
+        List<ParticipationObj> pendingParts = volunteerService.getAllParticipationWithStatus(currentUser.getId(),"pending");
 
         // Add data to the model
         model.addAttribute("allConfirmedEvs", allConfirmedEvs);
@@ -87,9 +87,10 @@ public class DashboardController {
 
         // Check if the organization is rejected by the admin
         if (organizationService.isOrganizationRejected(currentUser.getId())) {
-            model.addAttribute("rejected", true); // Mark the organization as rejected
-            model.addAttribute("message", "Your organization has been rejected by the admin. You will be logged out shortly.");
-            return "dashboard/org"; // Return the org dashboard page
+            return "errors/user-rejected";
+        }
+        if (organizationService.isOrganizationPending(currentUser.getId())) {
+            return "errors/user-not-approved";
         }
 
         // Fetch the organization’s data (volunteer participation statuses, events, etc.)
