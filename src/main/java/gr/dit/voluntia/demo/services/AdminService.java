@@ -12,9 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-// NOTE: In this class in each method, when the result is null means failure
-// The failure or the success response will be voiced from the Controller
-
 @Service
 public class AdminService  {
 

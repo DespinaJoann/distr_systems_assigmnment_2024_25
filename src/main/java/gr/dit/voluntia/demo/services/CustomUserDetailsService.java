@@ -16,14 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 
 
-/**
- * Implementation of {@link UserDetailsService} to handle user authentication
- * and authorization based on the username provided.
- *
- * This service fetches user details from one of three repositories: 
- * {@link AdminRepository}, {@link OrganizationRepository}, or {@link VolunteerRepository}.
- * It assigns roles to users based on their type (Admin, Organization, or Volunteer).
- * * */
+
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 

@@ -7,10 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-/**
- * Custom implementation of {@link UserDetails} to store and manage user details 
- * for authentication and authorization in a Spring Security-based application.
- */
+
 @Getter
 @Setter
 public class CustomUserDetails implements UserDetails {
