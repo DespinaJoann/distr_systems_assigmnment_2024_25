@@ -112,7 +112,9 @@ A `dummy_data.sql` file is included to populate the database with test data. The
 ---
 
 ## **TODO**
-
+- Add a public page for the start.
+- Add a public calendar with the events.
+- Improve the UI and the design of the page.
 ---
 
 ## **License**

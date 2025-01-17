@@ -27,6 +27,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT ev FROM Event ev WHERE ev.status = 'confirmed'")
     List<Event> findAllConfirmedEvents();
 
+    @Query("SELECT ev FROM Event ev WHERE ev.status = 'rejected'")
+    List<Event> findAllRejectedEvents();
     /**
      * Finds events by applying optional filters for status, date,
      * topic and location.

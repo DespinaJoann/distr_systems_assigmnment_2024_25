@@ -14,7 +14,7 @@
     <div class="sidebar">
         <h2>Dashboard</h2>
         <ul class="menu">
-            <li><a href="#">Home</a></li>
+            <li><a th:href="@{/}">Home</a></li>
             <li><a href="#">My Tasks</a></li>
             <li><a href="#">Edit Profile</a></li>
             <li><a th:href="@{/logout}">Logout</a></li>
@@ -45,13 +45,17 @@
                 <p>Approve or reject pending events submitted by users.</p>
                 <button onclick="openModal('events-modal')">View Events</button>
             </div>
+
+            <!-- Display Status Events Section -->
+            <div class="card">
+                <h3>Control Panel</h3>
+                <p>View all Users and Events.</p>
+                <button onclick="openModal('control-modal')">View Tables</button>
+            </div>
         </div>
     </div>
 </div>
 
-<footer>
-    <a th:href="@{/}">Go back to the Home Page</a>
-</footer>
 
 <!-- Modal for Users -->
 <div id="users-modal" class="modal">
@@ -82,13 +86,14 @@
                 <td>
                     <button class="expand-button" onclick="toggleDetails('org-details-${org.id}')">🔎</button>
                     <div id="org-details-${org.id}" class="expandable-content">
-                        <p th:text="${org.username}"></p>
-                        <p th:text="${org.orgType}"></p>
-                        <p th:text="${org.phoneNumber}"></p>
-                        <p th:text="${org.address}"></p>
-                        <p th:text="${org.location}"></p>
-                        <p th:text="${org.orgType}"></p>
-                        <p th:text="${org.profileDescription}"></p>
+                        <p th:text="'username: ' + ${org.username}"></p>
+                        <p th:text="'ID: ' + ${org.id}"></p>
+                        <p th:text="'type: ' + ${org.orgType}"></p>
+                        <p th:text="'phone: ' + ${org.phoneNumber}"></p>
+                        <p th:text="'address: ' + ${org.address}"></p>
+                        <p th:text="'location: ' + ${org.location}"></p>
+                        <p th:text="'type: ' + ${org.orgType}"></p>
+                        <p th:text="'description: ' + ${org.profileDescription}"></p>
                     </div>
                 </td>
             </tr>
@@ -163,6 +168,110 @@
     </div>
 </div>
 
+<!-- Control Panel-->
+<div id="control-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('control-modal')">&times;</span>
+        <!-- Organization Table -->
+        <h4>All Organizations</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>Organization Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="org : ${allOrgs}">
+                <td th:text="${org.orgName}"></td>
+                <td th:text="${org.email}"></td>
+                <td th:text="${org.accountStatus}"></td>
+                <td>
+                    <button class="expand-button" onclick="toggleDetails('org-details-${org.id}')">🔎</button>
+                    <div id="org-details-${org.id}" class="expandable-content">
+                        <p th:text="'username: ' + ${org.username}"></p>
+                        <p th:text="'ID: ' + ${org.id}"></p>
+                        <p th:text="'type: ' + ${org.orgType}"></p>
+                        <p th:text="'phone: ' + ${org.phoneNumber}"></p>
+                        <p th:text="'address: ' + ${org.address}"></p>
+                        <p th:text="'location: ' + ${org.location}"></p>
+                        <p th:text="'type: ' + ${org.orgType}"></p>
+                        <p th:text="'description: ' + ${org.profileDescription}"></p>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(allOrgs)}">
+                <td colspan="4" class="no-data">There is no organization registered.</td>
+            </tr>
+            </tbody>
+        </table>
+        <!-- Volunteer Table -->
+        <h4>All Volunteers</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="vol : ${allVols}">
+                <td th:text="${vol.firstName} + ' ' + ${vol.lastName}"></td>
+                <td th:text="${vol.email}"></td>
+                <td th:text="${vol.accountStatus}"></td>
+                <td>
+                    <button class="expand-button" onclick="toggleDetails('org-details-${org.id}')">🔎</button>
+                    <div id="vol-details-${vol.id}" class="expandable-content">
+                        <p th:text="'username: ' + ${vol.username}"></p>
+                        <p th:text="'ID: ' +${vol.id}"></p>
+                        <p th:text="'phone: ' +${vol.phoneNumber}"></p>
+                        <p th:text="'birthdate: ' +${vol.dateOfBirth}"></p>
+                        <p th:text="'description: ' +${vol.profileDescription}"></p>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(allVols)}">
+                <td colspan="4" class="no-data">There is no volunteer registered.</td>
+            </tr>
+            </tbody>
+        </table>
+        <!-- Event Table -->
+        <h4>All Events</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>Event Name</th>
+                <th>Topic</th>
+                <th>Status</th>
+                <th>Organization's Code</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Participants</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ev : ${allEvents}">
+                <td th:text="${ev.name}"></td>
+                <td th:text="${ev.topic}"></td>
+                <td th:text="${ev.status}"></td>
+                <td th:text="${ev.organizationId}"></td>
+                <td th:text="${ev.date}"></td>
+                <td th:text="${ev.location}"></td>
+                <td th:text="${ev.numberOfVolunteers}"></td>
+                <td th:text="${ev.description}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(allEvents)}">
+                <td colspan="4" class="no-data">There is no event created.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 <script>
     function toggleUserInfo() {
         const userInfo = document.querySelector('.user-info');

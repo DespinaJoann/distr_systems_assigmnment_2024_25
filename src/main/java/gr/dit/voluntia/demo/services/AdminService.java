@@ -27,6 +27,14 @@ public class AdminService  {
 
     // Event Methods
     /// ////////////////////////////////////////////////////////////////////////////
+    /**
+     * Description:
+     * Retrieve all events
+     * @return List of all events in the database
+     * * */
+    public List<Event> getAllEvents() {
+        return eventRepository.findAll();
+    }
 
     /**
      * Description:
@@ -68,6 +76,14 @@ public class AdminService  {
 
     // Organization Methods
     /// ////////////////////////////////////////////////////////////////////////////
+    /**
+     * Description:
+     * Retrieve all organization
+     * @return List of organization instances from database
+     * * */
+    public List<Organization> getAllOrganizations() {
+        return organizationRepository.findAll();
+    }
 
     /**
      * Description:
@@ -109,6 +125,14 @@ public class AdminService  {
 
     // Volunteer Methods
     /// ////////////////////////////////////////////////////////////////////////////
+    /**
+     * Description:
+     * Retrieve all volunteers
+     * @return List of all volunteers
+     * * */
+    public List<Volunteer> getAllVolunteers() {
+        return volunteerRepository.findAll();
+    }
 
     /**
      * Description:
@@ -146,7 +170,6 @@ public class AdminService  {
             volunteerRepository.save(vol);
         });
     }
-
 
 }
 

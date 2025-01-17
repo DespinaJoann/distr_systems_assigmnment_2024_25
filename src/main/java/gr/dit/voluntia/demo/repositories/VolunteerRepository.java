@@ -23,6 +23,12 @@ public interface VolunteerRepository extends JpaRepository<Volunteer, Long>, Jpa
     @Query("SELECT vol FROM Volunteer vol WHERE vol.accountStatus = 'pending'")
     List<Volunteer> findAllPendingVolunteers();
 
+    @Query("SELECT vol FROM Volunteer vol WHERE vol.accountStatus = 'approved'")
+    List<Volunteer> findAllApprovedVolunteers();
+
+    @Query("SELECT vol FROM Volunteer vol WHERE vol.accountStatus = 'rejected'")
+    List<Volunteer> findAllRejectedVolunteers();
+
     Collection<Object> findByEmail(String email);
 
 

@@ -167,16 +167,17 @@ body {
 #participations-table th,
 #participations-table td {
     padding: 10px;
-    border: 1px solid #ddd;
     text-align: left;
 }
 
 #participations-table th {
-    background-color: #f4f4f4;
+    background-color: #696c68;
+    color: white;
 }
 
 #participations-table td {
-    background-color: #fff;
+    background-color: #f6f2f2;
+    color: #4e4e4e;
 }
 
 #participations-table .no-data {
@@ -186,17 +187,13 @@ body {
 }
 
 button.apply-btn {
-    background-color: #6c63ff;
-    color: white;
+    background-color: #5cb85c;
     padding: 5px 10px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
 }
 
-button.apply-btn:hover {
-    background-color: #5a54d9;
-}
 
 /* Handling overflow and responsive table */
 @media (max-width: 768px) {
@@ -213,6 +210,9 @@ button.apply-btn:hover {
 body.dark-theme {
     background-color: #0c0b0b; /* Dark background for dark theme */
     color: #ECDFCC; /* Soft beige text */
+}
+body.dark-theme h2 {
+    color: #ECDFCC;
 }
 
 body.dark-theme .main-content {

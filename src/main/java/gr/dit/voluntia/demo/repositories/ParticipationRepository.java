@@ -28,6 +28,18 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
             @Param("status") String status
     );
 
+    @Query (
+            "SELECT p " +
+                    "FROM Participation p " +
+                    "WHERE " +
+                    "p.volunteerId = :volId " +
+                    "AND p.status = :status"
+    )
+    List<Participation> findParticipationsForVolunteerByStatus (
+            @Param("volId") Long volId,
+            @Param("status") String status
+    );
+
     List<Participation> findByStatus(String rejected);
 
 

@@ -6,7 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/table.css}">
-    <link rel="stylesheet" th:href="@{/css/modal.css}">
+    <link rel="stylesheet" th:href="@{/css/vol-dashboard-extra-align.css}">
     <title>Volunteer's Dashboard</title>
 </head>
 <body>
@@ -16,7 +16,7 @@
     <div class="sidebar">
         <h2>Dashboard</h2>
         <ul class="menu">
-            <li><a href="#">Home</a></li>
+            <li><a th:href="@{/}">Home</a></li>
             <li><a href="#" onclick="openModal('view-modal')">My Participations</a></li>
             <li><a href="#">Edit Profile</a></li>
             <li><a th:href="@{/logout}">Logout</a></li>
@@ -39,7 +39,7 @@
         <div class="card">
             <h3>Check Participations</h3>
             <p>View all the participation and their status.</p>
-            <button onclick="toggleParticipations()">View</button>
+            <button onclick="openModal('view-modal')">View</button>
         </div>
 
         <!-- Table for confirmed events -->
@@ -51,7 +51,7 @@
                     <th>Event</th>
                     <th>Date</th>
                     <th>Description</th>
-                    <th>Action</th>
+                    <th>Apply</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -62,7 +62,7 @@
                     <td>
                         <form th:action="@{/dashboard/vol/apply-to-event}" method="post">
                             <input type="hidden" name="eventId" th:value="${event.id}"/>
-                            <button type="submit" class="apply-btn">Apply</button>
+                            <button type="submit" class="apply-btn">✅</button>
                         </form>
                     </td>
                 </tr>
@@ -75,13 +75,6 @@
         </div>
     </div>
 </div>
-
-
-<!-- Footer -->
-<footer>
-    <a th:href="@{/}">Go back to the Home Page</a>
-</footer>
-
 
 <!-- Modal for View Participations -->
 <div id="view-modal" class="modal" aria-hidden="true">

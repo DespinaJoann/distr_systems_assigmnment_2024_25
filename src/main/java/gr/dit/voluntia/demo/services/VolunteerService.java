@@ -33,6 +33,7 @@ public class VolunteerService {
      * @param volId the volunteer ID
      * @return true if the volunteer is rejected
      * * */
+    @Transactional
     public boolean isVolunteerRejected(Long volId) {
         Volunteer vol = volunteerRepository.findById(volId).get();
         return vol.getAccountStatus().equals("rejected") ? true : false;
@@ -44,6 +45,7 @@ public class VolunteerService {
      * @param volId the volunteer ID
      * @return true if the volunteer is pending
      * * */
+    @Transactional
     public boolean isVolunteerPending(Long volId) {
         Volunteer vol = volunteerRepository.findById(volId).get();
         return vol.getAccountStatus().equals("pending") ? true : false;
@@ -69,6 +71,7 @@ public class VolunteerService {
      * @param ev the event for which the volunteer wants to apply
      * @param volId the ID of the volunteer applying
      * * */
+    @Transactional
     public void applyToEvent(Event ev, Long volId) {
         // Get today's date and parse it to string with patter YYYY-MM-DD
         LocalDate currDate = LocalDate.now();
@@ -94,20 +97,10 @@ public class VolunteerService {
      * @param status the status of the participation (e.g., "accepted", "rejected", "pending")
      * @return a list of participations matching the status or an empty list if none are found
      * * */
-    public List<ParticipationObj> getAllParticipationWithStatus(Long volId, String status) {
-        Volunteer vol = volunteerRepository.findById(volId).orElse(null);
-        if (vol == null) {
-            return new ArrayList<>();
-        }
-
-        // Filter participations locally based on the status
-        List<Participation> filteredParticipations = new ArrayList<>();
-        for (Participation participation : vol.getListOfParticipation()) {
-            if (status.equals(participation.getStatus())) {
-                filteredParticipations.add(participation);
-            }
-        }
-        return parseToParticipationObjListWithStatus(filteredParticipations, status);
+    @Transactional
+    public List<ParticipationObj> getAllParticipationsWithStatus(Long volId, String status) {
+        List<Participation> listOfParts = participationRepository.findParticipationsForVolunteerByStatus(volId, status);
+        return parseToParticipationObjListWithStatus(listOfParts, status);
     }
 
 

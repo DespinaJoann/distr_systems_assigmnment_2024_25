@@ -31,8 +31,6 @@ public class DashboardController {
         this.volunteerService = volunteerService;
     }
 
-
-
     @GetMapping("/vol")
     public String volunteerDashboard(Model model) {
         CurrentUser currentUser = CurrentUser.fromSecurityContext();
@@ -48,9 +46,9 @@ public class DashboardController {
 
         // Fetch the organization’s data (volunteer participation statuses, events, etc.)
         List<Event> allConfirmedEvs = volunteerService.getAllConfirmedEvents();
-        List<ParticipationObj> rejectedParts = volunteerService.getAllParticipationWithStatus(currentUser.getId(),"rejected");
-        List<ParticipationObj> acceptedParts = volunteerService.getAllParticipationWithStatus(currentUser.getId(),"accepted");
-        List<ParticipationObj> pendingParts = volunteerService.getAllParticipationWithStatus(currentUser.getId(),"pending");
+        List<ParticipationObj> rejectedParts = volunteerService.getAllParticipationsWithStatus(currentUser.getId(),"rejected");
+        List<ParticipationObj> acceptedParts = volunteerService.getAllParticipationsWithStatus(currentUser.getId(),"approved");
+        List<ParticipationObj> pendingParts = volunteerService.getAllParticipationsWithStatus(currentUser.getId(),"pending");
 
         // Add data to the model
         model.addAttribute("allConfirmedEvs", allConfirmedEvs);
@@ -77,6 +75,56 @@ public class DashboardController {
         System.out.println(currentUser.toString());
         return "dashboard/vol"; // vol.html
     }
+
+
+    @GetMapping("/admin")
+    public String adminDashboard(Model model) {
+        // Retrieve current user from the security context
+        CurrentUser currentUser = CurrentUser.fromSecurityContext();
+        model.addAttribute("currentUser", currentUser);
+
+        // Retrieve all data lists of Users and events
+        List<Organization> pendingOrgs = adminService.getPendingOrganizations();
+        List<Organization> allOrgs = adminService.getAllOrganizations();
+
+        List<Volunteer> pendingVols = adminService.getPendingVolunteers();
+        List<Volunteer> allVols = adminService.getAllVolunteers();
+
+        List<Event> pendingEvents = adminService.getPendingEvents();
+        List<Event> allEvents = adminService.getAllEvents();
+
+        Event newEvent = new Event();
+
+        // If the resulting lists are null, initialize them as empty
+        if (pendingOrgs == null) pendingOrgs = new ArrayList<>();
+        if (allOrgs == null) allOrgs = new ArrayList<>();
+
+        if (pendingVols == null) pendingVols = new ArrayList<>();
+        if (allVols == null) allVols = new ArrayList<>();
+
+        if (pendingEvents == null) pendingEvents = new ArrayList<>();
+        if (allEvents == null) allEvents = new ArrayList<>();
+
+        // Send this data to the frontend
+        model.addAttribute("pendingOrgs", pendingOrgs);
+        model.addAttribute("allOrgs", allOrgs);
+
+        model.addAttribute("pendingVols", pendingVols);
+        model.addAttribute("allVols", allVols);
+
+        model.addAttribute("pendingEvents", pendingEvents);
+        model.addAttribute("allEvents", allEvents);
+
+        model.addAttribute("event", newEvent);
+
+        // Message messages in case of empty lists
+        if (pendingOrgs.isEmpty() && pendingVols.isEmpty() && pendingEvents.isEmpty()) {
+            model.addAttribute("message", "All users and events have been confirmed!");
+        }
+
+        return "dashboard/admin"; // admin.html
+    }
+
 
 
     @GetMapping("/org")
@@ -126,65 +174,4 @@ public class DashboardController {
         return "dashboard/org"; // Return the org dashboard page (Thymeleaf template)
     }
 
-
-
-    @GetMapping("/admin")
-    public String adminDashboard(Model model) {
-        // Retrieve current user from the security context
-        CurrentUser currentUser = CurrentUser.fromSecurityContext();
-        model.addAttribute("currentUser", currentUser);
-
-        // Pending organizations, volunteers and events
-        List<Organization> pendingOrgs = adminService.getPendingOrganizations();
-        List<Volunteer> pendingVols = adminService.getPendingVolunteers();
-        List<Event> pendingEvents = adminService.getPendingEvents();
-        Event newEvent = new Event();
-
-        // If the resulting lists are null, initialize them as empty
-        if (pendingOrgs == null) pendingOrgs = new ArrayList<>();
-        if (pendingVols == null) pendingVols = new ArrayList<>();
-        if (pendingEvents == null) pendingEvents = new ArrayList<>();
-
-        model.addAttribute("pendingOrgs", pendingOrgs);
-        model.addAttribute("pendingVols", pendingVols);
-        model.addAttribute("pendingEvents", pendingEvents);
-        model.addAttribute("event", newEvent);
-        // Message for no pending items
-        if (pendingOrgs.isEmpty() && pendingVols.isEmpty() && pendingEvents.isEmpty()) {
-            model.addAttribute("message", "All users and events have been confirmed!");
-        }
-
-        return "dashboard/admin"; // admin.html
-    }
-
-  /**
-   // Edit Profile Form for the respective dashboard
-   @GetMapping("/edit-profile")
-   public String showEditProfileForm(Model model) {
-   // Get the current user from the session context
-   CurrentUser currentUser = CurrentUser.fromSecurityContext();
-
-   // Create a NewUser object pre-filled with the current user's data
-   NewUser newUser = new NewUser();
-   newUser.setUsername(currentUser.getUsername());
-   newUser.setRole(currentUser.getRole());
-
-   // Add the user data to the model
-   model.addAttribute("newUser", newUser);
-
-   // Return the appropriate view based on the dashboard
-   String dashboard = currentUser.getRole().toLowerCase(); // Assuming role is either 'admin', 'org', or 'vol'
-   System.out.println(dashboard);
-   return "dashboard/" + dashboard; // Dynamically choosing the view
-   }
-
-   // Update Profile Information
-   @PostMapping("/update-profile")
-   public String updateProfile(@ModelAttribute("newUser") NewUser updatedUser) {
-   // Call service to update profile
-   usersService.updateProfile(updatedUser);
-
-   // Redirect to the dashboard with a success message
-   return "redirect:/dashboard?update=success";
-   }*/
 }

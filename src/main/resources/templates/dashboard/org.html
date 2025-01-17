@@ -15,7 +15,7 @@
     <div class="sidebar">
         <h2>Dashboard</h2>
         <ul class="menu">
-            <li><a href="#">Home</a></li>
+            <li><a th:href="@{/}">Home</a></li>
             <li><a href="#">My Tasks</a></li>
             <li><a href="#">Edit Profile</a></li>
             <li><a th:href="@{/logout}">Logout</a></li>
@@ -60,10 +60,7 @@
     </div>
 </div>
 
-<!-- Footer -->
-<footer>
-    <a th:href="@{/}">Go back to the Home Page</a>
-</footer>
+
 
 <!-- Modal for Rejected Account -->
 <div th:if="${rejected}" id="rejected-user-modal" class="modal" aria-hidden="true">
@@ -82,24 +79,17 @@
         <table>
             <thead>
             <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
                 <th>Event</th>
-                <th>Details</th>
+                <th>Volunteer</th>
+                <th>Description</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="part : ${pendingParts}">
-                <td th:text="${part.vol.firstName}"></td>
-                <td th:text="${part.vol.lastName}"></td>
                 <td th:text="${part.event.name}"></td>
-                <td>
-                    <button class="expand-button" onclick="toggleDetails('vol-details-${part.vol.id}')">🔎</button>
-                    <div id="vol-details-${part.vol.id}" class="expandable-content" style="display:none;">
-                        <p th:text="${part.vol.profileDescription}"></p>
-                    </div>
-                </td>
+                <td th:text="${part.vol.firstName} + ' ' + ${part.vol.lastName}"></td>
+                <td th:text="${part.vol.profileDescription}"></td>
                 <td>
                     <form th:action="@{/dashboard/org/approve-part/{id}(id=${part.partId})}" method="post">
                         <button class="action-button" type="submit">Approve</button>
@@ -130,7 +120,7 @@
                 <th>Location</th>
                 <th>Volunteers</th>
                 <th>Topic</th>
-                <th>Details</th>
+                <th>Description</th>
             </tr>
             </thead>
             <tbody>
@@ -140,12 +130,7 @@
                 <td th:text="${ev.location}"></td>
                 <td th:text="${ev.numberOfVolunteers}"></td>
                 <td th:text="${ev.topic}"></td>
-                <td>
-                    <button class="expand-button" onclick="toggleDetails('event-details-${ev.id}')">🔎</button>
-                    <div id="event-details-${ev.id}" class="expandable-content" style="display:none;">
-                        <p th:text="${ev.description}"></p>
-                    </div>
-                </td>
+                <td th:text="${ev.description}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(activeEvents)}">
                 <td colspan="6" class="no-data">No active events available.</td>
@@ -168,7 +153,7 @@
                 <th>Location</th>
                 <th>Volunteers</th>
                 <th>Topic</th>
-                <th>Expand</th>
+                <th>Description</th>
             </tr>
             </thead>
             <tbody>
@@ -178,12 +163,7 @@
                 <td th:text="${ev.location}"></td>
                 <td th:text="${ev.numberOfVolunteers}"></td>
                 <td th:text="${ev.topic}"></td>
-                <td>
-                    <button class="expand-button" onclick="toggleDetails('event-details-${ev.id}')">🔎</button>
-                    <div id="event-details-${ev.id}" class="expandable-content" style="display:none;">
-                        <p th:text="${ev.description}"></p>
-                    </div>
-                </td>
+                <td th:text="${ev.description}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(rejectedEvents)}">
                 <td colspan="6" class="no-data">No rejected events available.</td>
@@ -200,7 +180,7 @@
                 <th>Location</th>
                 <th>Volunteers</th>
                 <th>Topic</th>
-                <th>Expand</th>
+                <th>Description</th>
             </tr>
             </thead>
             <tbody>
@@ -210,12 +190,7 @@
                 <td th:text="${ev.location}"></td>
                 <td th:text="${ev.numberOfVolunteers}"></td>
                 <td th:text="${ev.topic}"></td>
-                <td>
-                    <button class="expand-button" onclick="toggleDetails('event-details-${ev.id}')">🔎</button>
-                    <div id="event-details-${ev.id}" class="expandable-content" style="display:none;">
-                        <p th:text="${ev.description}"></p>
-                    </div>
-                </td>
+                <td th:text="${ev.description}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(rejectedEvents)}">
                 <td colspan="6" class="no-data">No expired events in the queue.</td>

@@ -18,8 +18,13 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
     Organization findByUsername(@Param("username") String username);
     Organization findByEmail(String email);
 
+    @Query("SELECT org FROM Organization org WHERE org.accountStatus = 'approved'")
+    List<Organization> findAllApprovedOrganizations();
+
+    @Query("SELECT org FROM Organization org WHERE org.accountStatus = 'rejected'")
+    List<Organization> findAllRejectedOrganizations();
+
     @Query("SELECT org FROM Organization org WHERE org.accountStatus = 'pending'")
     List<Organization> findAllPendingOrganizations();
-
     boolean findByOrgName(String orgName);
 }

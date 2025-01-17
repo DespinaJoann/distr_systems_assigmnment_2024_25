@@ -29,42 +29,6 @@ public class OrganizationService {
     private EventService eventService;
 
 
-    /**
-     * Description:
-     * Deletes all rejected events for a specific organization.
-     * @param orgId the organization ID
-     * * */
-    public void deleteAllRejectedEvents(Long orgId) {
-        List<Event> evList = getRejectedEventIdsByOrganization(orgId);
-        List<Long> eventIds = evList.stream()
-                .map(Event::getId)
-                .collect(Collectors.toList());
-
-        eventRepository.deleteAllByIdIn(eventIds);
-    }
-
-    private List<Event> getRejectedEventIdsByOrganization(Long orgId) {
-        return eventService.getAllRejectedEventsWithOrganizationId(orgId);
-    }
-
-    /**
-     * Description:
-     * Deletes all expired events for a specific organization.
-     * This checks if the event's date has passed compared to today's date.
-     * @param orgId the organization ID
-     * * */
-    @Transactional
-    public void deleteAllExpiredEvents(Long orgId) {
-        // First Things First be sure that the Expired Events are calculated
-        getAllExpiredEvents(orgId);
-
-        // Fetch all events for the organization
-        List<Event> exprEvs = eventService.getAllExpiredEventsWithOrganizationId(orgId);
-        for (Event ev : exprEvs) {
-            eventRepository.delete(ev);
-        }
-    }
-
 
     /**
      * Description:
@@ -95,6 +59,7 @@ public class OrganizationService {
      * @param orgId the organization ID
      * @return true if the organization is rejected
      * * */
+    @Transactional
     public boolean isOrganizationRejected(Long orgId) {
         Organization org = organizationRepository.findById(orgId).get();
         return org.getAccountStatus().equals("rejected") ? true : false;
@@ -106,22 +71,10 @@ public class OrganizationService {
      * @param orgId the organization ID
      * @return true if the organization is rejected
      * * */
+    @Transactional
     public boolean isOrganizationPending(Long orgId) {
         Organization org = organizationRepository.findById(orgId).get();
         return org.getAccountStatus().equals("pending") ? true : false;
-    }
-
-    /**
-     * Description:
-     * Deletes all rejected participations for a specific organization.
-     * @param orgId the organization ID
-     * * */
-    @Transactional
-    public void deleteAllRejectedParticipations(Long orgId) {
-        List<ParticipationObj> rejectedPartList = getAllParticipationsOfAnOrgWithStatus(orgId, "rejected");
-        for (ParticipationObj p : rejectedPartList) {
-            participationRepository.deleteById(p.getPartId());
-        }
     }
 
 
@@ -206,27 +159,20 @@ public class OrganizationService {
         return result;
     }
 
-        /**
-         * Description:
-         * Approves a participation for an organization.
-         * @param partId the ID of the participation
-         * * */
-    @Transactional
-    public void approveParticipationById(Long partId) {
-        Participation part = participationRepository.findById(partId)
-                .orElseThrow(() -> new IllegalArgumentException("Participation not found"));
+   /**
+    * Description:
+    * Approves a participation for an organization.
+    * @param partId the ID of the participation
+    * * */
+   @Transactional
+   public void approveParticipationById(Long partId) {
+       Participation part = participationRepository.findById(partId)
+               .orElseThrow(() -> new IllegalArgumentException("Participation not found"));
+       part.setStatus("approved");
+       participationRepository.save(part);
 
-        Event event = eventRepository.findById(part.getEventId())
-                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
-
-        Volunteer volunteer = volunteerRepository.findById(part.getVolunteerId())
-                .orElseThrow(() -> new IllegalArgumentException("Volunteer not found"));
-
-        Organization organization = organizationRepository.findById(part.getOrganizationId())
-                .orElseThrow(() -> new IllegalArgumentException("Organization not found"));
-
-        updateListsForParticipation(part, event, volunteer, organization, "rejected");
-    }
+       System.out.println("Participation ID: " + partId + " updated to approved.");
+   }
 
     /**
      * Description:
@@ -236,19 +182,15 @@ public class OrganizationService {
     @Transactional
     public void rejectParticipationById(Long partId) {
         Participation part = participationRepository.findById(partId)
-                .orElseThrow(() -> new IllegalArgumentException("Participation not found for ID: " + partId));
+                .orElseThrow(() -> new IllegalArgumentException("Participation not found"));
+        part.setStatus("rejected");
+        participationRepository.save(part);
 
-        Organization org = organizationRepository.findById(part.getOrganizationId())
-                .orElseThrow(() -> new IllegalArgumentException("Organization not found for ID: " + part.getOrganizationId()));
-        Event ev = eventRepository.findById(part.getEventId())
-                .orElseThrow(() -> new IllegalArgumentException("Event not found for ID: " + part.getEventId()));
-        Volunteer vol = volunteerRepository.findById(part.getVolunteerId())
-                .orElseThrow(() -> new IllegalArgumentException("Volunteer not found for ID: " + part.getVolunteerId()));
-
-        updateListsForParticipation(part, ev, vol, org, "rejected");
+        System.out.println("Participation ID: " + partId + " updated to rejected.");
     }
 
     /**
+     * DEPRECATED:
      * Description:
      * Updates participation details and adjusts associated lists (events, volunteers, organizations).
      * @param part   the participation object
