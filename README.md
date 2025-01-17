@@ -87,8 +87,8 @@ spring.jpa.properties.hibernate.format_sql=true
 ### **Run Locally**
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/voluntia.git
-   cd voluntia
+   git clone https://github.com/DespinaJoann/distr_systems_assigmnment_2024_25.git
+   cd distr_systems_assigmnment_2024_25
    ```
 
 2. Build the project:
@@ -107,7 +107,7 @@ spring.jpa.properties.hibernate.format_sql=true
    ```
 
 ### **Sample Data**
-A `dummy_data.sql` file is included to populate the database with test data. The sample data has already been integrated into the database during setup for testing purposes.
+A `dummy_data.sql` file is included to populate the database with test data. The sample data has already been integrated into our configyred database during setup for testing purposes.
 
 ---
 
