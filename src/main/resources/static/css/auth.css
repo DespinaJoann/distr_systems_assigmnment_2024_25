@@ -3,6 +3,7 @@ Animation for background
 It is static, but cool ;)
 */
 body {
+    color: #656262;
     margin: 0;
     height: 100vh; /* Ensure it covers the full viewport */
     display: flex;
@@ -12,9 +13,12 @@ body {
     background: linear-gradient(to bottom right,#212020 50%,   #353535 50%); /* Diagonal gradient with static colors */
 }
 
+h1 {
+    color: #940cef;
+}
 
 .actions-container {
-    background-color: #4e4e4e;
+    background-image: linear-gradient(to right, #434343 0%, black 100%);
     border: 3px solid #940cef;
     border-radius: 10px;
     width: 50%;

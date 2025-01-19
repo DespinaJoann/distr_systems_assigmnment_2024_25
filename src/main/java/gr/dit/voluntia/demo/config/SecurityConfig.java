@@ -40,7 +40,8 @@ public class SecurityConfig {
                                 "/signup",
                                 "/signup/vol",
                                 "/signup/org",
-                                "/signup/admin"
+                                "/signup/admin",
+                                "/public-calendar"
                         ).permitAll()
 
                         // Dashboards accessible only from the authority role users

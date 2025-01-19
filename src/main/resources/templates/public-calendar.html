@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Calendar</title>
+    <script>
+        // Πέρασμα των δεδομένων των events από το backend
+        const events = /*[[${events}]]*/ [];
+    </script>
+  <link rel="stylesheet" th:href="@{/css/calendar.css}"/>
+</head>
+<body>
+<div class="container">
+    <header>
+        <button class="left">&lt;</button>
+        <div class="display"></div>
+        <button class="right">&gt;</button>
+    </header>
+    <div class="calendar">
+        <div class="week">
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+        </div>
+        <div class="days"></div>
+    </div>
+    <div class="selected"></div>
+</div>
+<scripy type="text/javascript" th:src="@{/js/calendar.js}"></script>
+</body>
+</html>

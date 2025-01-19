@@ -18,6 +18,15 @@ public class EventService {
     @Autowired
     private EventRepository eventRepository;
 
+    /**
+     * Description:
+     * Retrieves all existing events on database.
+     * @return List<Event> of existing events else returns an empty List.
+     * * */
+    public List<Event> getAllEvents() {
+        List<Event> events = eventRepository.findAll();
+        return events.isEmpty() ? new ArrayList<>() : events;
+    }
 
     /**
      * Description:

@@ -24,7 +24,7 @@ body {
 /* Sidebar */
 .sidebar {
     width: 250px;
-    background-color: #bcc4cc; /* Muted blue-gray */
+    background-image: linear-gradient(to right, #b2b4b9 0%, #6c727a 100%);
     height: 100vh;
     padding: 20px;
     display: flex;
@@ -59,7 +59,7 @@ body {
 }
 
 .sidebar .menu li a:hover {
-    background-color: #942ed8;
+    background-color: #8c0ae3;
     transform: scale(1.02); /* Slight zoom for interactivity */
     color: #13141A;
 }
@@ -136,8 +136,8 @@ body {
 
 .card {
     color: #13141A; /* Dark text for light theme */
-    background-color: #a053d3;
-    border: 1px solid #bcc4cc; /* Subtle border */
+    background-image: linear-gradient(to right, #b2b4b9 0%, #6c727a 100%);
+    border: 3px solid #ba61f6;
     border-radius: 12px; /* Rounded corners for a modern look */
     padding: 20px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05); /* Clean shadow */
@@ -147,7 +147,6 @@ body {
 }
 
 .card:hover {
-    background-color: #9143c5; /* Slightly darker on hover */
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1); /* Enhanced shadow */
     transform: translateY(-5px); /* Subtle lift effect */
 }
@@ -175,7 +174,7 @@ body.dark-theme .main-content {
 }
 
 body.dark-theme .sidebar {
-    background-color: #333232;
+    background-image: linear-gradient(to right, #282626 0%, black 100%);
 }
 
 body.dark-theme .sidebar h2,
@@ -188,13 +187,21 @@ body.dark-theme .sidebar .menu li a:hover {
 }
 
 body.dark-theme .card {
-    background-color: #5f82d5;
+    background-image: linear-gradient(to right, #434343 0%, black 100%);
     border-color: #4C3BCF; /* Purple border for contrast */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Subtle shadow */
 }
 
+body.dark-theme .card h3 {
+    color: #4C3BCF
+}
+
+body.dark-theme .card p {
+    color: #8c8c8f
+}
+
+
 body.dark-theme .card:hover {
-    background-color: #4f73c9;
     border-color: #4C3BCF; /* Consistent hover color */
 }
 

@@ -1,0 +1,132 @@
+/** Color Palette **/
+:root {
+    --cal-bg: #ccd5f6; /* Background color for calendar cells */
+    --main-fill: #bec9f3; /* Background color for the calendar container */
+    --accent: #033be3; /* Primary accent color for borders and highlights */
+    --accent-2: #afadad; /* Secondary accent color for hover effects */
+}
+
+/* Body Styling */
+body {
+    display: flex; /* Use Flexbox to center content */
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    height: 100vh; /* Make the body height equal to the viewport height */
+    margin: 0; /* Remove default margin */
+    position: relative;
+    color: white;
+    background-image: linear-gradient(to right, #434343 0%, black 100%);
+}
+.container {
+    display: flex; /* Use Flexbox for layout */
+    flex-direction: column; /* Stack child elements vertically */
+    padding: 1em; /* Add padding inside the container */
+    box-sizing: border-box; /* Include padding and border in element's width/height */
+    width: 100%; /* Make the container responsive to screen width */
+    max-width: 900px; /* Set a maximum width for the container */
+    height: 90vh; /* Set the height relative to the viewport */
+    display: flex; /* Use flexbox for the container */
+    flex-direction: column; /* Stack rows */
+    border-radius: 50px;
+}
+
+.calendar {
+    border-radius: 30px;
+}
+/* Header Section */
+header {
+    margin: 10px; /* Add margin around the header */
+    display: flex; /* Use Flexbox for layout */
+    justify-content: space-between; /* Space out navigation buttons */
+    align-items: center; /* Center items vertically */
+    padding: 10px; /* Add padding inside the header */
+}
+
+.header-display {
+    display: flex; /* Use Flexbox for layout */
+    justify-content: center; /* Center the display text horizontally */
+    align-items: center; /* Center the display text vertically */
+    font-size: 1.5rem; /* Set font size for the display text */
+    font-weight: bold; /* Make the display text bold */
+    color: white; /* Set the color of the display text */
+}
+
+/* Navigation Buttons */
+pre {
+    padding: 10px; /* Add padding to the buttons */
+    margin: 0; /* Remove margin */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    font-size: 1.2rem; /* Set font size */
+    color: #7307ef; /* Set button color */
+}
+
+/* Weekdays Row */
+/* Weekdays Row */
+.week {
+    display: grid; /* Use Grid layout */
+    grid-template-columns: repeat(7, 1fr); /* Create 7 equal-width columns */
+    text-align: center; /* Center text inside each column */
+    font-weight: bold; /* Make text bold */
+    margin-bottom: 0; /* Remove margin below the row */
+    background-color: var(--accent); /* Set background color for the row */
+    color: white; /* Set text color to white */
+    height: 50%; /* Ensure the weekdays row takes 50% of the container height */
+    border-radius: 20px;
+}
+
+/* Days Grid */
+.days {
+    display: grid; /* Use Grid layout */
+    grid-template-columns: repeat(7, 1fr); /* Create 7 equal-width columns */
+    grid-template-rows: repeat(6, 1fr); /* Ensure 6 rows with equal height */
+    gap: 5px; /* Add spacing between cells */
+    height: 320%; /* Ensure the days row takes 50% of the container height */
+}
+
+.days {
+    color: #c760fa;
+}
+
+/* Styling for Weekdays and Days */
+.week div,
+.days div {
+    display: flex; /* Use Flexbox for cell content */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    border-radius: 5px; /* Round the corners of the cells */
+    height: 100%; /* Make sure the day cells take full height of the row */
+}
+
+/* Weekdays Styling */
+.week div {
+    opacity: 0.7; /* Set transparency for weekdays */
+    font-weight: bold; /* Make weekday labels bold */
+}
+
+/* Days Grid Styling */
+.days div {
+    background-image: linear-gradient(to right, #ffffff 0%, #eaf4f8 100%);/* Set background color for days */
+    height: 100%; /* Make sure the day cells take full height of the row */
+}
+
+/* Hover Effect for Days */
+.days div:hover {
+    background: #c760fa; /* Change background color on hover */
+    color: white; /* Change text color on hover */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    border-radius: 10px;
+}
+
+/* Styling for the Current Date */
+.current-date {
+    color: white;
+    background-color: #3cb6de !important;
+}
+
+
+/* Selected Date Display */
+.display-selected {
+    margin-bottom: 10px; /* Add margin below the display */
+    padding: 20px 20px; /* Add padding around the display text */
+    text-align: center; /* Center the text */
+}
