@@ -11,7 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +28,10 @@ public class PublicController {
 
     @GetMapping("/public-calendar")
     public String getPublicCalendarPage(Model model) {
+        // Retrieve all events from the database
         List<Event> events = eventService.getAllEvents();
+        model.addAttribute("events", events);
+
         return "public-calendar";
     }
 
