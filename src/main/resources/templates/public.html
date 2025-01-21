@@ -1,10 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Public</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Voluntia Public Page</title>
+    <link rel="stylesheet" th:href="@{/css/public.css}"/>
 </head>
 <body>
+<div class="context">
+    <div class="public-page-container">
+        <h1>Welcome to Voluntia</h1>
+        <p class="description">
+            Voluntia is your ultimate platform for fostering impactful, community-driven initiatives. Whether you're an individual passionate about making a difference, a volunteer looking to join meaningful events, or an organization planning to create opportunities for change, Voluntia empowers you at every step.
+        </p>
 
+        <div class="cards-container">
+            <div class="card">
+                <h2>How Voluntia Works</h2>
+                <p>
+                    Voluntia connects volunteers with organizations to enable impactful collaborations. Volunteers can browse events, track participation, and help their communities. Organizations can create events and find the right people for their initiatives.
+                </p>
+            </div>
+
+            <div class="card">
+                <h2>Opportunities for Volunteers</h2>
+                <p>
+                    Discover volunteer activities that match your interests. Track your contributions and be part of a thriving community of like-minded individuals passionate about giving back.
+                </p>
+            </div>
+
+            <div class="card">
+                <h2>Support for Organizations</h2>
+                <p>
+                    Organize and promote events seamlessly. Voluntia helps you connect with volunteers who share your vision and empowers you to create impactful change.
+                </p>
+            </div>
+
+            <div class="card">
+                <h2>Role of the Admin</h2>
+                <p>
+                    The Admin ensures the smooth operation of Voluntia by approving users, managing events, and monitoring activity on the platform. This ensures a safe and effective environment for all.
+                </p>
+            </div>
+        </div>
+
+        <p class="link-to">Discover pinned events on the   <a th:href="@{/public-calendar}">calendar</a></p>
+        <p class="link-to">Create or log in to to your account via the <a th:href="@{/auth}">authentication page</a> </p>
+        <p class="link-to">Go back to the <a th:href="@{/}">Home Page</a></p>
+
+    </div>
+</div>
+
+<!-- Background Animation -->
+<div class="area">
+    <ul class="circles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
 </body>
 </html>

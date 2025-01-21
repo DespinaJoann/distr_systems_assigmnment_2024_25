@@ -1,0 +1,129 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+
+/* Global Box-Sizing */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Global font settings */
+/* Grayscale background */
+body::before {
+    content: ''; /* It creates the pseudo-element */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://images.pexels.com/photos/12990385/pexels-photo-12990385.png");
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%) ; /* Makes the image to gray scale */
+    z-index: -1; /* To make sure that the pseudo-element  is behind */
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #575555;
+    background-color: #efeeee;
+    min-height: 100vh;
+    text-align: center;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Content container */
+.context {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* Public page container */
+.public-page-container {
+    position: relative; /* Απαραίτητο για το pseudo-element */
+    border-radius: 15px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 850px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+
+.public-page-container h1 {
+    margin-bottom: 30px;
+    font-size: 48px;
+    color: #007bff;
+}
+
+.public-page-container p {
+    font-size: 16px;
+    color: #c0bcbc;
+    margin-bottom: 20px;
+}
+
+/* Cards container */
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+/* Individual card */
+.card {
+    background: linear-gradient(to right, #434343 0%, black 100%);
+    color: #adacac;
+    border-radius: 8px;
+    border: 2px solid #252525;
+    padding: 20px;
+    width: 250px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.card h2 {
+    font-size: 20px;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 14px;
+    color: #cfcfcf;
+}
+
+
+.link-to {
+    text-align: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #5b5b5b;
+}
+
+a {
+    color: green;
+}

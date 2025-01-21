@@ -2,6 +2,7 @@
 Animation for background
 It is static, but cool ;)
 */
+
 body {
     color: #656262;
     margin: 0;
@@ -10,24 +11,43 @@ body {
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    background: linear-gradient(to bottom right,#212020 50%,   #353535 50%); /* Diagonal gradient with static colors */
+    position: relative; /* It's needed for the pseudo element*/
 }
+
+/* Grayscale background */
+body::before {
+    content: ''; /* It creates the pseudo-element */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://images.pexels.com/photos/12990385/pexels-photo-12990385.png");
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%) ; /* Makes the image to gray scale */
+    z-index: -1; /* To make sure that the pseudo-element  is behind */
+}
+
 
 h1 {
     color: #940cef;
 }
 
 .actions-container {
-    background-image: linear-gradient(to right, #434343 0%, black 100%);
-    border: 3px solid #940cef;
+    background: rgba( 255, 255, 255, 0.1 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 6px );
+    -webkit-backdrop-filter: blur( 2px );
     border-radius: 10px;
-    width: 50%;
+    border: 3px solid #8c0ae3;
+
+    width: 25%;
     height: 400px;
     display: flex; /* Set the body to use Flexbox */
     flex-direction: column; /* Ensure elements are stacked vertically */
     justify-content: center; /* Center elements vertically */
     align-items: center; /* Center elements horizontally */
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Subtle shadow */
 }
 
 .action-container a {
