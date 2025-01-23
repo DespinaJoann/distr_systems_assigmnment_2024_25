@@ -11,10 +11,10 @@
 <div class="rejected-container">
     <div class="card-container">
         <div class="card">
-            <h1>Your account is still pending approval</h1>
+            <h1>There is another user with this Username </h1>
             <img th:src="@{/images/thinking.png}" alt="Pending Approval" class="card-image">
-            <p>Thank you for registering! Your account is currently under review by the administrator.</p>
-            <p>When your account is ready to use, you will access your personal dashboard.</p>
+            <p>If you are this user, <a th:href="@{/login}">login</a>to your account.</p>
+            <p>Otherwise, try another username and <a th:href="@{/signup}">register</a></p>
             <p class="link-to">Go back to the <a th:href="@{/}">Home Page</a></p>
         </div>
     </div>

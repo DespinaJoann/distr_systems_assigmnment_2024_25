@@ -94,6 +94,10 @@ h1 {
     text-align: center;
     font-weight: 500;
 }
+.login-form h2 {
+    color: #52e813;
+}
+
 
 .login-form .separator {
     position: relative;

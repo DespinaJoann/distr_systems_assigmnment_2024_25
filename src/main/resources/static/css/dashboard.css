@@ -71,7 +71,7 @@ body {
 /* Main Content */
 .main-content {
     color: #13141A; /* Darker text */
-    background-color: #d7d9e3; /* Slightly darker than sidebar */
+    background-color: #c5c8d0; /* Slightly darker than sidebar */
     flex-grow: 1;
     padding: 20px;
     display: flex;

@@ -52,7 +52,7 @@ public class SignupController {
        // Check if user already exists
         if (volunteerRepository.findByUsername(newUser.getUsername()) != null) {
             model.addAttribute("message", "User with this username already exists. Please try again");
-            return "redirect:/signup/vol";
+            return "errors/user-already-exists";
         }
 
         // Ensure correct role is set
@@ -67,7 +67,7 @@ public class SignupController {
     public String processOrganizationSignup(NewUser newUser, Model model) {
         if (organizationRepository.findByUsername(newUser.getUsername()) != null) {
             model.addAttribute("message", "User with this username already exists. Please try again");
-            return "redirect:/signup/org";
+            return "errors/user-already-exists";
         }
 
         newUser.setRole("ORGANIZATION");
@@ -80,7 +80,7 @@ public class SignupController {
         if (adminRepository.findByUsername(newUser.getUsername()) != null
             || adminRepository.count() > 0) {
             model.addAttribute("message", "Admin is only one for this app!");
-            return "redirect:/signup/admin";
+            return "errors/admin-is-unique";
         }
 
         newUser.setRole("ADMIN");
