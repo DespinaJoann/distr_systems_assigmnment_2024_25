@@ -23,9 +23,9 @@ import java.util.List;
 @Entity
 public class Volunteer extends User {
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String firstName;
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String lastName;
     @Column(nullable = false)
     private String phoneNumber;
