@@ -34,8 +34,6 @@ public class Volunteer extends User {
 
     private String profileDescription;
 
-    private Boolean hasCheckedIn = false;
-
     @Column(nullable = false)
     private String accountStatus = "pending"; // => Pending/ Created/ Rejected
 
