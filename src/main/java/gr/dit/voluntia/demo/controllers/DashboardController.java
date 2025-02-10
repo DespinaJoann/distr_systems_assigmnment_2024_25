@@ -5,6 +5,7 @@ import gr.dit.voluntia.demo.linkers.ParticipationObj;
 import gr.dit.voluntia.demo.models.Event;
 import gr.dit.voluntia.demo.models.Organization;
 import gr.dit.voluntia.demo.models.Volunteer;
+import gr.dit.voluntia.demo.models.Admin;
 import gr.dit.voluntia.demo.services.AdminService;
 import gr.dit.voluntia.demo.services.OrganizationService;
 import gr.dit.voluntia.demo.services.VolunteerService;
@@ -44,6 +45,15 @@ public class DashboardController {
             return "errors/user-rejected";
         }
 
+        // Find Details from current User
+        Volunteer userObj = volunteerService.getVolunteer(currentUser.getId());
+        // Print-lines just for debugging purposes
+        if (userObj == null) {
+            System.out.println("Something went wrong, The provided ID does not match with any object of the database");
+        } else {
+            System.out.println(userObj.toString());
+        }
+
         // Fetch the organization’s data (volunteer participation statuses, events, etc.)
         List<Event> allConfirmedEvs = volunteerService.getAllConfirmedEvents();
         List<ParticipationObj> rejectedParts = volunteerService.getAllParticipationsWithStatus(currentUser.getId(),"rejected");
@@ -55,6 +65,7 @@ public class DashboardController {
         model.addAttribute("rejectedParts", rejectedParts);
         model.addAttribute("acceptedParts", acceptedParts);
         model.addAttribute("pendingParts", pendingParts);
+        model.addAttribute("userObj", userObj);
 
         // Messages to display if the respective lists are empty
         if (allConfirmedEvs.isEmpty()) {
@@ -79,9 +90,21 @@ public class DashboardController {
 
     @GetMapping("/admin")
     public String adminDashboard(Model model) {
+        
         // Retrieve current user from the security context
         CurrentUser currentUser = CurrentUser.fromSecurityContext();
         model.addAttribute("currentUser", currentUser);
+
+        // Find Details from current User 
+        Admin adminObj = adminService.getAdmin(currentUser.getId());
+        
+        // Print-lines just for debugging purposes 
+        if (adminObj == null) {
+            System.out.println("Something went wrong, The provided ID does not match with any object of the database");
+        } else {
+            System.out.println(adminObj.toString());
+        }
+
 
         // Retrieve all data lists of Users and events
         List<Organization> pendingOrgs = adminService.getPendingOrganizations();
@@ -116,6 +139,7 @@ public class DashboardController {
         model.addAttribute("allEvents", allEvents);
 
         model.addAttribute("event", newEvent);
+        model.addAttribute("adminObj", adminObj);
 
         // Message messages in case of empty lists
         if (pendingOrgs.isEmpty() && pendingVols.isEmpty() && pendingEvents.isEmpty()) {
@@ -141,6 +165,15 @@ public class DashboardController {
             return "errors/user-not-approved";
         }
 
+        // Find Details from current User
+        Organization userObj = organizationService.getOrganization(currentUser.getId());
+        // Print-lines just for debugging purposes
+        if (userObj == null) {
+            System.out.println("Something went wrong, The provided ID does not match with any object of the database");
+        } else {
+            System.out.println(userObj.toString());
+        }
+
         // Fetch the organization’s data (volunteer participation statuses, events, etc.)
         List<ParticipationObj> pendingParts = organizationService.getAllParticipationsOfAnOrgWithStatus(currentUser.getId(), "pending");
         List<Event> rejectedEvents = organizationService.getAllRejectedEvents(currentUser.getId());
@@ -153,6 +186,7 @@ public class DashboardController {
         model.addAttribute("activeEvents", activeEvents);
         model.addAttribute("expiredEvents", expiredEvents);
         model.addAttribute("event", new Event());
+        model.addAttribute("userObj", userObj);
 
         // Messages to display if the respective lists are empty
         if (pendingParts.isEmpty()) {

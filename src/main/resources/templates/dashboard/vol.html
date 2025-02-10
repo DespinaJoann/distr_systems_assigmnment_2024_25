@@ -17,8 +17,8 @@
         <h2>Dashboard</h2>
         <ul class="menu">
             <li><a th:href="@{/}">Home</a></li>
-            <li><a href="#" onclick="openModal('view-modal')">My Participations</a></li>
-            <li><a href="#">Edit Profile</a></li>
+            <li><a href="#" onclick="openModal('display-info-modal')">Display Profile</a></li>
+            <li><a href="#">Display Profile</a></li>
             <li><a th:href="@{/logout}">Logout</a></li>
         </ul>
     </div>
@@ -60,7 +60,13 @@
                     <td th:text="${event.date}"></td>
                     <td th:text="${event.description}"></td>
                     <td>
-                        <form th:action="@{/dashboard/vol/apply-to-event}" method="post">
+                        <!-- Εμφανίζει το "Requested" αν το event υπάρχει στη λίστα pendingParts -->
+                        <span
+                        style="color:red; font-weight: bold;"
+                        th:if="${#lists.contains(pendingParts.![event.id], event.id)}" class="applied">Requested</span>
+
+                        <!-- Εμφανίζει το κουμπί Apply αν ΔΕΝ υπάρχει στη λίστα pendingParts -->
+                        <form th:if="${!#lists.contains(pendingParts.![event.id], event.id)}" th:action="@{/dashboard/vol/apply-to-event}" method="post">
                             <input type="hidden" name="eventId" th:value="${event.id}"/>
                             <button type="submit" class="apply-btn">✅</button>
                         </form>
@@ -155,6 +161,32 @@
     </div>
 </div>
 
+
+<!-- Modal for Display Profile Info -->
+<div id="display-info-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('display-info-modal')">&times;</span>
+        <h4>User's Info</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <td th:text="${userObj.username}"></td>
+            <td th:text="${userObj.password}"></td>
+            <td th:text="${userObj.email}"></td>
+            <td th:text="${userObj.firstName}"></td>
+            <td th:text="${userObj.lastName}"></td>
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <script>
     function toggleUserInfo() {

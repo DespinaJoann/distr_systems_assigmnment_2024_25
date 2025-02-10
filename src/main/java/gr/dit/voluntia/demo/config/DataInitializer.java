@@ -17,7 +17,8 @@ public class DataInitializer implements CommandLineRunner {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    @Transactional    public void run(String... args) {
+    @Transactional
+    public void run(String... args) {
         if (isDatabaseEmpty()) {
             insertAdmin();
             insertVolunteers();

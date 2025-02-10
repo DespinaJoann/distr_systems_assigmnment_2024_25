@@ -15,8 +15,7 @@
         <h2>Dashboard</h2>
         <ul class="menu">
             <li><a th:href="@{/}">Home</a></li>
-            <li><a href="#">My Tasks</a></li>
-            <li><a href="#">Edit Profile</a></li>
+            <li><a href="#" onclick="openModal('display-info-modal')">Display Profile</a></li>
             <li><a th:href="@{/logout}">Logout</a></li>
         </ul>
     </div>
@@ -28,7 +27,7 @@
                     <span th:text="${currentUser.username.charAt(0)}"></span>
                 </div>
             </div>
-            <button id="theme-toggle" onclick="toggleTheme()">L</button>
+            <button id="theme-toggle" onclick="toggleTheme()">🌏</button>
         </div>
 
         <div class="cards-container">
@@ -168,6 +167,32 @@
     </div>
 </div>
 
+<!-- Modal for Display Profile Info -->
+<div id="display-info-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('display-info-modal')">&times;</span>
+        <h4>User's Info</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </tr>
+            </thead>
+            <tbody>
+                <td th:text="${adminObj.username}"></td>
+                <td th:text="${adminObj.password}"></td>
+                <td th:text="${adminObj.email}"></td>
+                <td th:text="${adminObj.firstName}"></td>
+                <td th:text="${adminObj.lastName}"></td>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <!-- Control Panel-->
 <div id="control-modal" class="modal">
     <div class="modal-content">
@@ -282,7 +307,7 @@
         const body = document.body;
         body.classList.toggle('dark-theme');
         const themeButton = document.getElementById('theme-toggle');
-        themeButton.textContent = body.classList.contains('dark-theme') ? 'D' : 'L';
+        themeButton.textContent = body.classList.contains('dark-theme') ? '🌑' : '🌏';
     }
 
     function openModal(modalId) {

@@ -9,7 +9,6 @@ body {
     display: flex;
     height: 100vh;
     color: #13141A; /* Slightly darker text */
-    background-color: #bdc0c5; /* Softer and darker light background */
     font-family: 'Poppins', sans-serif; /* Modern and clean font */
     transition: all 0.3s ease-in-out;
 }
@@ -24,12 +23,13 @@ body {
 /* Sidebar */
 .sidebar {
     width: 250px;
-    background-image: linear-gradient(to right, #b2b4b9 0%, #6c727a 100%);
     height: 100vh;
     padding: 20px;
     display: flex;
     flex-direction: column;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    background-color: #a7abb2;
+
 }
 
 .sidebar h2 {
@@ -59,7 +59,7 @@ body {
 }
 
 .sidebar .menu li a:hover {
-    background-color: #8c0ae3;
+    background-color: #1871ef;
     transform: scale(1.02); /* Slight zoom for interactivity */
     color: #13141A;
 }
@@ -110,9 +110,7 @@ body {
 
 #theme-toggle {
     background: none;
-    border: 2px solid #3C3F4E; /* Consistent muted border */
-    color: #3C3F4E;
-    font-size: 18px;
+    font-size: 30px;
     cursor: pointer;
     border-radius: 50%;
     margin-left: 10px;
@@ -121,9 +119,8 @@ body {
 }
 
 #theme-toggle:hover {
-    background-color: #3C3F4E; /* Inverted hover effect */
     color: #d3d7dc;
-    transform: scale(1.1); /* Slight zoom effect */
+    transform: scale(1.4); /* Slight zoom effect */
 }
 
 /* Cards Container */
@@ -136,8 +133,8 @@ body {
 
 .card {
     color: #13141A; /* Dark text for light theme */
-    background-image: linear-gradient(to right, #b2b4b9 0%, #6c727a 100%);
-    border: 3px solid #ba61f6;
+    background-color: #b2b4b9;
+    border: 3px solid #0d4ee6;
     border-radius: 12px; /* Rounded corners for a modern look */
     padding: 20px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05); /* Clean shadow */
@@ -163,18 +160,18 @@ body {
 }
 
 /* Dark Theme */
-body.dark-theme {
-    background-color: #0c0b0b; /* Dark background for dark theme */
+body.dark-theme , html.dark-theme {
+    background-color: #000000; /* Dark background for dark theme */
     color: #ECDFCC; /* Soft beige text */
 }
 
 body.dark-theme .main-content {
-    background-color: #1c1b1b;
+    background-color: #000000;
     color: #ECDFCC;
 }
 
 body.dark-theme .sidebar {
-    background-image: linear-gradient(to right, #282626 0%, black 100%);
+    background-color: #3a3737;
 }
 
 body.dark-theme .sidebar h2,
@@ -183,40 +180,38 @@ body.dark-theme .sidebar .menu li a {
 }
 
 body.dark-theme .sidebar .menu li a:hover {
-    background-color: #4C3BCF; /
+    background-color: #0d4ee6; /
 }
 
 body.dark-theme .card {
-    background-image: linear-gradient(to right, #434343 0%, black 100%);
-    border-color: #4C3BCF; /* Purple border for contrast */
+    background-color: #3a3737;
+    border-color: #0d4ee6; /* Purple border for contrast */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    color: #39ec39;
 }
 
+
 body.dark-theme .card h3 {
-    color: #4C3BCF
+    color: #0050ff
 }
 
 body.dark-theme .card p {
-    color: #8c8c8f
+    color: #cdcdd0
 }
 
 
 body.dark-theme .card:hover {
-    border-color: #4C3BCF; /* Consistent hover color */
+    border-color: #0d4ee6; /* Consistent hover color */
 }
 
 body.dark-theme .user-avatar {
-    background-color: #3C3D37; /* Dark avatar background */
+    background-color: #3a3737; /* Dark avatar background */
     color: #ECDFCC; /* Beige text */
-    border: 2px solid #4C3BCF; /* Purple border */
+    border: 2px solid #0d4ee6; /* Purple border */
 }
 
 body.dark-theme #theme-toggle {
-    border-color: #4C3BCF;
-    color: #4C3BCF;
+    border-color: #0d4ee6;
+    color: #0d4ee6;
 }
 
-body.dark-theme #theme-toggle:hover {
-    background-color: #4C3BCF; /* Bright purple hover */
-    color: #ECDFCC;
-}

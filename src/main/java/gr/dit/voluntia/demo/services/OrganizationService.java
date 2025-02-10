@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,7 +29,16 @@ public class OrganizationService {
     @Autowired
     private EventService eventService;
 
-
+    /**
+     * Description:
+     * Retrieves an Organization object based on his id.
+     * @param id of searching organization
+     * @return an Organization object or null of Organization with this id does not exist
+     * * */
+    public Organization getOrganization(Long id) {
+        Optional<Organization> org = organizationRepository.findById(id);
+        return org.isPresent() ? org.get() : null;
+    }
 
     /**
      * Description:

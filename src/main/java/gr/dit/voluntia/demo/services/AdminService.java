@@ -25,8 +25,24 @@ public class AdminService  {
     private EventRepository eventRepository;
 
 
+    // Admin's Methods
+    /// ////////////////////////////////////////////////////////////////////////////
+    
+    /**
+     * Description:
+     * Retrieves an Admin object based on his id.
+     * @param id of searching admin
+     * @return an Admin object or null of Admin with this id does not exists
+     * * */
+    public Admin getAdmin(Long id) {
+        Optional<Admin> admin = adminRepository.findById(id);
+        return admin.isPresent() ? admin.get() : null;
+    }
+
+
     // Event Methods
     /// ////////////////////////////////////////////////////////////////////////////
+    
     /**
      * Description:
      * Retrieve all events
@@ -74,8 +90,10 @@ public class AdminService  {
     }
 
 
+
     // Organization Methods
     /// ////////////////////////////////////////////////////////////////////////////
+    
     /**
      * Description:
      * Retrieve all organization
@@ -122,9 +140,11 @@ public class AdminService  {
         });
     }
 
+    
 
     // Volunteer Methods
     /// ////////////////////////////////////////////////////////////////////////////
+    
     /**
      * Description:
      * Retrieve all volunteers

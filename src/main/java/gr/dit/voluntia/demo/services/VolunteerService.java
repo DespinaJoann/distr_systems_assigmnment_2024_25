@@ -29,6 +29,17 @@ public class VolunteerService {
 
     /**
      * Description:
+     * Retrieves a Volunteer object based on his id.
+     * @param id of searching volunteer
+     * @return a Volunteer object or null of Volunteer with this id does not exist
+     * * */
+    public Volunteer getVolunteer(Long id) {
+        Optional<Volunteer> vol = volunteerRepository.findById(id);
+        return vol.isPresent() ? vol.get() : null;
+    }
+
+    /**
+     * Description:
      * Checks if a volunteer is rejected.
      * @param volId the volunteer ID
      * @return true if the volunteer is rejected
