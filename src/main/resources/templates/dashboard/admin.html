@@ -6,6 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/table.css}">
+
     <title>Admin's Dashboard</title>
 </head>
 <body>
@@ -297,32 +298,7 @@
         </table>
     </div>
 </div>
-<script>
-    function toggleUserInfo() {
-        const userInfo = document.querySelector('.user-info');
-        userInfo.classList.toggle('open');
-    }
-
-    function toggleTheme() {
-        const body = document.body;
-        body.classList.toggle('dark-theme');
-        const themeButton = document.getElementById('theme-toggle');
-        themeButton.textContent = body.classList.contains('dark-theme') ? '🌑' : '🌏';
-    }
-
-    function openModal(modalId) {
-        document.getElementById(modalId).style.display = "block";
-    }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = "none";
-    }
-
-    function toggleDetails(id) {
-        const details = document.getElementById(id);
-        details.style.display = details.style.display === "none" ? "block" : "none";
-    }
-</script>
+<script type="text/javascript" th:src="@{/js/dashboard.js}"></script>
 
 </body>
 </html>

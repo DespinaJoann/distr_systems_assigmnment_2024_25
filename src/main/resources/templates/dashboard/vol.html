@@ -32,7 +32,7 @@
                     <span th:text="${currentUser.username.charAt(0)}"></span>
                 </div>
             </div>
-            <button id="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">L</button>
+            <button id="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">🌏</button>
         </div>
 
         <!-- Card for applying to events -->
@@ -188,33 +188,7 @@
     </div>
 </div>
 
-<script>
-    function toggleUserInfo() {
-        document.querySelector('.user-info').classList.toggle('open');
-    }
-
-    function toggleTheme() {
-        const body = document.body;
-        body.classList.toggle('dark-theme');
-        document.getElementById('theme-toggle').textContent = body.classList.contains('dark-theme') ? 'D' : 'L';
-    }
-
-    function openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        modal.style.display = "block";
-    }
-
-    function closeModal(modalId) {
-        const modal = document.getElementById(modalId);
-        modal.style.display = "none";
-    }
-
-    function toggleParticipations() {
-        const table = document.getElementById('participations-table');
-        table.style.display = table.style.display === 'none' ? 'block' : 'none';
-    }
-
-</script>
+<script type="text/javascript" th:src="@{/js/dashboard.js}"></script>
 
 </body>
 </html>

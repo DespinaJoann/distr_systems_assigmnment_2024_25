@@ -1,10 +1,8 @@
-![Java 17+](https://img.shields.io/badge/Java-17%2B-blue) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Relational%20Database-brightgreen) ![Config](https://img.shields.io/badge/Update-application.properties-pink) ![Java](https://img.shields.io/badge/Java-Primary%20Language-blue) ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-Backend%20Framework-cyan) ![Hibernate ORM](https://img.shields.io/badge/Hibernate-ORM-orange) ![Spring Security](https://img.shields.io/badge/Spring%20Security-Authentication%20%26%20Authorization-darkgreen) ![Maven](https://img.shields.io/badge/Maven-Build%20Tool-yellow) ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-Template%20Engine-blueviolet) ![HTML/CSS](https://img.shields.io/badge/HTML%20%2F%20CSS-Frontend-orange) ![JavaScript](https://img.shields.io/badge/JavaScript-Interactivity-lime)
-
 # :seedling: **Voluntia**
 
 ## **Project Overview**
-**Voluntia** is a web-based platform developed as part of the course *"Distributed Systems"* at Harokopio University of Athens (HUA) during the academic year 2024-2025. 
-Authored by *Despina Ioanna Chalkiadaki* and *Vasiliki Maria Koutsi*, this project delivers a robust backend system designed for managing volunteers, events, and organizations. Built with **Spring Boot**, it utilizes **Hibernate ORM** for seamless database operations with **PostgreSQL** and ensures secure user authentication and authorization via **Spring Security**. 
+**Voluntia** is a web-based platform developed as part of the course *"Distributed Systems"* at Harokopio University of Athens (HUA) during the academic year 2024-2025.
+Authored by *Despina Ioanna Chalkiadaki* and *Vasiliki Maria Koutsi*, this project delivers a robust backend system designed for managing volunteers, events, and organizations. Built with **Spring Boot**, it utilizes **Hibernate ORM** for seamless database operations with **PostgreSQL** and ensures secure user authentication and authorization via **Spring Security**.
 The platform provides core API endpoints for handling user and event operations, making it a reliable solution for volunteer management.
 
 ---
@@ -22,16 +20,16 @@ Welcome to **Voluntia**, the ultimate platform for fostering community-driven in
 
 ### **Role-Based Functionalities**
 1. **Admin**:
-    - Approve or reject new user registrations (Volunteers and Organizations).
-    - Approve or reject event submissions.
-    - Manage user profiles and oversee platform activity.
+   - Approve or reject new user registrations (Volunteers and Organizations).
+   - Approve or reject event submissions.
+   - Manage user profiles and oversee platform activity.
 2. **Volunteer**:
-    - Browse available events and apply to participate.
-    - Manage personal profile and track event participation.
+   - Browse available events and apply to participate.
+   - Manage personal profile and track event participation.
 3. **Organization**:
-    - Create, update, and manage events.
-    - Review and approve volunteer applications for events.
-    - Maintain and update organizational profile.
+   - Create, update, and manage events.
+   - Review and approve volunteer applications for events.
+   - Maintain and update organizational profile.
 
 ### **Event & Participation Management**
 - Organizations can manage events, including creating and monitoring them.
@@ -59,7 +57,7 @@ Welcome to **Voluntia**, the ultimate platform for fostering community-driven in
 ## **Default Settings**
 
 ### **Database Configuration**
-Update the `application.properties` file with your PostgreSQL credentials:
+Update the application.properties file with your PostgreSQL credentials:
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/voluntia
@@ -72,7 +70,7 @@ spring.jpa.properties.hibernate.format_sql=true
 ```
 
 ### **Spring Security**
-- Role-based access control for `ADMIN`, `VOLUNTEER`, and `ORGANIZATION`.
+- Role-based access control for ADMIN, VOLUNTEER, and ORGANIZATION.
 - Passwords are securely encrypted using **BCrypt**.
 
 ---
@@ -81,8 +79,8 @@ spring.jpa.properties.hibernate.format_sql=true
 
 ### **Prerequisites**
 - **Java 17** or higher installed.
-- **PostgreSQL** with a database named `voluntia`.
-- Update your `application.properties` with the appropriate database credentials.
+- **PostgreSQL** with a database named voluntia.
+- Update your application.properties with the appropriate database credentials.
 
 ### **Run Locally**
 1. Clone the repository:
@@ -107,15 +105,60 @@ spring.jpa.properties.hibernate.format_sql=true
    ```
 
 ### **Sample Data**
-A `dummy_data.sql` file is included to populate the database with test data. The sample data has already been integrated into our configyred database during setup for testing purposes.
+Previously, sample data was loaded using a dummy_data.sql file. Now, data initialization is handled programmatically via the **DataInitializer** class in the `gr.dit.voluntia.demo.config` package. The new approach ensures that the database is populated only when it is empty, providing a more efficient and dynamic solution.
+
+#### **New Data Insertion Method:**
+The `DataInitializer` class implements `CommandLineRunner` and checks if the database is empty before inserting sample data. It uses `EntityManager` for executing native SQL queries and **BCrypt** for password encryption. The initialization includes:
+
+- **Admin Users**
+- **Volunteers**
+- **Organizations**
+- **Events**
+
+#### **Example Code:**
+```java
+@Component
+public class DataInitializer implements CommandLineRunner {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @Override
+    @Transactional
+    public void run(String... args) {
+        if (isDatabaseEmpty()) {
+            insertAdmin();
+            insertVolunteers();
+            insertOrganizations();
+            insertEvents();
+            System.out.println("Database initialized with seed data.");
+        } else {
+            System.out.println("Database already contains data. Skipping initialization.");
+        }
+    }
+    
+    private boolean isDatabaseEmpty() {
+        return isTableEmpty("Admin") && isTableEmpty("Volunteer") && isTableEmpty("Organization") && isTableEmpty("Event");
+    }
+
+    private boolean isTableEmpty(String tableName) {
+        TypedQuery<Long> query = entityManager.createQuery("SELECT COUNT(e) FROM " + tableName + " e", Long.class);
+        return query.getSingleResult() == 0;
+    }
+}
+```
+
+This ensures that the database is only populated when necessary and avoids duplicate data entries.
 
 ---
 
 ## **TODO**
-- Create the functionality of the edit profile opetation.
 - Improve the UI and the design of the calendar page.
-- Stracture better our code and add more `java docs`.
+- Add more sample-data for testing purposes.E
 ---
 
 ## **License**
 This project is licensed under the **Apache-2.0 License**.
+
