@@ -9,6 +9,8 @@ import gr.dit.voluntia.demo.models.Admin;
 import gr.dit.voluntia.demo.services.AdminService;
 import gr.dit.voluntia.demo.services.OrganizationService;
 import gr.dit.voluntia.demo.services.VolunteerService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,7 @@ public class DashboardController {
     private final AdminService adminService;
     private final OrganizationService organizationService;
     private final VolunteerService volunteerService;
+
 
     public DashboardController(AdminService adminService, OrganizationService organizationService, VolunteerService volunteerService) {
         this.adminService = adminService;
@@ -47,6 +50,7 @@ public class DashboardController {
 
         // Find Details from current User
         Volunteer userObj = volunteerService.getVolunteer(currentUser.getId());
+
         // Print-lines just for debugging purposes
         if (userObj == null) {
             System.out.println("Something went wrong, The provided ID does not match with any object of the database");
@@ -167,6 +171,7 @@ public class DashboardController {
 
         // Find Details from current User
         Organization userObj = organizationService.getOrganization(currentUser.getId());
+
         // Print-lines just for debugging purposes
         if (userObj == null) {
             System.out.println("Something went wrong, The provided ID does not match with any object of the database");
