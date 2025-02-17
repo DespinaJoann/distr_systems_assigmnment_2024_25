@@ -85,8 +85,7 @@ spring.jpa.properties.hibernate.format_sql=true
 ### **Run Locally**
 1. Clone the repository:
    ```bash
-   git clone https://github.com/DespinaJoann/distr_systems_assigmnment_2024_25.git
-   cd distr_systems_assigmnment_2024_25
+   git clone https://github.com/DespinaJoann/distr_systems_assigmnment_2024_25.git; cd distr_systems_assigmnment_2024_25;
    ```
 
 2. Build the project:
