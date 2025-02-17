@@ -107,23 +107,6 @@ body {
     margin-right: 10px;
 }
 
-#theme-toggle {
-    background: none;
-    border: 2px solid #3C3F4E; /* Consistent muted border */
-    color: #3C3F4E;
-    font-size: 18px;
-    cursor: pointer;
-    border-radius: 50%;
-    margin-left: 10px;
-    padding: 5px;
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-}
-
-#theme-toggle:hover {
-    background-color: #3C3F4E; /* Inverted hover effect */
-    color: #d3d7dc;
-    transform: scale(1.1); /* Slight zoom effect */
-}
 
 /* Cards Container */
 .cards-container {

@@ -181,6 +181,10 @@ public class OrganizationService {
        part.setStatus("approved");
        participationRepository.save(part);
 
+       Event ev = eventRepository.findById(part.getEventId()).orElse(null);
+       if (ev != null) {
+           ev.setNumberOfVolunteers(ev.getNumberOfVolunteers() + 1);
+       }
        System.out.println("Participation ID: " + partId + " updated to approved.");
    }
 
@@ -198,33 +202,6 @@ public class OrganizationService {
 
         System.out.println("Participation ID: " + partId + " updated to rejected.");
     }
-
-    /**
-     * DEPRECATED:
-     * Description:
-     * Updates participation details and adjusts associated lists (events, volunteers, organizations).
-     * @param part   the participation object
-     * @param ev     the event related to the participation
-     * @param vol    the volunteer related to the participation
-     * @param org    the organization managing the participation
-     * @param status the new status to set for the participation
-     * * */
-    private void updateListsForParticipation(Participation part, Event ev, Volunteer vol, Organization org, String status) {
-        if ("approved".equals(status)) {
-            org.getListOfCurrentEvents().add(ev);
-            ev.getParticipationList().add(part);
-            ev.setNumberOfVolunteers(ev.getNumberOfVolunteers() + 1);
-            vol.getListOfParticipation().add(part);
-        } else if ("rejected".equals(status)) {
-            org.getListOfCurrentEvents().remove(ev);
-            ev.getParticipationList().remove(part);
-            vol.getListOfParticipation().remove(part);
-        }
-
-        part.setStatus(status);
-        participationRepository.save(part);
-    }
-
 
 
 
