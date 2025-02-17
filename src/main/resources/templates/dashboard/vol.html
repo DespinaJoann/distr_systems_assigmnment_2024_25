@@ -106,7 +106,7 @@
                 <td th:text="${pr.status}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(acceptedParts)}">
-                <td colspan="4" class="no-data">No accepted applications.</td>
+                <td colspan="4" class="no-data"><span style="color:red;">No accepted applications.</span></td>
             </tr>
             </tbody>
         </table>
@@ -130,7 +130,7 @@
                 <td th:text="${pr.status}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(pendingParts)}">
-                <td colspan="4" class="no-data">No pending applications.</td>
+                <td colspan="4" class="no-data"><span style="color:red;">No pending applications.</span></td>
             </tr>
             </tbody>
         </table>
@@ -154,7 +154,7 @@
                 <td th:text="${pr.status}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(rejectedParts)}">
-                <td colspan="4" class="no-data">No rejected applications.</td>
+                <td colspan="4" class="no-data"><span style="color:red;">No rejected applications.</span></td>
             </tr>
             </tbody>
         </table>

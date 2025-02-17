@@ -119,6 +119,7 @@
                 <th>Location</th>
                 <th>Volunteers</th>
                 <th>Topic</th>
+                <th>Status</th>
                 <th>Description</th>
             </tr>
             </thead>
@@ -129,10 +130,11 @@
                 <td th:text="${ev.location}"></td>
                 <td th:text="${ev.numberOfVolunteers}"></td>
                 <td th:text="${ev.topic}"></td>
+                <span style="color:green;"><td th:text="${ev.status}"></td></span>
                 <td th:text="${ev.description}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(activeEvents)}">
-                <td colspan="6" class="no-data">No active events available.</td>
+                <td colspan="6" class="no-data"><span style="color:red;">No active events available.</span></td>
             </tr>
             </tbody>
         </table>
@@ -165,7 +167,7 @@
                 <td th:text="${ev.description}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(rejectedEvents)}">
-                <td colspan="6" class="no-data">No rejected events available.</td>
+                <td colspan="6" class="no-data"><span style="color:red;">No rejected events available.</span></td>
             </tr>
             </tbody>
         </table>
@@ -192,7 +194,7 @@
                 <td th:text="${ev.description}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(rejectedEvents)}">
-                <td colspan="6" class="no-data">No expired events in the queue.</td>
+                <td colspan="6" class="no-data"><span style="color:red;">No expired events in the queue.</span></td>
             </tr>
             </tbody>
         </table>

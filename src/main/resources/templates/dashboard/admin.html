@@ -98,7 +98,7 @@
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(pendingOrgs)}">
-                <td colspan="4" class="no-data">No pending organizations available.</td>
+                <td colspan="4" class="no-data"><span style="color:red;">No pending organizations available.</span></td>
             </tr>
             </tbody>
         </table>
@@ -125,7 +125,7 @@
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(pendingVols)}">
-                <td colspan="3" class="no-data">No pending volunteers available.</td>
+                <td colspan="3" class="no-data"><span style="color:red;">No pending volunteers available.</span></td>
             </tr>
             </tbody>
         </table>
@@ -161,7 +161,7 @@
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(pendingEvents)}">
-                <td colspan="4" class="no-data">No pending events available.</td>
+                <td colspan="4" class="no-data"><span style="color:red;">No pending events available.</span></td>
             </tr>
             </tbody>
         </table>
@@ -227,7 +227,7 @@
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(allOrgs)}">
-                <td colspan="4" class="no-data">There is no organization registered.</td>
+                <td colspan="4" class="no-data"><span style="color:mediumblue;">There is no organization registered.</span></td>
             </tr>
             </tbody>
         </table>
@@ -259,7 +259,7 @@
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(allVols)}">
-                <td colspan="4" class="no-data">There is no volunteer registered.</td>
+                <td colspan="4" class="no-data"><span style="color:mediumblue;">There is no volunteer registered.</span></td>
             </tr>
             </tbody>
         </table>
@@ -290,7 +290,7 @@
                 <td th:text="${ev.description}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(allEvents)}">
-                <td colspan="4" class="no-data">There is no event created.</td>
+                <td colspan="4" class="no-data"><span style="color:green;">There is no event created.</span></td>
             </tr>
             </tbody>
         </table>
